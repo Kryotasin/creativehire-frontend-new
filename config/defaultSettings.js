@@ -1,6 +1,5 @@
 export default {
   navTheme: 'dark',
-  // 拂晓蓝
   primaryColor: '#011A27',
   layout: 'sidemenu',
   contentWidth: 'Fluid',

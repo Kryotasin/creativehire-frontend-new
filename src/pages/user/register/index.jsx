@@ -1,25 +1,13 @@
 import { Form, Button, Input, Popover, Progress, Select, message } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { Link, connect, history, FormattedMessage, formatMessage } from 'umi';
+import { Link, connect, history } from 'umi';
 import styles from './style.less';
 
 const FormItem = Form.Item;
 const passwordStatusMap = {
-  ok: (
-    <div className={styles.success}>
-      <FormattedMessage id="userandregister.strength.strong" />
-    </div>
-  ),
-  pass: (
-    <div className={styles.warning}>
-      <FormattedMessage id="userandregister.strength.medium" />
-    </div>
-  ),
-  poor: (
-    <div className={styles.error}>
-      <FormattedMessage id="userandregister.strength.short" />
-    </div>
-  ),
+  ok: <div className={styles.success}>Stregth: Poor</div>,
+  pass: <div className={styles.warning}>Stregth: Medium</div>,
+  poor: <div className={styles.error}>Stregth: Strong</div>,
 };
 const passwordProgressMap = {
   ok: 'success',
@@ -86,7 +74,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     return 'poor';
   };
 
-  const onFinish = values => {
+  const onFinish = (values) => {
     dispatch({
       type: 'userAndregister/submit',
       payload: { ...values, prefix },
@@ -97,11 +85,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     const promise = Promise;
 
     if (value && value !== form.getFieldValue('password')) {
-      return promise.reject(
-        formatMessage({
-          id: 'userandregister.password.twice',
-        }),
-      );
+      return promise.reject('Passwords do not match!');
     }
 
     return promise.resolve();
@@ -112,11 +96,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
 
     if (!value) {
       setVisible(!!value);
-      return promise.reject(
-        formatMessage({
-          id: 'userandregister.password.required',
-        }),
-      );
+      return promise.reject('Pleaseenter password');
     } // 有值的情况
 
     if (!visible) {
@@ -136,7 +116,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     return promise.resolve();
   };
 
-  const changePrefix = value => {
+  const changePrefix = (value) => {
     setPrefix(value);
   };
 
@@ -158,54 +138,36 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
 
   return (
     <div className={styles.main}>
-      <h3>
-        <FormattedMessage id="userandregister.register.register" />
-      </h3>
+      <h3>Register</h3>
       <Form form={form} name="UserRegister" onFinish={onFinish}>
         <FormItem
           name="email"
           rules={[
             {
               required: true,
-              message: formatMessage({
-                id: 'userandregister.email.required',
-              }),
+              message: 'Please enter email address',
             },
             {
               type: 'email',
-              message: formatMessage({
-                id: 'userandregister.email.wrong-format',
-              }),
+              message: 'Invalid email',
             },
           ]}
         >
-          <Input
-            size="large"
-            placeholder={formatMessage({
-              id: 'userandregister.email.placeholder',
-            })}
-          />
+          <Input size="large" placeholder="Email" />
         </FormItem>
         <FormItem
           name="username"
           rules={[
             {
               required: true,
-              message: formatMessage({
-                id: 'userandregister.username.required',
-              }),
+              message: 'Please enter a username!',
             },
           ]}
         >
-          <Input
-            size="large"
-            placeholder={formatMessage({
-              id: 'userandregister.username.placeholder',
-            })}
-          />
+          <Input size="large" placeholder="userandregister.username.placeholder" />
         </FormItem>
         <Popover
-          getPopupContainer={node => {
+          getPopupContainer={(node) => {
             if (node && node.parentNode) {
               return node.parentNode;
             }
@@ -226,7 +188,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
                     marginTop: 10,
                   }}
                 >
-                  <FormattedMessage id="userandregister.strength.msg" />
+                  Enter at least 6 characters. Please do not enter easy passwords.
                 </div>
               </div>
             )
@@ -250,13 +212,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
               },
             ]}
           >
-            <Input
-              size="large"
-              type="password"
-              placeholder={formatMessage({
-                id: 'userandregister.password.placeholder',
-              })}
-            />
+            <Input size="large" type="password" placeholder="At least 6 digits, case sensitive" />
           </FormItem>
         </Popover>
         <FormItem
@@ -264,25 +220,16 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
           rules={[
             {
               required: true,
-              message: formatMessage({
-                id: 'userandregister.confirm-password.required',
-              }),
+              message: 'Please confirm your password!',
             },
             {
               validator: checkConfirm,
             },
           ]}
         >
-          <Input
-            size="large"
-            type="password"
-            placeholder={formatMessage({
-              id: 'userandregister.confirm-password.placeholder',
-            })}
-          />
+          <Input size="large" type="password" placeholder="Confirm password" />
         </FormItem>
-        
-       
+
         <FormItem>
           <Button
             size="large"
@@ -291,10 +238,10 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
             type="primary"
             htmlType="submit"
           >
-            <FormattedMessage id="userandregister.register.register" />
+            Register
           </Button>
           <Link className={styles.login} to="/user/login">
-            <FormattedMessage id="userandregister.register.sign-in" />
+            Already registered?
           </Link>
         </FormItem>
       </Form>

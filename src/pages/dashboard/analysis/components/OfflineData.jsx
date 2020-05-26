@@ -17,12 +17,7 @@ const CustomTab = ({ data, currentTabKey: currentKey }) => (
     <Col span={12}>
       <NumberInfo
         title={data.name}
-        subTitle={
-          <FormattedMessage
-            id="dashboardandanalysis.analysis.conversion-rate"
-            defaultMessage="Conversion Rate"
-          />
-        }
+        subTitle="转化率"
         gap={2}
         total={`${data.cvr * 100}%`}
         theme={currentKey !== data.name ? 'light' : undefined}
@@ -58,7 +53,7 @@ const OfflineData = ({ activeKey, loading, offlineData, offlineChartData, handle
     }}
   >
     <Tabs activeKey={activeKey} onChange={handleTabChange}>
-      {offlineData.map(shop => (
+      {offlineData.map((shop) => (
         <TabPane tab={<CustomTab data={shop} currentTabKey={activeKey} />} key={shop.name}>
           <div
             style={{
@@ -69,12 +64,8 @@ const OfflineData = ({ activeKey, loading, offlineData, offlineChartData, handle
               height={400}
               data={offlineChartData}
               titleMap={{
-                y1: formatMessage({
-                  id: 'dashboardandanalysis.analysis.traffic',
-                }),
-                y2: formatMessage({
-                  id: 'dashboardandanalysis.analysis.payments',
-                }),
+                y1: '客流量',
+                y2: '支付笔数',
               }}
             />
           </div>

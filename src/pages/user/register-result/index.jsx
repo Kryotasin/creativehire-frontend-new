@@ -5,15 +5,13 @@ import styles from './style.less';
 
 const actions = (
   <div className={styles.actions}>
-    <a href="">
+    <Link className={styles.login} to="/">
       <Button size="large" type="primary">
-        <FormattedMessage id="userandregister-result.register-result.view-mailbox" />
+        Home
       </Button>
-    </a>
-    <Link to="/">
-      <Button size="large">
-        <FormattedMessage id="userandregister-result.register-result.back-home" />
-      </Button>
+    </Link>
+    <Link to="/user/login">
+      <Button size="large">Login</Button>
     </Link>
   </div>
 );
@@ -22,19 +20,8 @@ const RegisterResult = ({ location }) => (
   <Result
     className={styles.registerResult}
     status="success"
-    title={
-      <div className={styles.title}>
-        <FormattedMessage
-          id="userandregister-result.register-result.msg"
-          values={{
-            email: location.state ? location.state.account : 'AntDesign@example.com',
-          }}
-        />
-      </div>
-    }
-    subTitle={formatMessage({
-      id: 'userandregister-result.register-result.activation-email',
-    })}
+    title={<div className={styles.title}>Registration Successfull!</div>}
+    subTitle="The activation email has been sent to your mailbox, and the email is valid for 24 hours. Please log in to the mailbox in time and click the link in the email to activate the account."
     extra={actions}
   />
 );
