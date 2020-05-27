@@ -19,7 +19,7 @@ const LoginMessage = ({ content }) => (
 
 const Login = props => {
   const { userAndlogin = {}, submitting } = props;
-  const { status, type: loginType } = userAndlogin;
+  const { status, error } = userAndlogin;
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState('account');
 
@@ -32,12 +32,13 @@ const Login = props => {
     });
   };
 
+
   return (
     <div className={styles.main}>
       <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
         <Tab key="account" tab="Login">
-          {status === 'error' && loginType === 'account' && !submitting && (
-            <LoginMessage content="Incorrect credentials" />
+          {status === 400 && !submitting && (
+            <LoginMessage content={error ? error : "Incorrect credentials"} />
           )}
 
           <UserName

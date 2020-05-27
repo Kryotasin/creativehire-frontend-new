@@ -10,13 +10,15 @@ const Model = {
   },
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(AccountLogin, payload);
+      try{
+        const response = yield call(AccountLogin, payload);
+
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       }); // Login successfully
 
-      if (response.status === '200') {
+      if (response.status === 200) {
         message.success('Login succesful!');
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -39,13 +41,20 @@ const Model = {
 
         history.replace(redirect || '/');
       }
+    }
+    catch(err) {
+      yield put({
+        type: 'changeLoginStatus',
+        payload: err.response,
+      }); // Login failed
+    }
     },
 
   },
   reducers: {
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, type: payload.type };
+      return { ...state, status: payload.status, userKey: payload.data['key'], error: payload.data['non_field_errors'][0] };
     },
   },
 };
