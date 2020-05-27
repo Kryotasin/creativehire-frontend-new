@@ -1,8 +1,10 @@
-import request from 'umi-request';
+import axios from '../../../umiRequestConfig';
 
-export async function fakeRegister(params) {
-  return request('/api/register', {
-    method: 'POST',
-    data: params,
-  });
+export async function userRegister(params) {
+  return axios.post('api/v1/rest-auth/registration/',{
+    username: params.username,
+    password1: params.password,
+    password2: params.confirm,
+    email: params.email
+})
 }

@@ -16,6 +16,7 @@ const Model = {
       yield put({
         type: 'changeLoginStatus',
         payload: response,
+        errors: ''
       }); // Login successfully
 
       if (response.status === 200) {
@@ -46,15 +47,16 @@ const Model = {
       yield put({
         type: 'changeLoginStatus',
         payload: err.response,
+        errors: err.response.data['non_field_errors'][0]
       }); // Login failed
     }
     },
 
   },
   reducers: {
-    changeLoginStatus(state, { payload }) {
+    changeLoginStatus(state, { payload, errors }) {
       setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, userKey: payload.data['key'], error: payload.data['non_field_errors'][0] };
+      return { ...state, status: payload.status, userKey: payload.data['key'], error: errors };
     },
   },
 };

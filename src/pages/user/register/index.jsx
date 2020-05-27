@@ -1,4 +1,4 @@
-import { Form, Button, Input, Popover, Progress, Select, message } from 'antd';
+import { Alert, Form, Button, Input, Popover, Progress, Select, message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { Link, connect, history } from 'umi';
 import styles from './style.less';
@@ -15,14 +15,27 @@ const passwordProgressMap = {
   poor: 'exception',
 };
 
-const Register = ({ submitting, dispatch, userAndregister }) => {
-  const [count, setCount] = useState(0);
+const RegisterMessage = ({ content }) => (
+  <Alert
+    style={{
+      marginBottom: 24,
+    }}
+    message={content}
+    type="error"
+    showIcon
+  />
+);
+
+const Register = props => {
+  const{ userAndregister = {}, submitting} = props;
+  const { status, error } = userAndregister;
+
   const [visible, setVisible] = useState(false);
-  const [prefix, setPrefix] = useState('86');
   const [popover, setPopover] = useState(false);
   const confirmDirty = false;
   let interval;
   const [form] = Form.useForm();
+
   useEffect(() => {
     if (!userAndregister) {
       return;
@@ -30,7 +43,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
 
     const account = form.getFieldValue('email');
 
-    if (userAndregister.status === 'ok') {
+    if (status === 201) {
       message.success('Registration Successul');
       history.push({
         pathname: '/user/register-result',
@@ -40,25 +53,13 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
       });
     }
   }, [userAndregister]);
+
   useEffect(
     () => () => {
       clearInterval(interval);
     },
     [],
   );
-
-  const onGetCaptcha = () => {
-    let counts = 59;
-    setCount(counts);
-    interval = window.setInterval(() => {
-      counts -= 1;
-      setCount(counts);
-
-      if (counts === 0) {
-        clearInterval(interval);
-      }
-    }, 1000);
-  };
 
   const getPasswordStatus = () => {
     const value = form.getFieldValue('password');
@@ -75,9 +76,12 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   };
 
   const onFinish = (values) => {
+    console.log(props)
+    const { dispatch } = props;
+
     dispatch({
       type: 'userAndregister/submit',
-      payload: { ...values, prefix },
+      payload: { ...values },
     });
   };
 
@@ -92,12 +96,12 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
   };
 
   const checkPassword = (_, value) => {
-    const promise = Promise; // 没有值的情况
+    const promise = Promise; // No value
 
     if (!value) {
       setVisible(!!value);
-      return promise.reject('Pleaseenter password');
-    } // 有值的情况
+      return promise.reject('Please enter password');
+    } // Case
 
     if (!visible) {
       setVisible(!!value);
@@ -114,10 +118,6 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
     }
 
     return promise.resolve();
-  };
-
-  const changePrefix = (value) => {
-    setPrefix(value);
   };
 
   const renderPasswordProgress = () => {
@@ -155,6 +155,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
         >
           <Input size="large" placeholder="Email" />
         </FormItem>
+
         <FormItem
           name="username"
           rules={[
@@ -188,7 +189,7 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
                     marginTop: 10,
                   }}
                 >
-                  Enter at least 6 characters. Please do not enter easy passwords.
+                  Enter at least 6 characters. Should contain one uppercase letters, numbers and symbols.
                 </div>
               </div>
             )
@@ -229,6 +230,10 @@ const Register = ({ submitting, dispatch, userAndregister }) => {
         >
           <Input size="large" type="password" placeholder="Confirm password" />
         </FormItem>
+
+        {status === 400 && !submitting && (
+            <RegisterMessage content={error ? error : "Incorrect credentials"} />
+          )}
 
         <FormItem>
           <Button
