@@ -16,7 +16,7 @@ const Model = {
         payload: response,
       }); // Login successfully
 
-      if (response.status === 'ok') {
+      if (response.status === '200') {
         message.success('Login succesful!');
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();

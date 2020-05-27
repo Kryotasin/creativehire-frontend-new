@@ -1,9 +1,11 @@
 // First we need to import axios.js
+// import { extend } from 'umi-request';
 import axios from 'axios';
+
 // Next we make an 'instance' of it
 const instance = axios.create({
 // .. where we make our configurations
-    baseURL: process.env.REACT_APP_AXIOS_BASEURL
+    baseURL: 'http://localhost:3001'
 });
 
 // Where you would set stuff like your 'Authorization' header, etc ...

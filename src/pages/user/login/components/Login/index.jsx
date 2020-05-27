@@ -87,6 +87,4 @@ Login.Tab = LoginTab;
 Login.Submit = LoginSubmit;
 Login.UserName = LoginItem.UserName;
 Login.Password = LoginItem.Password;
-Login.Mobile = LoginItem.Mobile;
-Login.Captcha = LoginItem.Captcha;
 export default Login;
