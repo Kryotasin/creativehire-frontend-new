@@ -59,6 +59,7 @@
     "@types/lodash.debounce": "^4.0.6",
     "@types/lodash.isequal": "^4.5.5",
     "antd": "^4.0.0",
+    "axios": "^0.19.2",
     "bizcharts": "^3.5.3-beta.0",
     "bizcharts-plugin-slider": "^2.1.1-beta.1",
     "classnames": "^2.2.6",
@@ -80,7 +81,10 @@
     "react-dom": "^16.8.6",
     "react-fittext": "^1.0.0",
     "react-helmet-async": "^1.0.4",
+    "react-redux": "^7.2.0",
     "react-router": "^4.3.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
     "umi": "^3.0.14",
     "umi-request": "^1.0.8",
     "use-merge-value": "^1.0.1"

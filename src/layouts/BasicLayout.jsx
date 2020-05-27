@@ -36,29 +36,28 @@ const menuDataRender = (menuList) =>
   });
 
 const defaultFooterDom = (
-  <DefaultFooter
-    copyright="2020 CreativeHire"
-    links={[
-      {
-        key: 'Terms',
-        title: 'Terms',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <GithubOutlined />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
-        blankTarget: true,
-      },
-    ]}
-  />
+  <DefaultFooter 
+  copyright="2020 CreativeHire"
+  links={[
+    {
+      key: 'terms',
+      title: 'Terms',
+      href: 'https://pro.ant.design',
+      blankTarget: true,
+    },
+    {
+      key: 'privacy',
+      title: 'Privacy Policy',
+      href: 'https://github.com/ant-design/ant-design-pro',
+      blankTarget: true,
+    },
+    {
+      key: 'contact',
+      title: 'Contact Us',
+      href: 'https://ant.design',
+      blankTarget: true,
+    },
+  ]}/>
 );
 
 const BasicLayout = (props) => {

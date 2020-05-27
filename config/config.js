@@ -11,9 +11,9 @@ const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_ENV, GA_KEY
 export default defineConfig({
   hash: true,
   antd: {},
-  analytics: 'UA-112683232-2'
+  analytics: GA_KEY
     ? {
-        ga: 'UA-112683232-2',
+        ga: GA_KEY,
       }
     : false,
   dva: {
