@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormattedMessage, connect } from 'umi';
+import { connect } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import BaseView from './components/base';
@@ -16,10 +16,10 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     const menuMap = {
-      base: '基本设置',
-      security: '安全设置',
-      binding: '账号绑定',
-      notification: '新消息通知',
+      base: 'Basic Information',
+      security: 'Account Settings',
+      // binding: 'External Accounts',
+      // notification: 'Notification Settings',
     };
     this.state = {
       mode: 'inline',
@@ -30,8 +30,12 @@ class Settings extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+    const userKey = localStorage.getItem('userKey');
+    const userID = localStorage.getItem('userID');
+
     dispatch({
       type: 'accountAndsettings/fetchCurrent',
+      payload: {userID, userKey}
     });
     window.addEventListener('resize', this.resize);
     this.resize();
@@ -108,9 +112,11 @@ class Settings extends Component {
   };
 
   render() {
+
     const { currentUser } = this.props;
 
-    if (!currentUser.userid) {
+
+    if (!currentUser) {
       return '';
     }
 

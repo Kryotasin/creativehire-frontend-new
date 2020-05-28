@@ -83,7 +83,7 @@ export default defineConfig({
               name: 'How it Works',
               path: '/how-it-works',
               component: '../pages/HowitWorks',
-              hideInMenu: true
+              hideInMenu: true,
             },
             {
               path: '/scan',
@@ -104,7 +104,26 @@ export default defineConfig({
                 },
               ],
             },
-            
+            {
+              name: 'Account',
+              icon: 'user',
+              path: '/account',
+              hideInMenu: true,
+              routes: [
+                {
+                  name: 'Command center',
+                  icon: 'control',
+                  path: '/account/center',
+                  component: './account/center',
+                },
+                {
+                  name: 'Account Settings',
+                  icon: 'setting',
+                  path: '/account/settings',
+                  component: './account/settings',
+                },
+              ],
+            },
             {
               path: '/',
               redirect: '/user/login',

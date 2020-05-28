@@ -3,9 +3,9 @@ import axios from '../../../umiRequestConfig';
 
 export async function AccountLogin(params) {
   
-  return axios.post('api/v1/rest-auth/login/', {
+  return axios.post('authenticate/', {
     username: params.userName,
     password: params.password
-  })
+  });
 
 }

@@ -1,16 +1,14 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message } from 'antd';
-import { connect, FormattedMessage, formatMessage } from 'umi';
+import { Skeleton, Button, Input, Select, Upload, Form, message } from 'antd';
+import { connect } from 'umi';
 import React, { Component } from 'react';
-import GeographicView from './GeographicView';
-import PhoneView from './PhoneView';
 import styles from './BaseView.less';
 
-const { Option } = Select; // 头像组件 方便以后独立，增加裁剪之类的功能
+const { Option } = Select; // The avatar component is convenient for future independence, and adds functions such as cropping
 
 const AvatarView = ({ avatar }) => (
   <>
-    <div className={styles.avatar_title}>头像</div>
+    <div className={styles.avatar_title}>Avatar</div>
     <div className={styles.avatar}>
       <img src={avatar} alt="avatar" />
     </div>
@@ -18,40 +16,13 @@ const AvatarView = ({ avatar }) => (
       <div className={styles.button_view}>
         <Button>
           <UploadOutlined />
-          更换头像
+          Change
         </Button>
       </div>
     </Upload>
   </>
 );
 
-const validatorGeographic = (_, value, callback) => {
-  const { province, city } = value;
-
-  if (!province.key) {
-    callback('Please input your province!');
-  }
-
-  if (!city.key) {
-    callback('Please input your city!');
-  }
-
-  callback();
-};
-
-const validatorPhone = (rule, value, callback) => {
-  const values = value.split('-');
-
-  if (!values[0]) {
-    callback('Please input your area code!');
-  }
-
-  if (!values[1]) {
-    callback('Please input your phone number!');
-  }
-
-  callback();
-};
 
 class BaseView extends Component {
   view = undefined;
@@ -76,14 +47,16 @@ class BaseView extends Component {
   };
 
   handleFinish = () => {
-    message.success('更新基本信息成功');
+    message.success('Successfully updated information');
   };
 
   render() {
     const { currentUser } = this.props;
+        
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
+          {currentUser.username ?
           <Form
             layout="vertical"
             onFinish={this.handleFinish}
@@ -91,12 +64,28 @@ class BaseView extends Component {
             hideRequiredMark
           >
             <Form.Item
-              name="email"
-              label="邮箱"
+              name="username"
+              label="Username"
               rules={[
                 {
                   required: true,
-                  message: '请输入您的邮箱!',
+                  message: 'Please enter username!',
+                },
+              ]}
+            >
+              <Input disabled	= {true} />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[
+                {
+                  type: 'email',
+                  message: 'Please enter a valid email!',
+                },
+                {
+                  required: true,
+                  message: 'Please enter your email!',
                 },
               ]}
             >
@@ -104,17 +93,29 @@ class BaseView extends Component {
             </Form.Item>
             <Form.Item
               name="name"
-              label="昵称"
+              label="Name"
               rules={[
                 {
                   required: true,
-                  message: '请输入您的昵称!',
+                  message: 'Please enter your full name!',
                 },
               ]}
             >
               <Input />
             </Form.Item>
             <Form.Item
+              name="location"
+              label="Location"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter a location!',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            {/* <Form.Item
               name="profile"
               label="个人简介"
               rules={[
@@ -125,8 +126,8 @@ class BaseView extends Component {
               ]}
             >
               <Input.TextArea placeholder="个人简介" rows={4} />
-            </Form.Item>
-            <Form.Item
+            </Form.Item> */}
+            {/* <Form.Item
               name="country"
               label="国家/地区"
               rules={[
@@ -143,8 +144,8 @@ class BaseView extends Component {
               >
                 <Option value="China">中国</Option>
               </Select>
-            </Form.Item>
-            <Form.Item
+            </Form.Item> */}
+            {/* <Form.Item
               name="geographic"
               label="所在省市"
               rules={[
@@ -158,40 +159,16 @@ class BaseView extends Component {
               ]}
             >
               <GeographicView />
-            </Form.Item>
-            <Form.Item
-              name="address"
-              label="街道地址"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入您的街道地址!',
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="phone"
-              label="联系电话"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入您的联系电话!',
-                },
-                {
-                  validator: validatorPhone,
-                },
-              ]}
-            >
-              <PhoneView />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item>
               <Button htmlType="submit" type="primary">
-                更新基本信息
+                Update info
               </Button>
             </Form.Item>
           </Form>
+          :
+          <Skeleton active />
+        }
         </div>
         <div className={styles.right}>
           <AvatarView avatar={this.getAvatarURL()} />

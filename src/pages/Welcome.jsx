@@ -36,7 +36,7 @@ export default () => (
 
         <p>
           <Button type="primary" shape="round" style={button}> 
-            <Link to="new-scan/" style={{ fontSize: "17px" }}>
+            <Link to="scan/new" style={{ fontSize: "17px" }}>
               Scan Now
             </Link>
           </Button>

@@ -13,7 +13,7 @@ const operationTabList = [
     key: 'articles',
     tab: (
       <span>
-        文章{' '}
+        Article{' '}
         <span
           style={{
             fontSize: 14,
@@ -28,7 +28,7 @@ const operationTabList = [
     key: 'applications',
     tab: (
       <span>
-        应用{' '}
+        Applications{' '}
         <span
           style={{
             fontSize: 14,
@@ -43,7 +43,7 @@ const operationTabList = [
     key: 'projects',
     tab: (
       <span>
-        项目{' '}
+        Projects{' '}
         <span
           style={{
             fontSize: 14,
@@ -95,7 +95,7 @@ const TagList = ({ tags }) => {
 
   return (
     <div className={styles.tags}>
-      <div className={styles.tagsTitle}>标签</div>
+      {/* <div className={styles.tagsTitle}>Skills</div>
       {(tags || []).concat(newTags).map(item => (
         <Tag key={item.key}>{item.label}</Tag>
       ))}
@@ -122,7 +122,7 @@ const TagList = ({ tags }) => {
         >
           <PlusOutlined />
         </Tag>
-      )}
+      )} */}
     </div>
   );
 };
@@ -151,11 +151,12 @@ class Center extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+    const userKey = localStorage.getItem('userKey');
+    const userID = localStorage.getItem('userID');
+
     dispatch({
       type: 'accountAndcenter/fetchCurrent',
-    });
-    dispatch({
-      type: 'accountAndcenter/fetch',
+      payload: {userID, userKey}
     });
   }
 
@@ -261,8 +262,8 @@ class Center extends Component {
                     }}
                     dashed
                   />
-                  <div className={styles.team}>
-                    <div className={styles.teamTitle}>团队</div>
+                  {/* <div className={styles.team}>
+                    <div className={styles.teamTitle}>Team</div>
                     <Row gutter={36}>
                       {currentUser.notice &&
                         currentUser.notice.map(item => (
@@ -274,13 +275,13 @@ class Center extends Component {
                           </Col>
                         ))}
                     </Row>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </Card>
           </Col>
           <Col lg={17} md={24}>
-            <Card
+            {/* <Card
               className={styles.tabsCard}
               bordered={false}
               tabList={operationTabList}
@@ -288,7 +289,7 @@ class Center extends Component {
               onTabChange={this.onTabChange}
             >
               {this.renderChildrenByTabKey(tabKey)}
-            </Card>
+            </Card> */}
           </Col>
         </Row>
       </GridContent>

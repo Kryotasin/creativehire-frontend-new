@@ -21,6 +21,12 @@ const Model = {
 
       if (response.status === 200) {
         message.success('Login succesful!');
+
+        // Set in localStorage
+
+        localStorage.setItem('userID', response.data['id']);
+        localStorage.setItem('userKey', response.data['token']);
+
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -56,7 +62,7 @@ const Model = {
   reducers: {
     changeLoginStatus(state, { payload, errors }) {
       setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, userKey: payload.data['key'], error: errors };
+      return { ...state, status: payload.status, userKey: payload.data['token'], userID: payload.data['id'], error: errors };
     },
   },
 };
