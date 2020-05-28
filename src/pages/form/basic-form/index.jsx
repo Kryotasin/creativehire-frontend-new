@@ -1,19 +1,14 @@
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip } from 'antd';
-import { connect, FormattedMessage, formatMessage } from 'umi';
+import { Divider, Button, Card, Input, Form } from 'antd';
+import { connect } from 'umi';
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import styles from './style.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 const BasicForm = (props) => {
   const { submitting } = props;
   const [form] = Form.useForm();
-  const [showPublicUsers, setShowPublicUsers] = React.useState(false);
   const formItemLayout = {
     labelCol: {
       xs: {
@@ -43,7 +38,7 @@ const BasicForm = (props) => {
       },
       sm: {
         span: 10,
-        offset: 7,
+        offset: 10,
       },
     },
   };
@@ -60,67 +55,108 @@ const BasicForm = (props) => {
     console.log('Failed:', errorInfo);
   };
 
-  const onValuesChange = (changedValues) => {
-    const { publicType } = changedValues;
-    if (publicType) setShowPublicUsers(publicType === '2');
-  };
 
   return (
-    <PageHeaderWrapper content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
+    <PageHeaderWrapper content="Enter details about your project and job.">
       <Card bordered={false}>
+      <Divider>Project Details</Divider>
         <Form
-          hideRequiredMark
           style={{
             marginTop: 8,
           }}
           form={form}
-          name="basic"
-          initialValues={{
-            public: '1',
-          }}
+          name="newScan"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
-          onValuesChange={onValuesChange}
         >
           <FormItem
             {...formItemLayout}
-            label="标题"
-            name="title"
+            label="Project Title"
+            name="projectTitle"
             rules={[
               {
                 required: true,
-                message: '请输入标题',
+                message: 'Please enter project title',
               },
             ]}
           >
-            <Input placeholder="给目标起个名字" />
+            <Input placeholder="An interesting title" />
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="起止日期"
-            name="date"
+            label="Project Link"
+            name="projectLink"
             rules={[
               {
+                type: 'url',
+                message: 'The input is not valid link!',
+              },
+              {
                 required: true,
-                message: '请选择起止日期',
+                message: 'Please enter project link',
               },
             ]}
           >
-            <RangePicker
-              style={{
-                width: '100%',
-              }}
-              placeholder={['开始日期', '结束日期']}
-            />
+            <Input placeholder="http://...."/>
           </FormItem>
+
+
+          <Divider>Job Details</Divider>
+
           <FormItem
             {...formItemLayout}
-            label="目标描述"
-            name="goal"
+            label="Company/Organization"
+            name="org"
             rules={[
               {
                 required: true,
-                message: '请输入目标描述',
+                message: 'Please enter company name that posted the job',
+              },
+            ]}
+          >
+            <Input placeholder="Google Inc." />
+          </FormItem>
+
+          <FormItem
+            {...formItemLayout}
+            label="Job Title"
+            name="jobTitle"
+            rules={[
+              {
+                required: true,
+                message: 'Please enter job title',
+              },
+            ]}
+          >
+            <Input placeholder="UX Designer" />
+          </FormItem>
+
+          <FormItem
+            {...formItemLayout}
+            label="Job Link"
+            name="jobLink"
+            rules={[
+              {
+                type: 'url',
+                message: 'The input is not valid link!',
+              },
+              {
+                required: true,
+                message: 'Please enter job link',
+              },
+            ]}
+          >
+            <Input placeholder="http://...."/>
+          </FormItem>
+
+          <FormItem
+            {...formItemLayout}
+            label="Job Description"
+            name="jobDescription"
+            rules={[
+              {
+                required: true,
+                message: 'Please enter the job decription',
               },
             ]}
           >
@@ -128,108 +164,11 @@ const BasicForm = (props) => {
               style={{
                 minHeight: 32,
               }}
-              placeholder="请输入你的阶段性工作目标"
+              placeholder="Paste complete job decription here"
               rows={4}
             />
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="衡量标准"
-            name="standard"
-            rules={[
-              {
-                required: true,
-                message: '请输入衡量标准',
-              },
-            ]}
-          >
-            <TextArea
-              style={{
-                minHeight: 32,
-              }}
-              placeholder="请输入衡量标准"
-              rows={4}
-            />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={
-              <span>
-                客户
-                <em className={styles.optional}>
-                  （选填）
-                  <Tooltip title="目标的服务对象">
-                    <InfoCircleOutlined
-                      style={{
-                        marginRight: 4,
-                      }}
-                    />
-                  </Tooltip>
-                </em>
-              </span>
-            }
-            name="client"
-          >
-            <Input placeholder="请描述你服务的客户，内部客户直接 @姓名／工号" />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={
-              <span>
-                邀评人
-                <em className={styles.optional}>（选填）</em>
-              </span>
-            }
-            name="invites"
-          >
-            <Input placeholder="请直接 @姓名／工号，最多可邀请 5 人" />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label={
-              <span>
-                权重
-                <em className={styles.optional}>（选填）</em>
-              </span>
-            }
-            name="weight"
-          >
-            <InputNumber placeholder="请输入" min={0} max={100} />
-            <span className="ant-form-text">%</span>
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="目标公开"
-            help="客户、邀评人默认被分享"
-            name="publicType"
-          >
-            <div>
-              <Radio.Group>
-                <Radio value="1">公开</Radio>
-                <Radio value="2">部分公开</Radio>
-                <Radio value="3">不公开</Radio>
-              </Radio.Group>
-              <FormItem
-                style={{
-                  marginBottom: 0,
-                }}
-                name="publicUsers"
-              >
-                <Select
-                  mode="multiple"
-                  placeholder="公开给"
-                  style={{
-                    margin: '8px 0',
-                    display: showPublicUsers ? 'block' : 'none',
-                  }}
-                >
-                  <Option value="1">同事甲</Option>
-                  <Option value="2">同事乙</Option>
-                  <Option value="3">同事丙</Option>
-                </Select>
-              </FormItem>
-            </div>
-          </FormItem>
+          
           <FormItem
             {...submitFormLayout}
             style={{
@@ -237,14 +176,7 @@ const BasicForm = (props) => {
             }}
           >
             <Button type="primary" htmlType="submit" loading={submitting}>
-              提交
-            </Button>
-            <Button
-              style={{
-                marginLeft: 8,
-              }}
-            >
-              保存
+              Scan Now
             </Button>
           </FormItem>
         </Form>

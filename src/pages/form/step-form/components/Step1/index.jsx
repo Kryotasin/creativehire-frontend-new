@@ -1,9 +1,8 @@
 import React from 'react';
-import { Form, Button, Divider, Input, Select } from 'antd';
+import { Form, Button, Divider, Input } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const { Option } = Select;
 const formItemLayout = {
   labelCol: {
     span: 5,
@@ -33,7 +32,7 @@ const Step1 = props => {
       });
       dispatch({
         type: 'formAndstepForm/saveCurrentStep',
-        payload: 'confirm',
+        payload: 'job',
       });
     }
   };
@@ -45,84 +44,35 @@ const Step1 = props => {
         form={form}
         layout="horizontal"
         className={styles.stepForm}
-        hideRequiredMark
-        initialValues={data}
       >
+
         <Form.Item
-          label="付款账户"
-          name="payAccount"
+          label="Project Name"
+          name="projectName"
           rules={[
             {
               required: true,
-              message: '请选择付款账户',
+              message: 'Please enter project name',
             },
           ]}
         >
-          <Select placeholder="test@example.com">
-            <Option value="ant-design@alipay.com">ant-design@alipay.com</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="收款账户">
-          <Input.Group compact>
-            <Select
-              defaultValue="alipay"
-              style={{
-                width: 100,
-              }}
-            >
-              <Option value="alipay">支付宝</Option>
-              <Option value="bank">银行账户</Option>
-            </Select>
-            <Form.Item
-              noStyle
-              name="receiverAccount"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入收款人账户',
-                },
-                {
-                  type: 'email',
-                  message: '账户名应为邮箱格式',
-                },
-              ]}
-            >
-              <Input
-                style={{
-                  width: 'calc(100% - 100px)',
-                }}
-                placeholder="test@example.com"
-              />
-            </Form.Item>
-          </Input.Group>
+          <Input placeholder="Project name" />
         </Form.Item>
         <Form.Item
-          label="收款人姓名"
-          name="receiverName"
+          label="Project Link"
+          name="projectLink"
           rules={[
             {
               required: true,
-              message: '请输入收款人姓名',
+              message: 'Please enter project link',
+            },
+            {
+              type: 'url',
+              message: 'Invalid url',
             },
           ]}
         >
-          <Input placeholder="请输入收款人姓名" />
-        </Form.Item>
-        <Form.Item
-          label="转账金额"
-          name="amount"
-          rules={[
-            {
-              required: true,
-              message: '请输入转账金额',
-            },
-            {
-              pattern: /^(\d+)((?:\.\d+)?)$/,
-              message: '请输入合法金额数字',
-            },
-          ]}
-        >
-          <Input prefix="￥" placeholder="请输入金额" />
+          <Input placeholder="http://...."/>
         </Form.Item>
         <Form.Item
           wrapperCol={{
@@ -137,7 +87,7 @@ const Step1 = props => {
           }}
         >
           <Button type="primary" onClick={onValidateForm}>
-            下一步
+            Next
           </Button>
         </Form.Item>
       </Form>
@@ -147,14 +97,10 @@ const Step1 = props => {
         }}
       />
       <div className={styles.desc}>
-        <h3>说明</h3>
-        <h4>转账到支付宝账户</h4>
+        <h3>Help</h3>
+        <h4>What is this?</h4>
         <p>
-          如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-        </p>
-        <h4>转账到银行卡</h4>
-        <p>
-          如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
+          We gather information about your skillset from your projects directly. Please make sure we have acces to the webpage you paste above.
         </p>
       </div>
     </>

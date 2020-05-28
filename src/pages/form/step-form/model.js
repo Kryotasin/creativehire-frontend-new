@@ -3,17 +3,18 @@ import { fakeSubmitForm } from './service';
 const Model = {
   namespace: 'formAndstepForm',
   state: {
-    current: 'info',
+    current: 'project',
     step: {
-      payAccount: 'ant-design@alipay.com',
-      receiverAccount: 'test@example.com',
-      receiverName: 'Alex',
-      amount: '500',
+      projectName: 'ant-design@alipay.com',
+      projectLink: 'test@example.com',
+      jobTitle: 'Alex',
+      org: '500',
     },
   },
   effects: {
     *submitStepForm({ payload }, { call, put }) {
       yield call(fakeSubmitForm, payload);
+      console.log(payload);
       yield put({
         type: 'saveStepFormData',
         payload,

@@ -12,11 +12,11 @@ import PromiseRender from './PromiseRender';
  * @param { 未通过的组件 | no pass components } Exception
  */
 const checkPermissions = (authority, currentAuthority, target, Exception) => {
-  // 没有判定权限.默认查看所有
+  // No judgment authority. View all by default
   // Retirement authority, return target;
   if (!authority) {
     return target;
-  } // 数组处理
+  } // Array processing
 
   if (Array.isArray(authority)) {
     if (Array.isArray(currentAuthority)) {
@@ -28,7 +28,7 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
     }
 
     return Exception;
-  } // string 处理
+  } // string processing
 
   if (typeof authority === 'string') {
     if (Array.isArray(currentAuthority)) {
@@ -40,15 +40,15 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
     }
 
     return Exception;
-  } // Promise 处理
+  } // Promise processing
 
   if (authority instanceof Promise) {
     return <PromiseRender ok={target} error={Exception} promise={authority} />;
-  } // Function 处理
+  } // Function processing
 
   if (typeof authority === 'function') {
     try {
-      const bool = authority(currentAuthority); // 函数执行后返回值是 Promise
+      const bool = authority(currentAuthority); // After the function is executed, the return value in Promise
 
       if (bool instanceof Promise) {
         return <PromiseRender ok={target} error={Exception} promise={bool} />;

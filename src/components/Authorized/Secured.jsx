@@ -1,7 +1,7 @@
 import React from 'react';
 import CheckPermissions from './CheckPermissions';
 /**
- * 默认不能访问任何页面
+ * No pages can be accessed by default
  * default is "NULL"
  */
 
@@ -30,25 +30,25 @@ const checkIsInstantiation = target => {
   return () => target;
 };
 /**
- * 用于判断是否拥有权限访问此 view 权限
- * authority 支持传入 string, () => boolean | Promise
- * e.g. 'user' 只有 user 用户能访问
- * e.g. 'user,admin' user 和 admin 都能访问
- * e.g. ()=>boolean 返回true能访问,返回false不能访问
- * e.g. Promise  then 能访问   catch不能访问
+ * Used to determine whether you have permission to access this view Authority
+ * authority Support incoming string, () => boolean | Promise
+ * e.g. 'user' can only be accessed by user
+ * e.g. 'user, admin' both user and admin can access
+ * e.g. () => boolean returns true can be accessed, false returns cannot be accessed
+ * e.g. Promise then can access catch can not access
  * e.g. authority support incoming string, () => boolean | Promise
  * e.g. 'user' only user user can access
  * e.g. 'user, admin' user and admin can access
  * e.g. () => boolean true to be able to visit, return false can not be accessed
  * e.g. Promise then can not access the visit to catch
  * @param {string | function | Promise} authority
- * @param {ReactNode} error 非必需参数
+ * @param {ReactNode} error Non-essential parameters
  */
 
 const authorize = (authority, error) => {
   /**
    * conversion into a class
-   * 防止传入字符串时找不到staticContext造成报错
+   * Prevent errors caused by not finding staticContext when passing in a string
    * String parameters can cause staticContext not found error
    */
   let classError = false;

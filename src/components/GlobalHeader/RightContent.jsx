@@ -7,6 +7,7 @@ import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
 import NoticeIconView from './NoticeIconView';
+import { Link } from 'umi';
 
 const ENVTagColor = {
   dev: 'orange',
@@ -24,7 +25,7 @@ const GlobalHeaderRight = props => {
 
   return (
     <div className={className}>
-      <HeaderSearch
+      {/* <HeaderSearch
         className={`${styles.action} ${styles.search}`}
         placeholder="站内搜索"
         defaultValue="umi ui"
@@ -48,25 +49,24 @@ const GlobalHeaderRight = props => {
         ]} // onSearch={value => {
         //   //console.log('input', value);
         // }}
-      />
-      <Tooltip title="使用文档">
-        <a
-          target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
+      /> */}
+      <Tooltip title="Help">
+        <Link
+          to="/how-it-works/"
           rel="noopener noreferrer"
           className={styles.action}
         >
           <QuestionCircleOutlined />
-        </a>
+        </Link>
       </Tooltip>
-      <NoticeIconView />
+      {/* <NoticeIconView /> */}
       <Avatar menu />
       {REACT_APP_ENV && (
         <span>
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <SelectLang className={styles.action} />
+      {/* <SelectLang className={styles.action} /> */}
     </div>
   );
 };

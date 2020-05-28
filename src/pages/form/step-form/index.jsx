@@ -11,7 +11,7 @@ const { Step } = Steps;
 
 const getCurrentStepAndComponent = current => {
   switch (current) {
-    case 'confirm':
+    case 'job':
       return {
         step: 1,
         component: <Step2 />,
@@ -23,7 +23,7 @@ const getCurrentStepAndComponent = current => {
         component: <Step3 />,
       };
 
-    case 'info':
+    case 'project':
     default:
       return {
         step: 0,
@@ -41,13 +41,13 @@ const StepForm = ({ current }) => {
     setStepComponent(component);
   }, [current]);
   return (
-    <PageHeaderWrapper content="将一个冗长或用户不熟悉的表单任务分成多个步骤，指导用户完成。">
+    <PageHeaderWrapper content="Divide a long or unfamiliar form task into multiple steps to guide the user through it.">
       <Card bordered={false}>
         <>
           <Steps current={currentStep} className={styles.steps}>
-            <Step title="填写转账信息" />
-            <Step title="确认转账信息" />
-            <Step title="完成" />
+            <Step title="Project Details" />
+            <Step title="Job Details" />
+            <Step title="Results" />
           </Steps>
           {stepComponent}
         </>

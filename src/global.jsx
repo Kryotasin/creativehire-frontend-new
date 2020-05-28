@@ -59,8 +59,8 @@ if (pwa) {
       </Button>
     );
     notification.open({
-      message: '有新内容',
-      description: '请点击“刷新”按钮或者手动刷新页面',
+      message: 'New content',
+      description: 'Please click the "Refresh" button or manually refresh the page',
       btn,
       key,
       onClose: async () => {},

@@ -1,21 +1,17 @@
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Space, Card, Typography, Button } from 'antd';
-import styles from './Welcome.less';
 import { Link } from 'umi';
-
-const CodePreview = ({ children }) => (
-  <pre className={styles.pre}>
-    <code>
-      <Typography.Text copyable>{children}</Typography.Text>
-    </code>
-  </pre>
-);
 
 
 const button = {
   height: "3rem",
   width: "9rem",
+};
+
+const decription = {
+  fontSize: "1.4em",
+  lineHeight: "1.5em",
 };
 
 
@@ -24,14 +20,22 @@ export default () => (
     <Card>
       <Space size='large' direction='vertical'>
         <Typography.Title level={2}>
-            Welcome to Creative Hire
+          How Creativehire Works
         </Typography.Title>
 
         <Typography.Text strong         
           style={{
             marginBottom: 12,
           }}>
-          Make Smart Decisions in your UX job applications
+            <ol style={decription}>
+              <li>Paste a job description from any job portal.</li>
+
+              <li>Upload a link to a portfolio project.</li>
+
+              <li>Enter the Project Name, Company Name, and Position Advertised.</li>
+
+              <li>Scan and check the compatibility score between your portfolio project and the job description's requirements.</li>
+            </ol>
         </Typography.Text>
 
         <p>
