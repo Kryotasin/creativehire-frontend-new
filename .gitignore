@@ -39,3 +39,7 @@ screenshot
 
 build
 jsconfig.json
+jest.config.js
+.editorconfig
+.eslintrc.js
+tests/*
