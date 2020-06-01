@@ -49,7 +49,7 @@ export default defineConfig({
             },
             {
               name: 'Login',
-              icon: 'smile',
+              icon: 'login',
               path: '/user/login',
               component: './user/login',
             },
@@ -101,6 +101,13 @@ export default defineConfig({
                   icon: 'folder',
                   path: '/scan/list',
                   component: './form/advanced-form',
+                },
+                {
+                  name: 'Scan',
+                  icon: 'folder',
+                  path: '/scan/item/:matchID',
+                  component: './dashboard/analysis',
+                  hideInMenu: true,
                 },
               ],
             },

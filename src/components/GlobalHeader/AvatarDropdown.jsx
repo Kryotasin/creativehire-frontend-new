@@ -54,7 +54,8 @@ class AvatarDropdown extends React.Component {
         </Menu.Item>
       </Menu>
     );
-    return currentUser && currentUser.name ? (
+
+    return currentUser  ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
           <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
@@ -75,10 +76,7 @@ class AvatarDropdown extends React.Component {
   }
 }
 
-// export default connect(({ user }) => ({
-//   currentUser: user.currentUser,
-// }))(AvatarDropdown);
-export default connect(({ accountAndsettings }) => ({
-  currentUser: accountAndsettings.currentUser,
+export default connect(({ user }) => ({
+  currentUser: user.currentUser,
 }))(AvatarDropdown);
 

@@ -1,12 +1,7 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Col, Row, Tooltip } from 'antd';
-import { FormattedMessage } from 'umi';
+import { Col, Row, Tooltip, Space } from 'antd';
 import React from 'react';
-import numeral from 'numeral';
-import { ChartCard, MiniArea, MiniBar, MiniProgress, Field } from './Charts';
-import Trend from './Trend';
-import Yuan from '../utils/Yuan';
-import styles from '../style.less';
+import { ChartCard} from './Charts';
 
 const topColResponsiveProps = {
   xs: 24,
@@ -19,108 +14,105 @@ const topColResponsiveProps = {
   },
 };
 
-const IntroduceRow = ({ loading, visitData }) => (
+const extractHostname = (url) => {
+  let hostname;
+  // find & remove protocol (http, ftp, etc.) and get hostname
+
+  if (url.indexOf("//") > -1) {
+      hostname = url.split('/')[2];
+  }
+  else {
+      hostname = url.split('/')[0];
+  }
+
+  // find & remove port number
+  hostname = hostname.split(':')[0];
+
+  // find & remove "?"
+  hostname = hostname.split('?')[0];
+
+  return hostname;
+}
+
+const IntroduceRow = ({ loading, project, job }) => (
   <Row gutter={24} type="flex">
-    <Col {...topColResponsiveProps}>
+    <Col  {...topColResponsiveProps} xl={{ span: 7, offset: 5 }} > 
       <ChartCard
         bordered={false}
-        title="总销售额"
+        title="Project Details"
         action={
-          <Tooltip title="指标说明">
+          <Tooltip title="Details about the project you entered">
             <InfoCircleOutlined />
           </Tooltip>
         }
         loading={loading}
-        total={() => <Yuan>126560</Yuan>}
-        footer={<Field label="日销售额" value={`￥${numeral(12423).format('0,0')}`} />}
-        contentHeight={46}
+        contentHeight={120}
       >
-        <Trend
-          flag="up"
-          style={{
-            marginRight: 16,
-          }}
-        >
-          周同比
-          <span className={styles.trendText}>12%</span>
-        </Trend>
-        <Trend flag="down">
-          日同比
-          <span className={styles.trendText}>11%</span>
-        </Trend>
+      <Space size="middle" direction="vertical">
+        <Space size="large" direction="horizontal">
+          <div>
+            Project Title:
+          </div>
+          <div>
+            {project ? project.title : ''}
+          </div>
+        </Space>
+        <Space size="large" direction="horizontal">
+          <div>
+            Project Link:
+          </div>
+          <div>
+          {project ?
+            <a style={{color: '#FF7A40'}} target="_blank" href={project.url}>{extractHostname(project.url)}</a>
+            : ''
+           }
+          </div>
+        </Space>
+      </Space>
       </ChartCard>
     </Col>
 
-    <Col {...topColResponsiveProps}>
+    <Col {...topColResponsiveProps} xl={{ span: 7 }}>
       <ChartCard
         bordered={false}
         loading={loading}
-        title="访问量"
+        title="Job Details"
         action={
-          <Tooltip title="指标说明">
+          <Tooltip title="Job details you have entered">
             <InfoCircleOutlined />
           </Tooltip>
         }
-        total={numeral(8846).format('0,0')}
-        footer={<Field label="日访问量" value={numeral(1234).format('0,0')} />}
-        contentHeight={46}
+        contentHeight={120}
       >
-        <MiniArea color="#975FE4" data={visitData} />
-      </ChartCard>
-    </Col>
-    <Col {...topColResponsiveProps}>
-      <ChartCard
-        bordered={false}
-        loading={loading}
-        title="支付笔数"
-        action={
-          <Tooltip title="指标说明">
-            <InfoCircleOutlined />
-          </Tooltip>
-        }
-        total={numeral(6560).format('0,0')}
-        footer={<Field label="转化率" value="60%" />}
-        contentHeight={46}
-      >
-        <MiniBar data={visitData} />
-      </ChartCard>
-    </Col>
-    <Col {...topColResponsiveProps}>
-      <ChartCard
-        loading={loading}
-        bordered={false}
-        title="运营活动效果"
-        action={
-          <Tooltip title="指标说明">
-            <InfoCircleOutlined />
-          </Tooltip>
-        }
-        total="78%"
-        footer={
-          <div
-            style={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-            }}
-          >
-            <Trend
-              flag="up"
-              style={{
-                marginRight: 16,
-              }}
-            >
-              周同比
-              <span className={styles.trendText}>12%</span>
-            </Trend>
-            <Trend flag="down">
-              日同比
-              <span className={styles.trendText}>11%</span>
-            </Trend>
-          </div>
-        }
-        contentHeight={46}
-      >
-        <MiniProgress percent={78} strokeWidth={8} target={80} color="#13C2C2" />
+        <Space size="middle" direction="vertical">
+          <Space size="large" direction="horizontal">
+            <div>
+              Job Title:
+            </div>
+            <div>
+              {job ? job.title : ''}
+            </div>
+          </Space>
+          <Space size="large" direction="horizontal">
+            <div>
+              Job Link:
+            </div>
+            <div>
+              {job ?
+                <a style={{color: '#FF7A40'}} href={job.link_jp}>{extractHostname(job.link_jp)}</a>
+                  : ''
+              }
+            </div>
+          </Space>
+          <Space size="large" direction="horizontal">
+            <div>
+              Company/Org:
+            </div>
+            <div>
+              {job ? job.org : ''}
+            </div>
+          </Space>
+        </Space>      
       </ChartCard>
     </Col>
   </Row>

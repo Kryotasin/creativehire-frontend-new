@@ -5,22 +5,22 @@ import autoHeight from '../autoHeight';
 const { Arc, Html, Line } = Guide;
 
 const defaultFormatter = val => {
-  switch (val) {
-    case '2':
-      return '差';
+    switch (val) {
+      case '2':
+        return 'Poor';
 
-    case '4':
-      return '中';
+      case '':
+        return '';
 
-    case '6':
-      return '良';
+      case '6':
+        return '';
 
-    case '8':
-      return '优';
+      case '8':
+        return 'Good';
 
-    default:
-      return '';
-  }
+      default:
+        return '';
+    }
 };
 
 if (Shape.registerShape) {
@@ -64,9 +64,10 @@ const Gauge = props => {
     percent,
     forceFit = true,
     formatter = defaultFormatter,
-    color = '#2F9CFF',
+    color,
     bgColor = '#F0F2F5',
   } = props;
+
   const cols = {
     value: {
       type: 'linear',
@@ -162,7 +163,7 @@ const Gauge = props => {
         type="point"
         position="value*1"
         shape="pointer"
-        color={color}
+        color={(color)}
         active={false}
       />
     </Chart>

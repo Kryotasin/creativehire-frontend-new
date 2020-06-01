@@ -1,6 +1,6 @@
 import axios from '../../../umiRequestConfig';
 
-export async function newProject(params, userID) {
+export async function newJobpost(params, userID) {
   return axios.post('jobpost/', {
     org: params.org,
     link_jp: params.jobLink,
@@ -10,7 +10,7 @@ export async function newProject(params, userID) {
   });
 }
 
-export async function newJobpost(params,userID) {
+export async function newProject(params,userID) {
   return axios.post('project/', {
     title: params.projectTitle,
     url: params.projectLink,
@@ -18,13 +18,14 @@ export async function newJobpost(params,userID) {
   });
 }
 
-export async function newScan(params,userID, projectID, jobpostID) {
-  return axios.post('/api/forms', {
-    projectid: projectID,
-    userid: userID,
-    jobid: jobpostID,
+export async function newScan(params,userID) {
+  return axios.post('scan-results/', {
+    projectTitle: params.projectTitle,
+    projectLink: params.projectLink,
     org: params.org,
-    jobtitle: params.jobtitle,
-    project_title: params.projtitle
+    jobTitle: params.jobTitle,
+    jobLink: params.jobLink,
+    jobDescription: params.jobDescription,
+    userID
   });
 }

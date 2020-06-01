@@ -1,4 +1,4 @@
-import { Divider, Button, Card, Input, Form } from 'antd';
+import { message, Divider, Button, Card, Input, Form } from 'antd';
 import { connect } from 'umi';
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -52,7 +52,7 @@ const BasicForm = (props) => {
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    message.error('Failed:', errorInfo);
   };
 
 
@@ -146,7 +146,7 @@ const BasicForm = (props) => {
               },
             ]}
           >
-            <Input placeholder="http://...."/>
+            <Input placeholder="Paste the portal link (Linkdin, Glassdoors, etc.)"/>
           </FormItem>
 
           <FormItem

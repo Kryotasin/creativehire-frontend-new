@@ -28,7 +28,7 @@ const renderTotal = total => {
 
 class ChartCard extends React.Component {
   renderContent = () => {
-    const { contentHeight, title, avatar, action, total, footer, children, loading } = this.props;
+    const { contentHeight, title, avatar, action, footer, children, loading } = this.props;
 
     if (loading) {
       return false;
@@ -44,10 +44,9 @@ class ChartCard extends React.Component {
           <div className={styles.avatar}>{avatar}</div>
           <div className={styles.metaWrap}>
             <div className={styles.meta}>
-              <span className={styles.title}>{title}</span>
+              <span className={styles.total}>{title}</span>
               <span className={styles.action}>{action}</span>
             </div>
-            {renderTotal(total)}
           </div>
         </div>
         {children && (
