@@ -1,60 +1,151 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Skeleton, Button, Input, Select, Upload, Form, message } from 'antd';
-import { connect } from 'umi';
+import { Alert, Skeleton, Button, Input, Select, Upload, Form, message } from 'antd';
+import { connect, Link, Helmet } from 'umi';
 import React, { Component } from 'react';
 import styles from './BaseView.less';
+import axios from '../../../../umiRequestConfig';
 
 const { Option } = Select; // The avatar component is convenient for future independence, and adds functions such as cropping
-
-const AvatarView = ({ avatar }) => (
-  <>
-    <div className={styles.avatar_title}>Avatar</div>
-    <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
-    </div>
-    <Upload showUploadList={false}>
-      <div className={styles.button_view}>
-        <Button>
-          <UploadOutlined />
-          Change
-        </Button>
-      </div>
-    </Upload>
-  </>
-);
 
 
 class BaseView extends Component {
   view = undefined;
 
-  getAvatarURL() {
-    const { currentUser } = this.props;
+  email_verified = undefined;
 
-    if (currentUser) {
-      if (currentUser.avatar) {
-        return currentUser.avatar;
-      }
-
-      const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-      return url;
+  constructor(props){
+    super(props);
+    this.state = {
+      img: undefined
     }
-
-    return '';
   }
 
+
+  componentDidMount(){
+    axios.get('userprofile/email-verified/'.concat(localStorage.getItem('userID')))
+    .then(res => {
+      if(res.data){
+        this.email_verified = true;
+      }
+    })
+    .catch(err => {
+      this.email_verified = false;
+    })
+
+  }
+
+  
   getViewDom = (ref) => {
     this.view = ref;
   };
 
-  handleFinish = () => {
-    message.success('Successfully updated information');
+  handleFinish = (values) => {
+    axios.put('userprofile/update/'.concat(localStorage.getItem('userID')),{
+      name: values.name,
+      location: values.location
+    })
+    .then(res => {    
+
+        setTimeout(() => message.success('Profile updated successfully!'), 100);
+    })
+    .catch(err => {
+        message.error(`Your profile could not be updated due to `.concat(err.message));
+    })
   };
 
+
+
   render() {
-    const { currentUser } = this.props;
-        
+
+    const{ currentUser } = this.props
+    
+    const typeOfImage = (proc) => {
+      return {"type" : "profile_pic", "process": proc, "fileName": currentUser['img_salt']}
+    }
+
+    const reloadProfilePicture = () => {
+      axios.post('file-handler/', {
+          ...typeOfImage('fetch')
+      })
+      .then(
+          res => {
+            let output;
+            if(res.status === 404){
+                // Set something to show lack of profile picture.
+                setTimeout(() => message.error('Profile picture not found.'), 100);
+            }
+            else if (res.status === 200 && res.data !== 'ErrorResponseMetadata'){
+                this.setState({
+                  img: res.data
+                });
+            }
+            
+            else if(res.status === 200 && res.data === 'ErrorResponseMetadata'){
+              // Set something to show lack of profile picture.
+              setTimeout(() => message.error('Profile picture not found.'), 100);
+          }      
+  
+         
+      })
+    }
+
+    const userProfilePictureUploadProps = {
+      name: 'file',
+      acceptedFiles: '.png',
+      multiple: false,
+      method: 'post',
+      data: typeOfImage("upload"),
+      action: 'http://localhost:3001/file-handler/',
+      onRemove(file){
+          axios.post('file-handler/', {
+              "file": file.name,
+              ...typeOfImage('remove')
+          });
+      },
+      
+      onChange(info) {
+        const { status } = info.file;
+        console.log(status)
+
+        if (status === 'done') {
+          message.success(`${info.file.name} file uploaded successfully.`);
+          reloadProfilePicture();
+        } else if (status === 'error') {
+          message.error(`${info.file.name} file upload failed.`.concat(info));
+        }
+      },
+    };
+
+
+
+    const AvatarView = () => (
+      <>
+        <div className={styles.avatar_title}>Avatar</div>
+        <div className={styles.avatar}>
+          <img src={`data:image/png;base64,${this.state.img}`} alt="avatar" />
+        </div>
+        <Upload {...userProfilePictureUploadProps} showUploadList={false}>
+          <div className={styles.button_view}>
+            <Button>
+              <UploadOutlined />
+                Change
+            </Button>
+          </div>
+        </Upload>
+      </>
+    );
+
+    
+    if(this.state.img === undefined){
+      reloadProfilePicture();
+    }
+      
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>Profile</title>
+        </Helmet>
         <div className={styles.left}>
           {currentUser.username ?
           <Form
@@ -73,8 +164,9 @@ class BaseView extends Component {
                 },
               ]}
             >
-              <Input disabled	= {true} />
+              <Input disabled/>
             </Form.Item>
+            
             <Form.Item
               name="email"
               label="Email"
@@ -89,8 +181,10 @@ class BaseView extends Component {
                 },
               ]}
             >
-              <Input />
+              <Input disabled placeholder={currentUser ? currentUser.email : 'No email set'}/> 
             </Form.Item>
+            { this.email_verified && (<Alert message= {this.email_verified ? "Email verified!" : <Link to='/user/confirm-email'>Click here to verify email</Link>} type={this.email_verified ? "success" : "error"} showIcon />)}
+
             <Form.Item
               name="name"
               label="Name"
@@ -101,7 +195,7 @@ class BaseView extends Component {
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={currentUser.name !== null ? currentUser.name : 'No name set'}/>
             </Form.Item>
             <Form.Item
               name="location"
@@ -113,53 +207,8 @@ class BaseView extends Component {
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={currentUser.location !== null ? currentUser.location : 'No location set'}/>
             </Form.Item>
-            {/* <Form.Item
-              name="profile"
-              label="个人简介"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入个人简介!',
-                },
-              ]}
-            >
-              <Input.TextArea placeholder="个人简介" rows={4} />
-            </Form.Item> */}
-            {/* <Form.Item
-              name="country"
-              label="国家/地区"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入您的国家或地区!',
-                },
-              ]}
-            >
-              <Select
-                style={{
-                  maxWidth: 220,
-                }}
-              >
-                <Option value="China">中国</Option>
-              </Select>
-            </Form.Item> */}
-            {/* <Form.Item
-              name="geographic"
-              label="所在省市"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入您的所在省市!',
-                },
-                {
-                  validator: validatorGeographic,
-                },
-              ]}
-            >
-              <GeographicView />
-            </Form.Item> */}
             <Form.Item>
               <Button htmlType="submit" type="primary">
                 Update info
@@ -171,7 +220,10 @@ class BaseView extends Component {
         }
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
+            {this.state.img ?
+            <AvatarView imgSrc={this.state.img} />
+          :
+          <Skeleton active />}
         </div>
       </div>
     );

@@ -67,13 +67,13 @@ const Login = props => {
           <Checkbox checked={autoLogin} onChange={e => setAutoLogin(e.target.checked)}>
             Remember me
           </Checkbox>
-          <a
+          <Link to='/user/reset-password'
             style={{
               float: 'right',
             }}
           >
             Forgot Password
-          </a>
+          </Link>
         </div>
         <Submit loading={submitting}>Login</Submit>
         <div className={styles.other}>

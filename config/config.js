@@ -66,6 +66,24 @@ export default defineConfig({
               component: './user/register',
             },
             {
+              name: 'Confirm Email',
+              icon: 'login',
+              path: '/user/confirm-email',
+              component: './user/confirm-email',
+            },
+            {
+              name: 'Reset Password',
+              icon: 'login',
+              path: '/user/reset-password',
+              component: './user/reset-password',
+            },
+            {
+              name: 'Reset Password',
+              icon: 'login',
+              path: '/user/reset-password/:uidb64/:token',
+              component: './user/reset-password',
+            },
+            {
               component: '404',
             },
           ],

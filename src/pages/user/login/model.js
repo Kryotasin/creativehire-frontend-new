@@ -25,7 +25,7 @@ const Model = {
         // Set in localStorage
 
         localStorage.setItem('userID', response.data['id']);
-        localStorage.setItem('userKey', response.data['token']);
+        localStorage.setItem('userKey', response.data['key']);
 
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();

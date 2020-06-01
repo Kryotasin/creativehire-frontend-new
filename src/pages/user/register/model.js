@@ -16,6 +16,12 @@ const Model = {
         payload: response,
         errors: ''
       });
+
+      if(response.status === 201){
+        localStorage.setItem('userID', btoa(response.data['user']));
+        localStorage.setItem('userKey', response.data['key']);
+      }
+      
     }
     catch(errRes){
       // for (let [key, value] of Object.entries(err.response.data)) {
