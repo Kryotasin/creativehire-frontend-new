@@ -105,7 +105,6 @@ class BaseView extends Component {
       
       onChange(info) {
         const { status } = info.file;
-        console.log(status)
 
         if (status === 'done') {
           message.success(`${info.file.name} file uploaded successfully.`);
