@@ -41,19 +41,19 @@ const defaultFooterDom = (
     {
       key: 'terms',
       title: 'Terms',
-      href: 'https://pro.ant.design',
+      href: 'https://creativehire.co/#/misc/terms',
       blankTarget: true,
     },
     {
       key: 'privacy',
       title: 'Privacy Policy',
-      href: 'https://github.com/ant-design/ant-design-pro',
+      href: 'https://creativehire.co/#/misc/privacy',
       blankTarget: true,
     },
     {
       key: 'contact',
       title: 'Contact Us',
-      href: 'https://ant.design',
+      href: 'https://creativehire.co/#/misc/contact',
       blankTarget: true,
     },
   ]}/>
