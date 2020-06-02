@@ -43,7 +43,7 @@ const Login = props => {
 
           <UserName
             name="userName"
-            placeholder="admin or user"
+            placeholder="username"
             rules={[
               {
                 required: true,
@@ -53,7 +53,7 @@ const Login = props => {
           />
           <Password
             name="password"
-            placeholder="ant.design"
+            placeholder="password"
             rules={[
               {
                 required: true,

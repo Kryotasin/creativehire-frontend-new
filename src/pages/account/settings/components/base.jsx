@@ -4,6 +4,7 @@ import { connect, Link, Helmet } from 'umi';
 import React, { Component } from 'react';
 import styles from './BaseView.less';
 import axios from '../../../../umiRequestConfig';
+import logo from '../../../../assets/default.png';
 
 const { Option } = Select; // The avatar component is convenient for future independence, and adds functions such as cropping
 
@@ -95,7 +96,7 @@ class BaseView extends Component {
       multiple: false,
       method: 'post',
       data: typeOfImage("upload"),
-      action: 'http://localhost:3001/file-handler/',
+      action: 'https://api.creativehire.co/file-handler/',
       onRemove(file){
           axios.post('file-handler/', {
               "file": file.name,
@@ -121,7 +122,12 @@ class BaseView extends Component {
       <>
         <div className={styles.avatar_title}>Avatar</div>
         <div className={styles.avatar}>
-          <img src={`data:image/png;base64,${this.state.img}`} alt="avatar" />
+          {
+            this.state.img ?
+            <img src={`data:image/png;base64,${this.state.img}`} alt="avatar" />
+            :
+            <img src={logo} alt="avatar" />
+          }
         </div>
         <Upload {...userProfilePictureUploadProps} showUploadList={false}>
           <div className={styles.button_view}>
@@ -219,10 +225,7 @@ class BaseView extends Component {
         }
         </div>
         <div className={styles.right}>
-            {this.state.img ?
             <AvatarView imgSrc={this.state.img} />
-          :
-          <Skeleton active />}
         </div>
       </div>
     );

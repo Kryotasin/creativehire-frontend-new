@@ -165,7 +165,7 @@ const Register = props => {
             },
           ]}
         >
-          <Input size="large" placeholder="userandregister.username.placeholder" />
+          <Input size="large" placeholder="Choose a username to login with" />
         </FormItem>
         <Popover
           getPopupContainer={(node) => {
