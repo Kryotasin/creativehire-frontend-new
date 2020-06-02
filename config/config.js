@@ -89,6 +89,38 @@ export default defineConfig({
           ],
         },
         {
+          path: '/misc',
+          component: '../layouts/UserLayout',
+          routes: [
+            {
+              path: '/docs',
+              redirect: '/user/login',
+            },
+            {
+              name: 'Terms and Conditions',
+              icon: 'login',
+              path: '/misc/terms',
+              component: './misc/terms',
+            },
+            {
+              name: 'Privacy policy',
+              icon: 'login',
+              path: '/misc/privacy',
+              component: './misc/privacy',
+            },
+            {
+              name: 'Contact Us',
+              icon: 'login',
+              path: '/misc/contact',
+              component: './misc/contact',
+            },
+
+            {
+              component: '404',
+            },
+          ],
+        },
+        {
           path: '/',
           component: '../layouts/BasicLayout',
           routes: [
