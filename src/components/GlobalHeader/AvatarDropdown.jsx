@@ -4,8 +4,17 @@ import React from 'react';
 import { history, connect } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+import axios from '../../umiRequestConfig';
 
 class AvatarDropdown extends React.Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      avatarSrc : undefined
+    };
+  }
+
   onMenuClick = event => {
     const { key } = event;
 
@@ -54,11 +63,27 @@ class AvatarDropdown extends React.Component {
         </Menu.Item>
       </Menu>
     );
+    
+    // const typeOfImage = (proc) => {
+    //   return {"type" : "profile_pic", "process": proc, "fileName": currentUser.img_salt}
+    // }
+
+    // const getPic = () => {
+    //   axios.post('file-handler/', {
+    //     ...typeOfImage('fetch')
+    // })
+    // .then(res =>{
+    //   console.log(res.data);
+    //   this.setState({
+    //     avatarSrc: res.data
+    //   });
+    // })
+    // }
 
     return currentUser  ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
+          {/* <Avatar size="small" className={styles.avatar} src={} alt="avatar" /> */}
           <span className={styles.name}>{currentUser.name ? currentUser.name : 'Doe'}</span>
         </span>
       </HeaderDropdown>

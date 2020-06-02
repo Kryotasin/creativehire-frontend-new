@@ -67,6 +67,8 @@ class CardList extends Component {
             loading={loading}
             grid={{
               gutter: 24,
+              xxl: 5,
+              xl: 3,
               lg: 3,
               md: 3,
               sm: 1,
@@ -74,7 +76,6 @@ class CardList extends Component {
             }}
             dataSource={[nullData, ...list]}
             renderItem={item => {
-              console.log(item.pk !== -1)
               if (item && item.pk !== -1) {
                 return (
                   <List.Item key={item.fields.projectid}>
@@ -109,13 +110,16 @@ class CardList extends Component {
                 );
               }
 
-              return (
-                <List.Item>
-                  <Button type="dashed" className={styles.newButton}>
-                    <PlusOutlined /> New Project
-                  </Button>
-                </List.Item>
-              );
+              // return (
+              //   <List.Item>
+              //     <Button type="dashed" className={styles.newButton}>
+              //       <Link to='/scan/new'>
+              //           <PlusOutlined /> New Scan
+              //       </Link>
+
+              //     </Button>
+              //   </List.Item>
+              // );
             }}
           />
         </div>

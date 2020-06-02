@@ -7,21 +7,6 @@ import axios from '../../../umiRequestConfig';
 const IntroduceRow = React.lazy(() => import('./components/IntroduceRow'));
 const TopSearch = React.lazy(() => import('./components/TopSearch'));
 
-const gaugeColor = val => {
-  if(val >= 0 && val < 20){
-    return '#FF2600 ';
-  }
-
-  if(val >= 20 && val < 60){
-    return '#FF7A40';
-  }
-
-  if(val >= 60 && val <=100){
-    return '#00A037'
-  }
-  return '';
-}
-
 class Analysis extends Component {
 
   reqRef = 0;
