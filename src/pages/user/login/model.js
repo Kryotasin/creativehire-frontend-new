@@ -46,7 +46,7 @@ console.log(response)
           }
         }
 
-        history.replace(redirect || '/');
+        history.replace(redirect || '/home');
       }
     }
     catch(err) {

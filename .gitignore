@@ -43,3 +43,6 @@ jest.config.js
 .editorconfig
 .eslintrc.js
 tests/*
+
+# Local Netlify folder
+.netlify

@@ -4,13 +4,6 @@ import { Space, Card, Typography, Button } from 'antd';
 import styles from './Welcome.less';
 import { Link } from 'umi';
 
-const CodePreview = ({ children }) => (
-  <pre className={styles.pre}>
-    <code>
-      <Typography.Text copyable>{children}</Typography.Text>
-    </code>
-  </pre>
-);
 
 
 const button = {
@@ -21,7 +14,6 @@ const button = {
 
 export default () => (
   <PageHeaderWrapper>
-    {console.log(REACT_APP_AXIOS_BASEURL)}
     <Card>
       <Space size='large' direction='vertical'>
         <Typography.Title level={2}>

@@ -10,7 +10,7 @@ const { winPath } = utils; // preview.pro.ant.design only do not use in your pro
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_AXIOS_BASEURL, REACT_APP_ENV, GA_KEY } = process.env;
 export default defineConfig({
   hash: true,
-  // history: { type: 'hash' }, // default type is browser
+  history: { type: 'hash' }, // default type is browser
   antd: {},
   analytics: GA_KEY
     ? {
@@ -94,7 +94,7 @@ export default defineConfig({
           routes: [
             {
               name: 'Welcome',
-              path: '/',
+              path: '/home',
               icon: 'home',
               component: '../pages/Welcome',
             },            {
@@ -118,7 +118,7 @@ export default defineConfig({
                   name: 'My Scans',
                   icon: 'folder',
                   path: '/scan/list',
-                  component: './form/advanced-form',
+                  component: './scan/list',
                 },
                 {
                   name: 'Scan',
@@ -152,7 +152,6 @@ export default defineConfig({
             {
               path: '/',
               redirect: '/user/login',
-              authority: ['admin', 'user', 'guest', 'root'],
             },
             {
               component: '404',
@@ -169,7 +168,7 @@ export default defineConfig({
   },
   define: {
     REACT_APP_ENV: REACT_APP_ENV || false,
-    REACT_APP_AXIOS_BASEURL: REACT_APP_AXIOS_BASEURL || 'https//api.creativehire.co',
+    REACT_APP_AXIOS_BASEURL: REACT_APP_AXIOS_BASEURL || 'https://api.creativehire.co',
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION:
       ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
   },
