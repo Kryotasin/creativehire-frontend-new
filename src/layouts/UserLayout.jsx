@@ -20,10 +20,10 @@ const UserLayout = (props) => {
     },
   } = props;
   const {} = useIntl();
-  const { breadcrumb } = getMenuData(routes);
+  // const { breadcrumb } = getMenuData(routes);
   const title = getPageTitle({
     pathname: location.pathname,
-    breadcrumb,
+    // breadcrumb,
     ...props,
   });
   return (

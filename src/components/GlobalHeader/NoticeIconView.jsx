@@ -31,7 +31,7 @@ class GlobalHeaderRight extends Component {
 
   handleNoticeClear = (title, key) => {
     const { dispatch } = this.props;
-    message.success(`${'清空了'} ${title}`);
+    message.success(`${'Cleared'} ${title}`);
 
     if (dispatch) {
       dispatch({

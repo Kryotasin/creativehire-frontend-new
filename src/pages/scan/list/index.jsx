@@ -1,140 +1,130 @@
-import React from 'react';
-import { Space, Form, Input, Button, Spin, Alert } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { Helmet, Link } from 'umi';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Card, List, Typography, Progress } from 'antd';
+import React, { Component } from 'react';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { connect, Link } from 'umi';
+import styles from './style.less';
+import Gauge from '../../dashboard/analysis/components/Charts/Gauge';
 
-import axios from '../../../umiRequestConfig';
+const { Paragraph, Text } = Typography;
 
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+const gaugeColor = val => {
+  if(val >= 0 && val < 20){
+    return '#FF2600 ';
+  }
 
-const layout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 8,
-  },
-};
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 8,
-  },
-};
-class ConfirmEmail extends React.Component {
+  if(val >= 20 && val < 60){
+    return '#FF7A40';
+  }
 
-    state = {
-        loading: false,
-        message: null,
-        description: null,
-        type: null
-    }
+  if(val >= 60 && val <=100){
+    return '#00A037'
+  }
+  return '';
+}
 
-    componentDidMount(){
 
-    }
+class CardList extends Component {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const userID = localStorage.getItem('userID');
+
+    dispatch({
+      type: 'listAndcardList/fetch',
+      payload: { userID },
+    });
+  }
+  
 
   render() {
 
-    const onFinish = values => {
-        this.setState({
-            loading: true
-        });
-        axios.post('api/v1/rest-auth/registration/verify-email/', {
-            'key': values.token
-        })
-        .then(res => {
-            this.setState({
-                loading: false
-            });
-            if(res.status === 200 || res.status === 201){
-                this.setState({
-                    message: 'Email verified!',
-                    description: 'Your email has been verified.',
-                    type: 'success'         
-                });
+    const parseDate = (date) => {
+      const parts = date.split('-')
+      const d = new Date(parts[0], parts[1], parts[2].split('T')[0]);
+      return d.toDateString();
+  }
 
-            }
-            else if(res.status !== 200){
-                this.setState({
-                    message: 'Email verification failed!',
-                    description: 'Please check the token again If problem persists contact admin@creativehire.co.',
-                    type: 'error'         
-                });
-            }
-        })
-    };
-    
-    const onFinishFailed = errorInfo => {
-    };
-
-    const onSubCap = event => {
-        event.preventDefault();
-    };
-   
-
-    return (
-        <div>  
-            <Helmet>
-                <meta charSet="utf-8" />
-                <title>Confirm Email</title>
-            </Helmet>
-            {
-
-                this.state.loading ?
-  
-                <Spin indicator={antIcon} />
-                
-                :
-  
-  
-              <Form
-              {...layout}
-              initialValues={{
-                  remember: true,
-              }}
-              ref={this.formRef}
-              onSubmitCapture={onSubCap}
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              >
-              <Form.Item
-                  label="Token"
-                  name="token"
-                  rules={[
-                  {
-                      required: true,
-                      message: 'Please input your token!',
-                  },
-                  ]}
-              >
-                  <Input autoComplete="off" />
-              </Form.Item>
-  
-              <Form.Item {...tailLayout}>
-                <Space size="large">
-                    <Button type="primary" htmlType="submit">
-                    Verify Email
-                    </Button>
-                    <Link style={{marginRight: '10px'}} 
-                        to='/'> Back to home
-                    </Link>
-                </Space>
-              </Form.Item>
-            
-            {
-                this.state.message && this.state.description && this.state.type ? 
-                <Alert {...tailLayout} message = {this.state.message} description = {this.state.description} type={this.state.type} showIcon />
-                :
-                ''
-            }
-              
-              </Form>
-          }
+    const {
+      listAndcardList: { list },
+      loading,
+    } = this.props;
+    const content = (
+      <div className={styles.pageHeaderContent}>
+        <p>
+          All the scans you have completed
+        </p>
       </div>
     );
-  } 
-  
+    
+    const nullData = {'pk': -1};
+    
+
+    return (
+      <PageHeaderWrapper content={content} >
+        <div className={styles.cardList}>
+          <List
+            rowKey="id"
+            loading={loading}
+            grid={{
+              gutter: 24,
+              lg: 3,
+              md: 3,
+              sm: 1,
+              xs: 1,
+            }}
+            dataSource={[nullData, ...list]}
+            renderItem={item => {
+              console.log(item.pk !== -1)
+              if (item && item.pk !== -1) {
+                return (
+                  <List.Item key={item.fields.projectid}>
+                    <Link to={'/scan/item/'.concat(item.pk)}>
+                      <Card
+                        hoverable
+                        className={styles.card}
+                        cover={
+                          <Gauge title="Match" height={164} color={gaugeColor((item.fields.matchpercent * 100).toFixed(2))} percent={(item.fields.matchpercent * 100).toFixed(2)} />
+                        }
+                      >
+                        <Card.Meta
+                          // avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
+                          title= {item.fields.jobtitle ? item.fields.org.concat(" - ").concat(item.fields.jobtitle) : "No position details"}
+                          description={
+                            <div>
+                            <Paragraph
+                              className={styles.item}
+                              ellipsis={{
+                                rows: 3,
+                              }}
+                              >
+                                <Text strong>Project Name: </Text>{item.fields.project_title}
+                              {/* {parseDate(item.fields.posted_date)} */}
+                            </Paragraph>
+                            </div>
+                          }
+                        />
+                      </Card>
+                    </Link>
+                  </List.Item>
+                );
+              }
+
+              return (
+                <List.Item>
+                  <Button type="dashed" className={styles.newButton}>
+                    <PlusOutlined /> New Project
+                  </Button>
+                </List.Item>
+              );
+            }}
+          />
+        </div>
+      </PageHeaderWrapper>
+    );
+  }
 }
 
-export default ConfirmEmail;
+export default connect(({ listAndcardList, loading }) => ({
+  listAndcardList,
+  loading: loading.models.listAndcardList,
+}))(CardList);

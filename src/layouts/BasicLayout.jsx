@@ -65,7 +65,7 @@ const BasicLayout = (props) => {
     children,
     settings,
     location = {
-      pathname: '/',
+      pathname: '/home',
     },
   } = props;
   /**
@@ -92,7 +92,7 @@ const BasicLayout = (props) => {
     }
   }; // get children authority
 
-  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
+  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/home') || {
     authority: undefined,
   };
   const {} = useIntl();
@@ -101,7 +101,7 @@ const BasicLayout = (props) => {
       <ProLayout
         logo={logo}
         menuHeaderRender={(logoDom, titleDom) => (
-          <Link to="/">
+          <Link to="/home">
             {logoDom}
             {titleDom}
           </Link>
@@ -114,21 +114,21 @@ const BasicLayout = (props) => {
 
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
-        breadcrumbRender={(routers = []) => [
-          {
-            path: '/',
-            breadcrumbName: 'Home',
-          },
-          ...routers,
-        ]}
-        itemRender={(route, params, routes, paths) => {
-          const first = routes.indexOf(route) === 0;
-          return first ? (
-            <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-          ) : (
-            <span>{route.breadcrumbName}</span>
-          );
-        }}
+        // breadcrumbRender={(routers = []) => [
+        //   {
+        //     path: '',
+        //     breadcrumbName: 'Home',
+        //   },
+        //   ...routers,
+        // ]}
+        // itemRender={(route, params, routes, paths) => {
+        //   const first = routes.indexOf(route) === 0;
+        //   return first ? (
+        //     <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+        //   ) : (
+        //     <span>{route.breadcrumbName}</span>
+        //   );
+        // }}
         footerRender={() => defaultFooterDom}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
@@ -139,7 +139,7 @@ const BasicLayout = (props) => {
           {children}
         </Authorized>
       </ProLayout>
-      <SettingDrawer
+      {/* <SettingDrawer
         settings={settings}
         onSettingChange={(config) =>
           dispatch({
@@ -147,7 +147,7 @@ const BasicLayout = (props) => {
             payload: config,
           })
         }
-      />
+      /> */}
     </>
   );
 };
