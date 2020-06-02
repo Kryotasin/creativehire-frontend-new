@@ -1,5 +1,7 @@
 import React, { Component, Suspense } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
+import { Helmet } from 'umi';
+
 import PageLoading from './components/PageLoading';
 
 import axios from '../../../umiRequestConfig';
@@ -28,14 +30,12 @@ class Analysis extends Component {
           structure: null,
           job: null,
           project: null,
-          projectid: null,
-          jobid: null
       }
   }
 
   componentDidMount() {
 
-    const matchID = this.props.match.params.matchID;
+    const { matchID } = this.props.match.params;
 
     axios.get('scans/'.concat(matchID).concat('/'))
         .then(scanRes => {
@@ -52,15 +52,9 @@ class Analysis extends Component {
                 })
 
                 const project = 'project/'.concat(scanRes.data.projectid);
-                this.setState({
-                    projectid: scanRes.data.projectid
-                });
 
                 const job = 'jobpost/'.concat(scanRes.data.jobid);
 
-                this.setState({
-                    jobid: scanRes.data.jobid
-                });
                 
                 axios.get(project)
                 .then(projectRes => {
@@ -99,6 +93,10 @@ class Analysis extends Component {
 
     return (
       <GridContent>
+      <Helmet>
+          <meta charSet="utf-8" />
+    <title>Scan - {this.props.match.params.matchID}</title>
+      </Helmet> 
         <React.Fragment>
           <Suspense fallback={<PageLoading />}>
             <IntroduceRow project={this.state.project} job={this.state.job} />

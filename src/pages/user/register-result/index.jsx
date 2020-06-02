@@ -5,7 +5,7 @@ import styles from './style.less';
 
 const actions = (
   <div className={styles.actions}>
-    <Link className={styles.login} to="/">
+    <Link className={styles.login} to="/home">
       <Button size="large" type="primary">
         My Dashboard
       </Button>

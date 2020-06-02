@@ -133,7 +133,6 @@ export default defineConfig({
               name: 'How it Works',
               path: '/how-it-works',
               component: '../pages/HowitWorks',
-              hideInMenu: true,
             },
             {
               path: '/scan',

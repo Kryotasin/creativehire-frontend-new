@@ -1,11 +1,9 @@
 import React from 'react';
-import { Form, Input, Button, Spin, message } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { Helmet, Link } from 'umi';
+import { Form, Input, Button, message } from 'antd';
+import { Helmet } from 'umi';
 
 import axios from '../../../umiRequestConfig';
 
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 const layout = {
   labelCol: {
