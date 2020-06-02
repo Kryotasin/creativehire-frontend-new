@@ -1,6 +1,5 @@
 import { Button, message, notification } from 'antd';
 import React from 'react';
-import { formatMessage } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings; // if pwa is true
@@ -8,7 +7,7 @@ const { pwa } = defaultSettings; // if pwa is true
 if (pwa) {
   // Notify user if offline now
   window.addEventListener('sw.offline', () => {
-    message.warning('当前处于离线状态');
+    message.warning('Offline');
   }); // Pop up a prompt on the page asking the user if they want to use the latest version
 
   window.addEventListener('sw.updated', (event) => {
@@ -55,7 +54,7 @@ if (pwa) {
           reloadSW();
         }}
       >
-        刷新
+        Refresh
       </Button>
     );
     notification.open({

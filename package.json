@@ -1,8 +1,8 @@
 {
-  "name": "ant-design-pro",
-  "version": "4.0.0",
+  "name": "creativehire",
+  "version": "1.0.0",
   "private": true,
-  "description": "An out-of-box UI solution for enterprise applications",
+  "description": "Evaluate the strength of your portfolio",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
@@ -21,7 +21,7 @@
     "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
     "prettier": "prettier -c --write \"**/*\"",
     "start": "umi dev",
-    "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none umi dev",
+    "start:dev": "cross-env REACT_APP_ENV=dev REACT_APP_AXIOS_BASEURL=http://localhost:3001 MOCK=none umi dev",
     "start:no-mock": "cross-env MOCK=none umi dev",
     "start:no-ui": "cross-env UMI_UI=none umi dev",
     "start:pre": "cross-env REACT_APP_ENV=pre umi dev",

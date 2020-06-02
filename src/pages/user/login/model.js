@@ -12,7 +12,7 @@ const Model = {
     *login({ payload }, { call, put }) {
       try{
         const response = yield call(AccountLogin, payload);
-
+console.log(response)
       yield put({
         type: 'changeLoginStatus',
         payload: response,
