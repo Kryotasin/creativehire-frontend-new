@@ -55,19 +55,19 @@ const UserLayout = (props) => {
           {
               key: 'terms',
               title: 'Terms',
-              href: 'https://creativehire.co/#/misc/terms',
+              href: 'https://creativehire.co/misc/terms',
               blankTarget: true,
             },
             {
               key: 'privacy',
               title: 'Privacy Policy',
-              href: 'https://creativehire.co/#/misc/privacy',
+              href: 'https://creativehire.co/misc/privacy',
               blankTarget: true,
             },
             {
               key: 'contact',
               title: 'Contact Us',
-              href: 'https://creativehire.co/#/misc/contact',
+              href: 'https://creativehire.co/misc/contact',
               blankTarget: true,
             },
         ]}/>
