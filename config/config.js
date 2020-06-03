@@ -6,11 +6,15 @@ import webpackPlugin from './plugin.config';
 
 const { winPath } = utils; // preview.pro.ant.design only do not use in your production ;
 
-
-const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_AXIOS_BASEURL, REACT_APP_ENV, GA_KEY } = process.env;
+const {
+  ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION,
+  REACT_APP_AXIOS_BASEURL,
+  REACT_APP_ENV,
+  GA_KEY,
+} = process.env;
 export default defineConfig({
   hash: true,
-  history: { type: 'hash' }, // default type is browser
+  // history: { type: 'hash' }, // default type is browser
   antd: {},
   analytics: GA_KEY
     ? {
@@ -93,8 +97,8 @@ export default defineConfig({
           component: '../layouts/UserLayout',
           routes: [
             {
-              path: '/docs',
-              redirect: '/user/login',
+              path: '/misc',
+              redirect: '/misc/terms',
             },
             {
               name: 'Terms and Conditions',
@@ -129,7 +133,7 @@ export default defineConfig({
               path: '/home',
               icon: 'home',
               component: '../pages/Welcome',
-            },            
+            },
             {
               name: 'How it Works',
               path: '/how-it-works',
@@ -141,6 +145,10 @@ export default defineConfig({
               icon: 'scan',
               name: 'Scan',
               routes: [
+                {
+                  path: '/scan',
+                  redirect: '/scan/list',
+                },
                 {
                   name: 'New Scan',
                   icon: 'plus',
@@ -226,8 +234,8 @@ export default defineConfig({
           const antdProPath = match[1].replace('.less', '');
           const arr = winPath(antdProPath)
             .split('/')
-            .map(a => a.replace(/([A-Z])/g, '-$1'))
-            .map(a => a.toLowerCase());
+            .map((a) => a.replace(/([A-Z])/g, '-$1'))
+            .map((a) => a.toLowerCase());
           return `antd-pro${arr.join('-')}-${localName}`.replace(/--/g, '-');
         }
 
