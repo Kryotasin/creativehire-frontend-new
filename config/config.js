@@ -129,9 +129,11 @@ export default defineConfig({
               path: '/home',
               icon: 'home',
               component: '../pages/Welcome',
-            },            {
+            },            
+            {
               name: 'How it Works',
               path: '/how-it-works',
+              icon: 'question',
               component: '../pages/HowitWorks',
             },
             {
