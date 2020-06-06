@@ -42,12 +42,16 @@ const Login = props => {
           )}
 
           <UserName
-            name="userName"
-            placeholder="username"
+            name="email"
+            placeholder="Email address"
             rules={[
               {
                 required: true,
-                message: 'Please enter username!',
+                message: 'Please enter email address',
+              },
+              {
+                type: 'email',
+                message: 'Invalid email',
               },
             ]}
           />

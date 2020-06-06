@@ -13,6 +13,7 @@ const Model = {
       try{
         const response = yield call(AccountLogin, payload);
 
+
         yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -24,7 +25,7 @@ const Model = {
 
         // Set in localStorage
 
-        localStorage.setItem('userID', response.data['id']);
+        localStorage.setItem('userID', response.data['user']);
         localStorage.setItem('userKey', response.data['key']);
 
         const urlParams = new URL(window.location.href);
