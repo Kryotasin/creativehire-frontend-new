@@ -12,7 +12,7 @@ const { Option } = Select; // The avatar component is convenient for future inde
 class BaseView extends Component {
   view = undefined;
 
-  email_verified = undefined;
+  email_verified = false;
 
   constructor(props){
     super(props);
@@ -25,8 +25,12 @@ class BaseView extends Component {
   componentDidMount(){
     axios.get('userprofile/email-verified/'.concat(localStorage.getItem('userID')))
     .then(res => {
-      if(res.data){
+
+      if(res.data === 'True'){
         this.email_verified = true;
+      }
+      if(res.data === 'False'){
+        this.email_verified = false;
       }
     })
     .catch(err => {
@@ -42,7 +46,8 @@ class BaseView extends Component {
 
   handleFinish = (values) => {
     axios.put('userprofile/update/'.concat(localStorage.getItem('userID')),{
-      name: values.name,
+      first_name: values.first_name,
+      last_name: values.last_name,
       location: values.location
     })
     .then(res => {    
@@ -152,25 +157,14 @@ class BaseView extends Component {
           <title>Profile</title>
         </Helmet>
         <div className={styles.left}>
-          {currentUser.username ?
+          {currentUser.email ?
           <Form
             layout="vertical"
             onFinish={this.handleFinish}
             initialValues={currentUser}
             hideRequiredMark
           >
-            <Form.Item
-              name="username"
-              label="Username"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter username!',
-                },
-              ]}
-            >
-              <Input disabled/>
-            </Form.Item>
+
             
             <Form.Item
               name="email"
@@ -188,20 +182,35 @@ class BaseView extends Component {
             >
               <Input disabled placeholder={currentUser ? currentUser.email : 'No email set'}/> 
             </Form.Item>
-            { this.email_verified && (<Alert message= {this.email_verified ? "Email verified!" : <Link to='/user/confirm-email'>Click here to verify email</Link>} type={this.email_verified ? "success" : "error"} showIcon />)}
+            <Alert message= {this.email_verified ? "Email verified!" : <Link to='/user/confirm-email'>Click here to verify email</Link>} type={this.email_verified ? "success" : "error"} showIcon />
 
             <Form.Item
-              name="name"
-              label="Name"
+              name="first_name"
+              label="First Name"
               rules={[
                 {
                   required: true,
-                  message: 'Please enter your full name!',
+                  message: 'Please enter your first name!',
                 },
               ]}
             >
-              <Input placeholder={currentUser.name !== null ? currentUser.name : 'No name set'}/>
+              <Input placeholder={currentUser.first_name !== null ? currentUser.first_name : 'No first name set'}/>
             </Form.Item>
+
+            <Form.Item
+              name="last_name"
+              label="Last Name"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter your last name!',
+                },
+              ]}
+            >
+              <Input placeholder={currentUser.last_name !== null ? currentUser.last_name : 'No first name set'}/>
+            </Form.Item>
+
+
             <Form.Item
               name="location"
               label="Location"

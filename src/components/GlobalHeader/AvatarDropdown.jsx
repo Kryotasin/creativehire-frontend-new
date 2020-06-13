@@ -37,7 +37,8 @@ class AvatarDropdown extends React.Component {
     const {
       currentUser = {
         avatar: '',
-        name: '',
+        first_name: '',
+        last_name: '',
       },
       menu,
     } = this.props;
@@ -84,7 +85,7 @@ class AvatarDropdown extends React.Component {
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
           {/* <Avatar size="small" className={styles.avatar} src={} alt="avatar" /> */}
-          <span className={styles.name}>{currentUser.name ? currentUser.name : 'Doe'}</span>
+          <span className={styles.name}>{currentUser.first_name && currentUser.last_name ? currentUser.first_name.concat(' ').concat(currentUser.last_name) : 'Doe'}</span>
         </span>
       </HeaderDropdown>
     ) : (

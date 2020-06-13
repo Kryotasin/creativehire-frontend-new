@@ -1,11 +1,17 @@
-import React from 'react';
-import { Form, Button, Descriptions, Divider, Statistic, Input } from 'antd';
+import React,  { useState }  from 'react';
+import { Spin, Form, Button, Tooltip, Divider, Statistic, Input, Typography } from 'antd';
+import { ArrowRightOutlined, ArrowLeftOutlined, InfoCircleOutlined } from '@ant-design/icons';
+
 import { connect } from 'umi';
 import styles from './index.less';
 
+const { TextArea } = Input;
+
+
+
 const formItemLayout = {
   labelCol: {
-    span: 5,
+    span: 8,
   },
   wrapperCol: {
     span: 19,
@@ -17,112 +23,165 @@ const Step2 = props => {
   const { data, dispatch, submitting } = props;
 
   if (!data) {
-    return null;
+    return <Spin />;
   }
 
-  const { validateFields, getFieldsValue } = form;
+  const { validateFields } = form;
 
   const onPrev = () => {
     if (dispatch) {
-      const values = getFieldsValue();
-      dispatch({
-        type: 'formAndstepForm/saveStepFormData',
-        payload: { ...data, ...values },
-      });
       dispatch({
         type: 'formAndstepForm/saveCurrentStep',
-        payload: 'info',
+        payload: 'link',
       });
     }
   };
+
+
+  const { title, description, img_list } = data;
+
+  const [img_counter, setImgCount] = useState(0);
 
   const onValidateForm = async () => {
     const values = await validateFields();
 
+    const final_values = { ...values, 'projectImage': img_list[img_counter+1], ...props.link};
+
     if (dispatch) {
       dispatch({
-        type: 'formAndstepForm/submitStepForm',
-        payload: { ...data, ...values },
+        type: 'formAndstepForm/submitNewProject',
+        payload: { ...final_values },
       });
     }
   };
 
-  const { payAccount, receiverAccount, receiverName, amount } = data;
-  return (
-    <Form
-      {...formItemLayout}
-      form={form}
-      layout="horizontal"
-      className={styles.stepForm}
-      initialValues={{
-        password: '123456',
-      }}
-    >
 
-      <Descriptions column={1}>
-        <Descriptions.Item label="付款账户"> {payAccount}</Descriptions.Item>
-        <Descriptions.Item label="收款账户"> {receiverAccount}</Descriptions.Item>
-        <Descriptions.Item label="收款人姓名"> {receiverName}</Descriptions.Item>
-        <Descriptions.Item label="转账金额">
-          <Statistic value={amount} suffix="元" />
-        </Descriptions.Item>
-      </Descriptions>
-      <Divider
-        style={{
-          margin: '24px 0',
+
+  return (
+    <>
+      <Form
+        {...formItemLayout}
+        form={form}
+        layout="horizontal"
+        className={styles.stepForm}
+        initialValues={{
+          projectName: title,
+          projectSummary: description,
+
         }}
-      />
-      <Form.Item
-        label="支付密码"
-        name="password"
-        required={false}
-        rules={[
-          {
-            required: true,
-            message: '需要支付密码才能进行支付',
-          },
-        ]}
       >
-        <Input
-          type="password"
-          autoComplete="off"
+
+        <Divider
           style={{
-            width: '80%',
+            margin: '24px 0',
           }}
         />
-      </Form.Item>
-      <Form.Item
-        style={{
-          marginBottom: 8,
-        }}
-        wrapperCol={{
-          xs: {
-            span: 24,
-            offset: 0,
-          },
-          sm: {
-            span: formItemLayout.wrapperCol.span,
-            offset: formItemLayout.labelCol.span,
-          },
-        }}
-      >
-        <Button type="primary" onClick={onValidateForm} loading={submitting}>
-          提交
-        </Button>
-        <Button
-          onClick={onPrev}
+
+        <Form.Item
+          label="Project Name"
+          name="projectName"
+          rules={[
+            {
+              required: true,
+              message: 'Please enter project name',
+            },
+          ]}
+        >
+          <Input placeholder="Project name" />
+        </Form.Item>
+
+
+        <Form.Item
+            {...formItemLayout}
+            label="Project Summary"
+            name="projectSummary"
+            rules={[
+              {
+                required: true,
+                message: 'Please enter the project summary',
+              },
+            ]}
+          >
+            <TextArea
+              style={{
+                minHeight: 32,
+              }}
+              placeholder="Paste complete job decription here"
+              rows={4}
+            />
+          </Form.Item>
+
+        <Form.Item
+          label="Project Image"
+          name="projectImage"
+        >
+          <img src={img_list[img_counter+1]} width="320" alt={title.concat(' image')}/>
+          <Button disabled={img_counter === 0} onClick={()=>{
+            setImgCount(img_counter - 1)
+          }}>
+          <ArrowLeftOutlined /> Previous image 
+          </Button>
+          <Button disabled={img_counter === img_list.length} onClick={()=>{
+            setImgCount(img_counter + 1)
+          }}>
+            Next image <ArrowRightOutlined />
+          </Button>
+
+
+        </Form.Item>  
+
+        <Form.Item
           style={{
-            marginLeft: 8,
+            marginBottom: 8,
+          }}
+          wrapperCol={{
+            xs: {
+              span: 24,
+              offset: 0,
+            },
+            sm: {
+              span: formItemLayout.wrapperCol.span,
+              offset: formItemLayout.labelCol.span,
+            },
           }}
         >
-          上一步
-        </Button>
-      </Form.Item>
-    </Form>
+
+          <Button
+            onClick={onPrev}
+            style={{
+              marginLeft: 8,
+            }}
+          >
+            Previous
+          </Button>
+          <Button type="primary" onClick={onValidateForm} loading={props.loading}>
+            Next
+          </Button>
+
+        </Form.Item>
+      </Form>
+
+      <Divider
+        style={{
+          margin: '40px 0 24px',
+        }}
+      />
+      <div className={styles.desc}>
+        <h3>Help</h3>
+        <h4>What is Project Image?</h4>
+          <p>
+            Project images are images we could retrieve from the link you provided. Pick any you like.
+          </p>
+          <p>
+            <Typography.Text strong>Note: </Typography.Text>The images are fetched directly from the original source.
+          </p>
+      </div>
+    </>
   );
 };
 
-export default connect(({ formAndstepForm, loading }) => ({
-  submitting: loading.effects['formAndstepForm/submitStepForm'],
-  data: formAndstepForm.step,
+export default connect(({ formAndstepForm }) => ({
+  loading: formAndstepForm.loading,
+  data: formAndstepForm.basics,
+  link: formAndstepForm.link,
 }))(Step2);

@@ -11,19 +11,19 @@ const { Step } = Steps;
 
 const getCurrentStepAndComponent = current => {
   switch (current) {
-    case 'job':
+    case 'basic':
       return {
         step: 1,
         component: <Step2 />,
       };
 
-    case 'result':
+    case 'skills':
       return {
         step: 2,
         component: <Step3 />,
       };
 
-    case 'project':
+    case 'link':
     default:
       return {
         step: 0,
@@ -41,13 +41,13 @@ const StepForm = ({ current }) => {
     setStepComponent(component);
   }, [current]);
   return (
-    <PageHeaderWrapper content="Divide a long or unfamiliar form task into multiple steps to guide the user through it.">
+    <PageHeaderWrapper content="Upload your project.">
       <Card bordered={false}>
         <>
           <Steps current={currentStep} className={styles.steps}>
-            <Step title="Project Details" />
-            <Step title="Job Details" />
-            <Step title="Results" />
+            <Step title="Project Link" />
+            <Step title="Basic Details" />
+            <Step title="Skills" />
           </Steps>
           {stepComponent}
         </>

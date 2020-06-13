@@ -13,12 +13,8 @@ const formItemLayout = {
 };
 
 const Step1 = props => {
-  const { dispatch, data } = props;
+  const { dispatch, link, loading } = props;
   const [form] = Form.useForm();
-
-  if (!data) {
-    return null;
-  }
 
   const { validateFields } = form;
 
@@ -27,12 +23,8 @@ const Step1 = props => {
 
     if (dispatch) {
       dispatch({
-        type: 'formAndstepForm/saveStepFormData',
+        type: 'formAndstepForm/fetchBasicDetails',
         payload: values,
-      });
-      dispatch({
-        type: 'formAndstepForm/saveCurrentStep',
-        payload: 'job',
       });
     }
   };
@@ -43,37 +35,27 @@ const Step1 = props => {
         {...formItemLayout}
         form={form}
         layout="horizontal"
+        initialValues={link}
         className={styles.stepForm}
       >
 
-        <Form.Item
-          label="Project Name"
-          name="projectName"
-          rules={[
-            {
-              required: true,
-              message: 'Please enter project name',
-            },
-          ]}
-        >
-          <Input placeholder="Project name" />
-        </Form.Item>
         <Form.Item
           label="Project Link"
           name="projectLink"
           rules={[
             {
-              required: true,
-              message: 'Please enter project link',
+              type: 'url',
+              message: 'The input is not valid link!',
             },
             {
-              type: 'url',
-              message: 'Invalid url',
+              required: true,
+              message: 'Please enter exact link to project link',
             },
           ]}
         >
-          <Input placeholder="http://...."/>
+          <Input placeholder="Project link"/>
         </Form.Item>
+
         <Form.Item
           wrapperCol={{
             xs: {
@@ -86,7 +68,7 @@ const Step1 = props => {
             },
           }}
         >
-          <Button type="primary" onClick={onValidateForm}>
+          <Button type="primary" loading={loading} onClick={onValidateForm}>
             Next
           </Button>
         </Form.Item>
@@ -100,7 +82,7 @@ const Step1 = props => {
         <h3>Help</h3>
         <h4>What is this?</h4>
         <p>
-          We gather information about your skillset from your projects directly. Please make sure we have acces to the webpage you paste above.
+          Enter your project link above. We will fetch all the information we can from the link. 
         </p>
       </div>
     </>
@@ -108,5 +90,6 @@ const Step1 = props => {
 };
 
 export default connect(({ formAndstepForm }) => ({
-  data: formAndstepForm.step,
+  link: formAndstepForm.link,
+  loading: formAndstepForm.loading,
 }))(Step1);

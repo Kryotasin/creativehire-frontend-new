@@ -157,16 +157,29 @@ const Register = props => {
         </FormItem>
 
         <FormItem
-          name="username"
+          name="firstName"
           rules={[
             {
               required: true,
-              message: 'Please enter a username!',
+              message: 'Please enter your first name',
             },
           ]}
         >
-          <Input size="large" placeholder="Choose a username" />
+          <Input size="large" placeholder="Jane" />
         </FormItem>
+
+        <FormItem
+          name="lastName"
+          rules={[
+            {
+              required: true,
+              message: 'Please enter your last name',
+            },
+          ]}
+        >
+          <Input size="large" placeholder="Doe" />
+        </FormItem>
+
         <Popover
           getPopupContainer={(node) => {
             if (node && node.parentNode) {

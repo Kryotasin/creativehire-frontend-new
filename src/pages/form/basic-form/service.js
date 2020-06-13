@@ -14,7 +14,7 @@ export async function newProject(params,userID) {
   return axios.post('project/', {
     title: params.projectTitle,
     url: params.projectLink,
-    project_owner_id: userID
+    author: userID
   });
 }
 

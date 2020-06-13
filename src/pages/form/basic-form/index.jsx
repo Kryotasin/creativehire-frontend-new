@@ -166,6 +166,7 @@ const BasicForm = (props) => {
               }}
               placeholder="Paste complete job decription here"
               rows={4}
+              autoSize={{ minRows: 2, maxRows: 6 }}
             />
           </FormItem>
           

@@ -156,7 +156,7 @@ class TopSearch extends React.Component {
             </Space>
           </Col>
         </Row>
-      </Card>
+      </Card> 
     </Col>
 
 
@@ -181,83 +181,83 @@ class TopSearch extends React.Component {
             }}
           > 
 
-                    { this.state.structure !== null && this.state.match.jobpost_results !== null ?
-                    <div style={{ listStyleType: "none" }}>
-                        <Title level={4}>{this.state.structure[0][this.label]}</Title>
-                        <Text strong>{this.state.structure[1][this.subcat]}</Text>
-                        <p>{this.state.structure[3][this.label]}{this.existsInProject(this.label)}</p>
+        { this.state.structure !== null && this.state.match.jobpost_results !== null ?
+        <div style={{ listStyleType: "none" }}>
+            <Title level={4}>{this.state.structure[0][this.label]}</Title>
+            <Text strong>{this.state.structure[1][this.subcat]}</Text>
+            <p>{this.state.structure[3][this.label]}{this.existsInProject(this.label)}</p>
 
 
-                            {
-                            this.state.match.jobpost_results.map((item) => {
-                                const parts = item.split(',');
-                                
-                                if(this.subcat === parts[1]){
-                                    if(this.label !== parts[0]){
-                                        this.label = parts[0];
-                                        return(
-                                            <React.Fragment key={parts[0]}>
-                                                <p>{this.state.structure[3][parts[0]]}{this.existsInProject(this.label)}</p>
-                                            </React.Fragment>
-                                            )
-                                    }
-
-                                }
-                                else{
-                                    this.subcat = parts[1];
-                                    this.label = parts[0];
-                                return(
-                                    <React.Fragment key={parts[0]}>
-                                        <Title level={4}>{
-                                            this.cat === this.state.structure[0][this.label] ?
-                                            ''
-                                            :
-                                            this.cat = this.state.structure[0][this.label]
-                                            }
-                                        </Title>
-                                        <Text strong>{this.state.structure[1][parts[1]]}</Text>
-                                        <p>{this.state.structure[3][parts[0]]}
-                                {this.existsInProject(this.label)}</p>
-                                    </React.Fragment>
-                                )        
-                            }
-                            }) 
-                                }
-                        </div>
-                                :
-                        <Empty  />
-                        // {
-                        //   Object.values(getResultItem()).map((val) => {
-                        //     const parts = val.split(',');
-                            
-                        //     if(this.subcat === parts[1]){
-                      
-                        //       if(this.label !== parts[0]){
-                        //         this.label = parts[0];
-                        //         return(
-                        //             <React.Fragment key={parts[0]}>
-                        //               <Title level={3}>{this.state.structure[1][parts[1]]}</Title>
-                        //                 <p>{this.state.structure[3][parts[0]]}{this.existsInProject(this.label)}</p>
-                        //             </React.Fragment>
-                        //             )
-                        //     }
-                      
-                        //       return(
-                        //         <React.Fragment key={parts[0]}>
-                        //             <Title level={3}>{this.state.structure[1][parts[1]]}</Title>
-                        //             <p>{this.state.structure[3][parts[0]]}
-                        //             {this.existsInProject(this.label)}</p>
-                        //         </React.Fragment>
-                        //       )                         
-                        //   }                        
-                        //       this.subcat = parts[1];
-                        //       this.label = parts[0];
-                        //       console.log(this.subcat, parts[1]);
-                        //       return '';
-                        //   })
-                      
-                        // }
+                {
+                this.state.match.jobpost_results.map((item) => {
+                    const parts = item.split(',');
+                    
+                    if(this.subcat === parts[1]){
+                        if(this.label !== parts[0]){
+                            this.label = parts[0];
+                            return(
+                                <React.Fragment key={parts[0]}>
+                                    <p>{this.state.structure[3][parts[0]]}{this.existsInProject(this.label)}</p>
+                                </React.Fragment>
+                                )
                         }
+
+                    }
+                    else{
+                        this.subcat = parts[1];
+                        this.label = parts[0];
+                    return(
+                        <React.Fragment key={parts[0]}>
+                            <Title level={4}>{
+                                this.cat === this.state.structure[0][this.label] ?
+                                ''
+                                :
+                                this.cat = this.state.structure[0][this.label]
+                                }
+                            </Title>
+                            <Text strong>{this.state.structure[1][parts[1]]}</Text>
+                            <p>{this.state.structure[3][parts[0]]}
+                    {this.existsInProject(this.label)}</p>
+                        </React.Fragment>
+                    )        
+                }
+                }) 
+                    }
+            </div>
+                    :
+            <Empty  />
+            // {
+            //   Object.values(getResultItem()).map((val) => {
+            //     const parts = val.split(',');
+                
+            //     if(this.subcat === parts[1]){
+          
+            //       if(this.label !== parts[0]){
+            //         this.label = parts[0];
+            //         return(
+            //             <React.Fragment key={parts[0]}>
+            //               <Title level={3}>{this.state.structure[1][parts[1]]}</Title>
+            //                 <p>{this.state.structure[3][parts[0]]}{this.existsInProject(this.label)}</p>
+            //             </React.Fragment>
+            //             )
+            //     }
+          
+            //       return(
+            //         <React.Fragment key={parts[0]}>
+            //             <Title level={3}>{this.state.structure[1][parts[1]]}</Title>
+            //             <p>{this.state.structure[3][parts[0]]}
+            //             {this.existsInProject(this.label)}</p>
+            //         </React.Fragment>
+            //       )                         
+            //   }                        
+            //       this.subcat = parts[1];
+            //       this.label = parts[0];
+            //       console.log(this.subcat, parts[1]);
+            //       return '';
+            //   })
+          
+            // }
+            }
 
           </Col>
         </Row>

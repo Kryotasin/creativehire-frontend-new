@@ -171,6 +171,29 @@ export default defineConfig({
               ],
             },
             {
+              path: '/portfolio',
+              icon: 'folder',
+              name: 'Portfolio',
+              routes: [
+                {
+                  path: '/portfolio',
+                  redirect: '/portfolio/list',
+                },
+                {
+                  name: 'New Project',
+                  icon: 'plus',
+                  path: '/portfolio/new',
+                  component: './form/step-form',
+                },
+                {
+                  name: 'My Projects',
+                  icon: 'project',
+                  path: '/portfolio/list',
+                  component: './scan/list',
+                },
+              ],
+            },
+            {
               name: 'Account',
               icon: 'user',
               path: '/account',
