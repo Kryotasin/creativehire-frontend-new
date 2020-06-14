@@ -37,7 +37,7 @@ const Model = {
 
 
       if(basicdetails.status === 200){
-        // Save teh project link
+        // Save the project link
         yield put({
           type: 'saveProjectLink',
           payload,
