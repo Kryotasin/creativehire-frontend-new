@@ -95,28 +95,27 @@ const Model = {
     },
 
     *submitNewProjectSkills({ payload }, { call, put, select }) {
-      try{
-      yield put({
-        type: 'saveStepLoadingState',
-        payload: true
-      });
+      try {
+        yield put({
+          type: 'saveStepLoadingState',
+          payload: true,
+        });
 
-      yield put({
-        type: 'saveProjectSkills',
-        payload
-      })
-      const project = yield select(state => state.formAndstepForm.project);
-      const response = yield call(submitProjectSkills, project)
+        yield put({
+          type: 'saveProjectSkills',
+          payload,
+        });
+        const project = yield select((state) => state.formAndstepForm.project);
+        const response = yield call(submitProjectSkills, project);
 
-      yield put({
-        type: 'saveStepLoadingState',
-        payload: false
-      });
-    }
-      catch(e) {
-        console.log('error')
+        yield put({
+          type: 'saveStepLoadingState',
+          payload: false,
+        });
+      } catch (e) {
+        console.log('error');
         console.log(e);
-        throw new Error(e)
+        throw new Error(e);
       }
     },
   },
