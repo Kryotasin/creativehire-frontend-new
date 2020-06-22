@@ -16,10 +16,10 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     const menuMap = {
-      base: 'Basic Information',
+      base: 'Personal Information',
+      notification: 'Professional Information',
+      binding: 'External Applications',
       security: 'Account Settings',
-      // binding: 'External Accounts',
-      // notification: 'Notification Settings',
     };
     this.state = {
       mode: 'inline',
