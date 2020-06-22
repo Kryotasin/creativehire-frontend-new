@@ -36,7 +36,7 @@ const gaugeColor = val => {
   return '';
 }
 
-const onlyUnique = (value, index, self) => { 
+const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index;
 }
 
@@ -64,7 +64,7 @@ class TopSearch extends React.Component {
       tabKey: this.props.structure[0][0]
     }
   }
-  
+
 
   existsInProject = (row) => {
     if(this.state.match.matchitems){
@@ -86,13 +86,13 @@ class TopSearch extends React.Component {
     this.cat = this.state.structure[0][this.state.match.jobpost_results[0].split(',')[0]]
     this.subcat = this.state.match.jobpost_results[0].split(',')[1];
     this.label = this.state.match.jobpost_results[0].split(',')[0];
-  } 
+  }
 
-  const getResultItem = () => {    
+  const getResultItem = () => {
     if(this.state.structure && this.state.match.jobpost_results){
-  
+
     const temp = [];
-    
+
     Object.values(this.state.match.jobpost_results).forEach((val) => {
       const parts = val.split(',');
 
@@ -100,11 +100,11 @@ class TopSearch extends React.Component {
         temp.push(val);
       }
     })
-  
+
       return temp;
-    } 
+    }
     return '';
-  
+
   }
 
   return(
@@ -156,7 +156,7 @@ class TopSearch extends React.Component {
             </Space>
           </Col>
         </Row>
-      </Card> 
+      </Card>
     </Col>
 
 
@@ -179,7 +179,7 @@ class TopSearch extends React.Component {
             style={{
               marginBottom: 24,
             }}
-          > 
+          >
 
         { this.state.structure !== null && this.state.match.jobpost_results !== null ?
         <div style={{ listStyleType: "none" }}>
@@ -191,7 +191,7 @@ class TopSearch extends React.Component {
                 {
                 this.state.match.jobpost_results.map((item) => {
                     const parts = item.split(',');
-                    
+
                     if(this.subcat === parts[1]){
                         if(this.label !== parts[0]){
                             this.label = parts[0];
@@ -219,9 +219,9 @@ class TopSearch extends React.Component {
                             <p>{this.state.structure[3][parts[0]]}
                     {this.existsInProject(this.label)}</p>
                         </React.Fragment>
-                    )        
+                    )
                 }
-                }) 
+                })
                     }
             </div>
                     :
@@ -229,9 +229,9 @@ class TopSearch extends React.Component {
             // {
             //   Object.values(getResultItem()).map((val) => {
             //     const parts = val.split(',');
-                
+
             //     if(this.subcat === parts[1]){
-          
+
             //       if(this.label !== parts[0]){
             //         this.label = parts[0];
             //         return(
@@ -241,21 +241,21 @@ class TopSearch extends React.Component {
             //             </React.Fragment>
             //             )
             //     }
-          
+
             //       return(
             //         <React.Fragment key={parts[0]}>
             //             <Title level={3}>{this.state.structure[1][parts[1]]}</Title>
             //             <p>{this.state.structure[3][parts[0]]}
             //             {this.existsInProject(this.label)}</p>
             //         </React.Fragment>
-            //       )                         
-            //   }                        
+            //       )
+            //   }
             //       this.subcat = parts[1];
             //       this.label = parts[0];
             //       console.log(this.subcat, parts[1]);
             //       return '';
             //   })
-          
+
             // }
             }
 
