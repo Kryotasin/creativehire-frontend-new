@@ -189,7 +189,7 @@ export default defineConfig({
                   name: 'My Projects',
                   icon: 'project',
                   path: '/portfolio/list',
-                  component: './scan/list',
+                  component: './portfolio/list',
                 },
               ],
             },

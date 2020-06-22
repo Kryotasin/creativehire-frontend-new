@@ -46,3 +46,5 @@ tests/*
 
 # Local Netlify folder
 .netlify
+
+package.json

@@ -9,7 +9,7 @@ import styles from './style.less';
 
 const { Step } = Steps;
 
-const getCurrentStepAndComponent = current => {
+const getCurrentStepAndComponent = (current) => {
   switch (current) {
     case 'basic':
       return {
