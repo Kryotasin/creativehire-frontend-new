@@ -171,7 +171,7 @@ class ResetPassword extends React.Component {
                                         Reset Password
                                     </Button>
                                     <Link style={{marginRight: '10px'}} 
-                                    to='/login/'> Login
+                                    to='/user/login/'> Login
                                     </Link>
                                 </Space>
                             </Form.Item>
