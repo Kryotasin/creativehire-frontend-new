@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Spin, Form, Button, Tooltip, Divider, Statistic, Input, Typography, message } from 'antd';
+import { Spin, Form, Button, Tooltip, Divider, Statistic, Input, Typography, AutoComplete, Space, message } from 'antd';
 import {
   ArrowRightOutlined,
   ArrowLeftOutlined,
@@ -14,7 +14,7 @@ const { Title, Text } = Typography;
 import { connect } from 'umi';
 import styles from './index.less';
 
-const Step2 = (props) => {
+const Step3 = (props) => {
   const [form] = Form.useForm();
   const { project, dispatch, loading, structure } = props;
 
@@ -25,18 +25,18 @@ const Step2 = (props) => {
   }
 
   const { validateFields } = form;
-
-  const [catNum, subcatNum, labelNum, _] = skills[0].split(',');
+  const sortedSkills = skills.sort((a, b) =>  a.split(',')[0]-b.split(',')[0])
+  const [catNum, ..._] = sortedSkills[0].split(',')
   let cat = structure[0][catNum];
-  let subcat = structure[1][subcatNum];
+  let subcat = structure[1][catNum];
   let label = structure[3][catNum];
 
-  const onDeleteButtonClick = ([cn, scn]) => {
+  const onDeleteButtonClick = (cn) => {
     message.warn(`${structure[3][cn]} has been removed`)
     updateSkills((prev) => {
       return prev.filter((item) => {
-        const [prevcn, prevscn, ..._] = item.split(',');
-        return prevcn !== cn || prevscn !== scn;
+        const [prevcn, ..._] = item.split(',');
+        return prevcn !== cn ;
       });
     });
   };
@@ -55,13 +55,13 @@ const Step2 = (props) => {
             size='small'
             icon={<CloseOutlined />}
             onClick={() => {
-              onDeleteButtonClick([catNum, subcatNum]);
+              onDeleteButtonClick(catNum);
             }}
           ></Button>
         </p>
-        {skills.map((skill) => {
-          const [cn, scn, ln, _] = skill.split(',');
-          if (subcat === structure[1][scn]) {
+        {sortedSkills.map((skill) => {
+          const [cn, start, end] = skill.split(',');
+          if (subcat === structure[1][cn]) {
             if (label !== structure[3][cn]) {
               label = structure[3][cn];
               return (
@@ -74,19 +74,19 @@ const Step2 = (props) => {
                     size='small'
                     icon={<CloseOutlined />}
                     onClick={() => {
-                      onDeleteButtonClick([cn, scn]);
+                      onDeleteButtonClick(cn);
                     }}
                   ></Button>
                 </p>
               );
             }
           } else {
-            subcat = structure[1][scn];
+            subcat = structure[1][cn];
             label = structure[3][cn];
             return (
               <React.Fragment key={cn}>
                 <Title level={4}>{cat === structure[0][cn] ? '' : (cat = structure[0][cn])}</Title>
-                <Text strong>{structure[1][scn]}</Text>
+                <Text strong>{structure[1][cn]}</Text>
                 <p>
                   {structure[3][cn]}{' '}
                   <Button
@@ -96,7 +96,7 @@ const Step2 = (props) => {
                     size='small'
                     style={{ float: 'right' }}
                     onClick={() => {
-                      onDeleteButtonClick([cn, scn]);
+                      onDeleteButtonClick(cn);
                     }}
                   ></Button>
                 </p>
@@ -129,30 +129,31 @@ const Step2 = (props) => {
     }
   };
 
-  // const onSelect = (value, option) => {
-  //   console.log({value});
-  //   console.log(structure[1])
-  //   const cn = structure[3].indexOf(value);
-  //   console.log({cn})
-  //   console.log(skills[0])
-  // }
-  //
-  // const autoCompleteValues = structure[3].filter(item => item.length > 0).map(value => {
-  //   return {value}
-  // })
+  const onSelect = (label, option) => {
+    const cn = structure[3].indexOf(label);
+    const cat = structure[0][cn]
+    const subcat = structure[1][cn]
+    updateSkills((prev) => [...prev, `${cn},-1,-1,-1`])
+  }
+
+  const autoCompleteValues = structure[3].filter(item => item.length > 0).map(value => {
+    return {value}
+  })
 
   return (
     <div className={styles.stepForm}>
-      {/**<AutoComplete
+    <div class={styles.inputContainer}>
+      <AutoComplete
         placeholder="Add a skill!"
         options={autoCompleteValues}
         filterOption={(inputValue, option) => option.value.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
         style={{width: 200}}
         notFoundContent="No Skills Found"
         onSelect={onSelect}
-      />**/}
+      />
+      </div>
       <div className={styles.result}>
-        <ul>{structure !== null && project.skills ? <>{renderSkills()}</> : null}</ul>
+        <ul>{structure !== null && sortedSkills ? <>{renderSkills()}</> : null}</ul>
       </div>
 
       <Button
@@ -197,4 +198,4 @@ export default connect(({ formAndstepForm }) => ({
   loading: formAndstepForm.loading,
   project: formAndstepForm.project,
   structure: formAndstepForm.structure.payload,
-}))(Step2);
+}))(Step3);
