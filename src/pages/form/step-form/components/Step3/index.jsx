@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Spin, Form, Button, Tooltip, Divider, Statistic, Input, Typography, AutoComplete, Space, message } from 'antd';
+import {
+  Spin,
+  Form,
+  Button,
+  Tooltip,
+  Divider,
+  Statistic,
+  Input,
+  Typography,
+  AutoComplete,
+  Space,
+  message,
+} from 'antd';
 import {
   ArrowRightOutlined,
   ArrowLeftOutlined,
@@ -7,7 +19,7 @@ import {
   CloseOutlined,
 } from '@ant-design/icons';
 
-import {history} from 'umi';
+import { history } from 'umi';
 
 const { Title, Text } = Typography;
 
@@ -19,24 +31,25 @@ const Step3 = (props) => {
   const { project, dispatch, loading, structure } = props;
 
   const [skills, updateSkills] = useState(project.skills);
+  const [selected, setSelected] = useState("");
 
   if (!project) {
     return <Spin />;
   }
 
   const { validateFields } = form;
-  const sortedSkills = skills.sort((a, b) =>  a.split(',')[0]-b.split(',')[0])
-  const [catNum, ..._] = sortedSkills[0].split(',')
+  const sortedSkills = skills.sort((a, b) => a.split(',')[0] - b.split(',')[0]);
+  const [catNum, ..._] = sortedSkills[0].split(',');
   let cat = structure[0][catNum];
   let subcat = structure[1][catNum];
   let label = structure[3][catNum];
 
   const onDeleteButtonClick = (cn) => {
-    message.warn(`${structure[3][cn]} has been removed`)
+    message.warn(`${structure[3][cn]} has been removed`);
     updateSkills((prev) => {
       return prev.filter((item) => {
         const [prevcn, ..._] = item.split(',');
-        return prevcn !== cn ;
+        return prevcn !== cn;
       });
     });
   };
@@ -50,9 +63,9 @@ const Step3 = (props) => {
           {label}
           <Button
             danger
-            type='link'
+            type="link"
             style={{ float: 'right' }}
-            size='small'
+            size="small"
             icon={<CloseOutlined />}
             onClick={() => {
               onDeleteButtonClick(catNum);
@@ -69,9 +82,9 @@ const Step3 = (props) => {
                   {structure[3][cn]}{' '}
                   <Button
                     danger
-                    type='link'
+                    type="link"
                     style={{ float: 'right' }}
-                    size='small'
+                    size="small"
                     icon={<CloseOutlined />}
                     onClick={() => {
                       onDeleteButtonClick(cn);
@@ -91,9 +104,9 @@ const Step3 = (props) => {
                   {structure[3][cn]}{' '}
                   <Button
                     danger
-                    type='link'
+                    type="link"
                     icon={<CloseOutlined />}
-                    size='small'
+                    size="small"
                     style={{ float: 'right' }}
                     onClick={() => {
                       onDeleteButtonClick(cn);
@@ -118,39 +131,68 @@ const Step3 = (props) => {
   };
 
   const onValidateForm = async () => {
-    const values = {skills};
+    const values = { skills };
 
     if (dispatch) {
       dispatch({
         type: 'formAndstepForm/submitNewProjectSkills',
         payload: { ...values },
       });
-      history.push(`project/${project.id}`)
+      history.push(`project/${project.id}`);
     }
   };
 
-  const onSelect = (label, option) => {
-    const cn = structure[3].indexOf(label);
-    const cat = structure[0][cn]
-    const subcat = structure[1][cn]
-    updateSkills((prev) => [...prev, `${cn},-1,-1,-1`])
-  }
+  const renderItem = (item, cat) => (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        {item}
+        <span style={{fontSize: '0.8em'}}>
+          {cat}
+        </span>
+      </div>
+    );
 
-  const autoCompleteValues = structure[3].filter(item => item.length > 0).map(value => {
-    return {value}
+  const onSelect = (label, option) => {
+    const {item, category, subcategory, index} = option;
+    message.success(`${item} has been added!`)
+    setSelected(item);
+    updateSkills((prev) => [...prev, `${index},-1,-1`]);
+  };
+
+  const autoCompleteValues = structure[3].filter(item => item.length > 0).map(item => {
+    const index = structure[3].indexOf(item);
+    const category = structure[0][index];
+    const subcategory = structure[1][index];
+    return {
+      value: renderItem(item, category),
+      item,
+      category,
+      subcategory,
+      index
+    }
+
   })
+
 
   return (
     <div className={styles.stepForm}>
-    <div class={styles.inputContainer}>
-      <AutoComplete
-        placeholder="Add a skill!"
-        options={autoCompleteValues}
-        filterOption={(inputValue, option) => option.value.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
-        style={{width: 200}}
-        notFoundContent="No Skills Found"
-        onSelect={onSelect}
-      />
+      <div class={styles.inputContainer}>
+        <AutoComplete
+          placeholder="Add a skill!"
+          options={autoCompleteValues}
+          filterOption={(inputValue, option) => option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
+          style={{ width: 350 }}
+          notFoundContent="No Skills Found"
+          onSelect={onSelect}
+          onChange={(value) => {
+            setSelected(value)
+          }}
+          value={selected}
+        />
       </div>
       <div className={styles.result}>
         <ul>{structure !== null && sortedSkills ? <>{renderSkills()}</> : null}</ul>

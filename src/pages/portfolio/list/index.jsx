@@ -59,8 +59,8 @@ function ProjectList() {
             gutter: 24,
             xxl: 5,
             xl: 4,
-            lg: 4,
-            md: 4,
+            lg: 3,
+            md: 3,
             sm: 1,
             xs: 1,
           }}
