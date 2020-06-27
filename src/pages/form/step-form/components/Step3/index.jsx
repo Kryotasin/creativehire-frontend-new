@@ -1,23 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Spin,
-  Form,
-  Button,
-  Tooltip,
-  Divider,
-  Statistic,
-  Input,
-  Typography,
-  AutoComplete,
-  Space,
-  message,
-} from 'antd';
-import {
-  ArrowRightOutlined,
-  ArrowLeftOutlined,
-  InfoCircleOutlined,
-  CloseOutlined,
-} from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Spin, Form, Button, Divider, Typography, AutoComplete, message } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 
 import { history } from 'umi';
 
@@ -31,13 +14,12 @@ const Step3 = (props) => {
   const { project, dispatch, loading, structure } = props;
 
   const [skills, updateSkills] = useState(project.skills);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState('');
 
   if (!project) {
     return <Spin />;
   }
 
-  const { validateFields } = form;
   const sortedSkills = skills.sort((a, b) => a.split(',')[0] - b.split(',')[0]);
   const [catNum, ..._] = sortedSkills[0].split(',');
   let cat = structure[0][catNum];
@@ -143,40 +125,38 @@ const Step3 = (props) => {
   };
 
   const renderItem = (item, cat) => (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        {item}
-        <span style={{fontSize: '0.8em'}}>
-          {cat}
-        </span>
-      </div>
-    );
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}
+    >
+      {item}
+      <span style={{ fontSize: '0.8em' }}>{cat}</span>
+    </div>
+  );
 
   const onSelect = (label, option) => {
-    const {item, category, subcategory, index} = option;
-    message.success(`${item} has been added!`)
+    const { item, category, subcategory, index } = option;
+    message.success(`${item} has been added!`);
     setSelected(item);
     updateSkills((prev) => [...prev, `${index},-1,-1`]);
   };
 
-  const autoCompleteValues = structure[3].filter(item => item.length > 0).map(item => {
-    const index = structure[3].indexOf(item);
-    const category = structure[0][index];
-    const subcategory = structure[1][index];
-    return {
-      value: renderItem(item, category),
-      item,
-      category,
-      subcategory,
-      index
-    }
-
-  })
-
+  const autoCompleteValues = structure[3]
+    .filter((item) => item.length > 0)
+    .map((item) => {
+      const index = structure[3].indexOf(item);
+      const category = structure[0][index];
+      const subcategory = structure[1][index];
+      return {
+        value: renderItem(item, category),
+        item,
+        category,
+        subcategory,
+        index,
+      };
+    });
 
   return (
     <div className={styles.stepForm}>
@@ -184,12 +164,14 @@ const Step3 = (props) => {
         <AutoComplete
           placeholder="Add a skill!"
           options={autoCompleteValues}
-          filterOption={(inputValue, option) => option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
+          filterOption={(inputValue, option) =>
+            option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+          }
           style={{ width: 350 }}
           notFoundContent="No Skills Found"
           onSelect={onSelect}
           onChange={(value) => {
-            setSelected(value)
+            setSelected(value);
           }}
           value={selected}
         />

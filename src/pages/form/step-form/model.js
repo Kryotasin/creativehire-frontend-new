@@ -95,7 +95,6 @@ const Model = {
     },
 
     *submitNewProjectSkills({ payload }, { call, put, select }) {
-      try {
         yield put({
           type: 'saveStepLoadingState',
           payload: true,
@@ -112,11 +111,34 @@ const Model = {
           type: 'saveStepLoadingState',
           payload: false,
         });
-      } catch (e) {
-        console.log('error');
-        console.log(e);
-        throw new Error(e);
-      }
+
+        if (response.status === 200) {
+          yield put({
+            type: 'saveProject',
+            payload: []
+          });
+          yield put({
+            type: 'saveProjectLink',
+            payload: undefined
+          });
+          yield put({
+            type: 'saveBasicData',
+            payload: undefined
+          })
+          yield put({
+            type: 'saveProjectLink',
+            payload: undefined
+          });
+          yield put({
+            type: 'saveCurrentStep',
+            payload: 'link'
+          });
+          yield put({
+            type: 'saveMetricsStructure',
+            payload: null
+          })
+        }
+
     },
   },
   reducers: {
@@ -143,6 +165,10 @@ const Model = {
     saveCurrentStep(state, { payload }) {
       return { ...state, current: payload };
     },
+
+    saveProject(state, { payload }) {
+      return {...state, project: payload}
+    }
   },
 };
 export default Model;
