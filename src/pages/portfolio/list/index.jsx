@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Card, List, Typography } from 'antd';
+import { Card, List, Typography, Pagination } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Link } from 'umi';
@@ -52,6 +52,7 @@ function ProjectList() {
   return (
     <PageHeaderWrapper content={content}>
       <div className={styles.cardList}>
+
         <List
           rowKey="id"
           loading={loading}
@@ -65,6 +66,7 @@ function ProjectList() {
             xs: 1,
           }}
           dataSource={[nullData, ...projects]}
+          pagination={{pageSize: 9}}
           renderItem={(item) => {
             if (item && item.pk !== -1) {
               return (
