@@ -171,6 +171,13 @@ export default defineConfig({
               ],
             },
             {
+              name: 'Project',
+              icon: 'project',
+              path: '/project/:matchID',
+              component: './dashboard/project',
+              hideInMenu: true,
+            },
+            {
               path: '/portfolio',
               icon: 'folder',
               name: 'Portfolio',
@@ -191,6 +198,7 @@ export default defineConfig({
                   path: '/portfolio/list',
                   component: './portfolio/list',
                 },
+
               ],
             },
             {
