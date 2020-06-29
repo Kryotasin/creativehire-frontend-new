@@ -1,30 +1,52 @@
-import React, { useState } from 'react';
-import { Spin, Form, Button, Divider, Typography, AutoComplete, message } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Divider, Card, Typography, Tabs, AutoComplete, message } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-
-import { history } from 'umi';
+import axios from '../../../../umiRequestConfig';
+import styles from './SkillList.less';
+import { PieChart } from 'react-charts-d3';
 
 const { Title, Text } = Typography;
+const { TabPane } = Tabs;
 
-import { connect } from 'umi';
-import styles from './index.less';
-
-const Step3 = (props) => {
-  const [form] = Form.useForm();
-  const { project, dispatch, loading, structure } = props;
+export default function SkillList(props) {
+  const { project, structure } = props;
 
   const [skills, updateSkills] = useState(project.skills);
   const [selected, setSelected] = useState('');
-
-  if (!project) {
-    return <Spin />;
-  }
+  const [loading, setLoading] = useState(false);
 
   const sortedSkills = skills.sort((a, b) => a.split(',')[0] - b.split(',')[0]);
   const [catNum, ..._] = sortedSkills[0].split(',');
   let cat = structure[0][catNum];
   let subcat = structure[1][catNum];
   let label = structure[3][catNum];
+
+  let counts = {};
+  let total = 0;
+  let prevIndex = -1;
+  let prevCat = '';
+  if (skills) {
+    for (let i = 0; i < skills.length; ++i) {
+      const [index, ..._] = skills[i].split(',');
+      if (index != prevIndex) {
+        console.log({ index, prevIndex });
+        if (structure[0][index] === prevCat) {
+          counts[prevCat]++;
+        } else {
+          prevCat = structure[0][index];
+          counts[prevCat] = 1;
+        }
+        total++;
+        prevIndex = index;
+      }
+    }
+  }
+  console.log({ total });
+  let chartData = [];
+  for (let k in counts) {
+    chartData.push({ label: k, value: (counts[k] * 100) / total });
+  }
+  console.log(chartData);
 
   const onDeleteButtonClick = (cn) => {
     message.warn(`${structure[3][cn]} has been removed`);
@@ -34,6 +56,31 @@ const Step3 = (props) => {
         return prevcn !== cn;
       });
     });
+  };
+
+  const onSave = () => {
+    const { id, img, summary, title, author, url } = project;
+    setLoading(true);
+    axios
+      .put(`project/${project.id}/`, {
+        id,
+        img,
+        title,
+        author,
+        url,
+        summary,
+        skills,
+      })
+      .then((response) => {
+        console.log(response);
+        setLoading(false);
+        message.success('Skills have been saved.');
+      })
+      .catch((e) => {
+        console.error(e);
+        message.error('Something went wrong. Try again later.');
+        setLoading(false);
+      });
   };
 
   const renderSkills = () => {
@@ -103,27 +150,6 @@ const Step3 = (props) => {
     );
   };
 
-  const onPrev = () => {
-    if (dispatch) {
-      dispatch({
-        type: 'formAndstepForm/saveCurrentStep',
-        payload: 'basic',
-      });
-    }
-  };
-
-  const onValidateForm = async () => {
-    const values = { skills };
-
-    if (dispatch) {
-      dispatch({
-        type: 'formAndstepForm/submitNewProjectSkills',
-        payload: { ...values },
-      });
-      history.push(`project/${project.id}`);
-    }
-  };
-
   const renderItem = (item, cat) => (
     <div
       style={{
@@ -159,67 +185,53 @@ const Step3 = (props) => {
     });
 
   return (
-    <div className={styles.stepForm}>
-      <div class={styles.inputContainer}>
-        <AutoComplete
-          placeholder="Add a skill!"
-          options={autoCompleteValues}
-          filterOption={(inputValue, option) =>
-            option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
-          }
-          style={{ width: 350 }}
-          notFoundContent="No Skills Found"
-          onSelect={onSelect}
-          onChange={(value) => {
-            setSelected(value);
-          }}
-          value={selected}
-        />
-      </div>
-      <div className={styles.result}>
-        <ul>{structure !== null && sortedSkills ? <>{renderSkills()}</> : null}</ul>
-      </div>
+    <Card>
+      <Tabs defaultActiveKey="skills">
+        <TabPane tab="Skills" key="skills">
+          <div className={styles.stepForm}>
+            <div class={styles.inputContainer}>
+              <AutoComplete
+                placeholder="Add a skill!"
+                options={autoCompleteValues}
+                filterOption={(inputValue, option) =>
+                  option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+                }
+                style={{ width: 350 }}
+                notFoundContent="No Skills Found"
+                onSelect={onSelect}
+                onChange={(value) => {
+                  setSelected(value);
+                }}
+                value={selected}
+              />
+            </div>
+            <div className={styles.result}>
+              <ul>{structure !== null && sortedSkills ? <>{renderSkills()}</> : null}</ul>
+            </div>
 
-      <Button
-        onClick={onPrev}
-        style={{
-          marginLeft: 164,
-        }}
-      >
-        Previous
-      </Button>
+            <Button
+              type="primary"
+              onClick={onSave}
+              loading={loading}
+              size="large"
+              style={{
+                marginLeft: 16,
+              }}
+            >
+              Save Changes
+            </Button>
 
-      <Button
-        type="primary"
-        onClick={onValidateForm}
-        loading={props.loading}
-        size="large"
-        style={{
-          marginLeft: 16,
-        }}
-      >
-        Add Project
-      </Button>
-
-      <Divider
-        style={{
-          margin: '40px 0 24px',
-        }}
-      />
-      <div className={styles.desc}>
-        <h3>Help</h3>
-        <h4>What is this page?</h4>
-        <p>
-          Here are all the relavant skills we could find on the page. If there are any skills you
-          want to add manually, you can.
-        </p>
-      </div>
-    </div>
+            <Divider
+              style={{
+                margin: '40px 0 24px',
+              }}
+            />
+          </div>
+        </TabPane>
+        <TabPane tab="Charts" key="charts">
+          <PieChart data={chartData} />
+        </TabPane>
+      </Tabs>
+    </Card>
   );
-};
-
-export default connect(({ formAndstepForm }) => ({
-  loading: formAndstepForm.loading,
-  project: formAndstepForm.project,
-  structure: formAndstepForm.structure.payload,
-}))(Step3);
+}
