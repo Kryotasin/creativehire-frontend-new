@@ -1,13 +1,14 @@
+import { connect } from 'umi';
 import React, { useState } from 'react';
 import { Spin, Form, Button, Divider, Typography, AutoComplete, message } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
 import { history } from 'umi';
+import styles from './index.less';
 
 const { Title, Text } = Typography;
 
-import { connect } from 'umi';
-import styles from './index.less';
+
 
 const Step3 = (props) => {
   const [form] = Form.useForm();
@@ -120,7 +121,7 @@ const Step3 = (props) => {
         type: 'formAndstepForm/submitNewProjectSkills',
         payload: { ...values },
       });
-      history.push(`project/${project.id}`);
+      history.push(`/project/${project.id}`);
     }
   };
 
@@ -160,7 +161,7 @@ const Step3 = (props) => {
 
   return (
     <div className={styles.stepForm}>
-      <div class={styles.inputContainer}>
+      <div className={styles.inputContainer}>
         <AutoComplete
           placeholder="Add a skill!"
           options={autoCompleteValues}

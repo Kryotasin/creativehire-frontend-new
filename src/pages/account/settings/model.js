@@ -4,8 +4,6 @@ const Model = {
   namespace: 'accountAndsettings',
   state: {
     currentUser: {},
-    province: [],
-    city: [],
     isLoading: false,
   },
   effects: {

@@ -151,12 +151,12 @@ class Center extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const userKey = localStorage.getItem('userKey');
+    // const userKey = localStorage.getItem('userKey');
     const userID = localStorage.getItem('userID');
 
     dispatch({
       type: 'accountAndcenter/fetchCurrent',
-      payload: {userID, userKey}
+      payload: {userID}
     });
   }
 

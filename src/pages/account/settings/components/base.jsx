@@ -45,7 +45,7 @@ class BaseView extends Component {
   };
 
   handleFinish = (values) => {
-    axios.put('userprofile/update/'.concat(localStorage.getItem('userID')),{
+    axios.put('userprofile/update-personal-details/'.concat(localStorage.getItem('userID')),{
       first_name: values.first_name,
       last_name: values.last_name,
       location: values.location

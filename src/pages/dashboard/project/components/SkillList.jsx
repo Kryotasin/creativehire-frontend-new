@@ -118,7 +118,7 @@ export default function SkillList(props) {
                     onClick={() => {
                       onDeleteButtonClick(cn);
                     }}
-                  ></Button>
+                  />
                 </p>
               );
             }
@@ -140,7 +140,7 @@ export default function SkillList(props) {
                     onClick={() => {
                       onDeleteButtonClick(cn);
                     }}
-                  ></Button>
+                  />
                 </p>
               </React.Fragment>
             );
@@ -189,7 +189,7 @@ export default function SkillList(props) {
       <Tabs defaultActiveKey="skills">
         <TabPane tab="Skills" key="skills">
           <div className={styles.stepForm}>
-            <div class={styles.inputContainer}>
+            <div className={styles.inputContainer}>
               <AutoComplete
                 placeholder="Add a skill!"
                 options={autoCompleteValues}

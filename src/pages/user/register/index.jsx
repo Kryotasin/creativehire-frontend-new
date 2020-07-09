@@ -26,6 +26,8 @@ const RegisterMessage = ({ content }) => (
   />
 );
 
+
+
 const Register = props => {
   const{ userAndregister = {}, submitting} = props;
   const { status, error } = userAndregister;
@@ -180,6 +182,7 @@ const Register = props => {
           <Input size="large" placeholder="Doe" />
         </FormItem>
 
+        { window.innerWidth > 855 ?
         <Popover
           getPopupContainer={(node) => {
             if (node && node.parentNode) {
@@ -202,7 +205,7 @@ const Register = props => {
                     marginTop: 10,
                   }}
                 >
-                  Enter at least 6 characters. Should contain one uppercase letters, numbers and symbols.
+                  Enter at least 6 characters containing uppercase letters, numbers and symbols.
                 </div>
               </div>
             )
@@ -226,9 +229,28 @@ const Register = props => {
               },
             ]}
           >
-            <Input size="large" type="password" placeholder="At least 6 digits, case sensitive" />
+            <Input size="large" type="password" placeholder="At least 6 characters, case sensitive" />
           </FormItem>
         </Popover>
+        :
+        <FormItem
+            name="password"
+            className={
+              form.getFieldValue('password') &&
+              form.getFieldValue('password').length > 0 &&
+              styles.password
+            }
+            rules={[
+              {
+                validator: checkPassword,
+              },
+            ]}
+          >
+            <Input size="large" type="password" placeholder="At least 6 digits, case sensitive" />
+          </FormItem>
+        }
+
+        
         <FormItem
           name="confirm"
           rules={[
