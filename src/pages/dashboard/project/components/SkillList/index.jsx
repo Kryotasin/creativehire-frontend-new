@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Divider, Card, Typography, Tabs, AutoComplete, message } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import axios from '../../../../umiRequestConfig';
-import styles from './SkillList.less';
+import axios from '../../../../../umiRequestConfig';
+import styles from './index.less';
 import { PieChart } from 'react-charts-d3';
 
 const { Title, Text } = Typography;
@@ -29,7 +29,6 @@ export default function SkillList(props) {
     for (let i = 0; i < skills.length; ++i) {
       const [index, ..._] = skills[i].split(',');
       if (index != prevIndex) {
-        console.log({ index, prevIndex });
         if (structure[0][index] === prevCat) {
           counts[prevCat]++;
         } else {
@@ -41,12 +40,10 @@ export default function SkillList(props) {
       }
     }
   }
-  console.log({ total });
   let chartData = [];
   for (let k in counts) {
     chartData.push({ label: k, value: (counts[k] * 100) / total });
   }
-  console.log(chartData);
 
   const onDeleteButtonClick = (cn) => {
     message.warn(`${structure[3][cn]} has been removed`);
@@ -72,12 +69,10 @@ export default function SkillList(props) {
         skills,
       })
       .then((response) => {
-        console.log(response);
         setLoading(false);
         message.success('Skills have been saved.');
       })
       .catch((e) => {
-        console.error(e);
         message.error('Something went wrong. Try again later.');
         setLoading(false);
       });
@@ -189,7 +184,7 @@ export default function SkillList(props) {
       <Tabs defaultActiveKey="skills">
         <TabPane tab="Skills" key="skills">
           <div className={styles.stepForm}>
-            <div class={styles.inputContainer}>
+            <div className={styles.inputContainer}>
               <AutoComplete
                 placeholder="Add a skill!"
                 options={autoCompleteValues}

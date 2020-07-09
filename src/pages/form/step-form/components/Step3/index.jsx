@@ -20,12 +20,6 @@ const Step3 = (props) => {
     return <Spin />;
   }
 
-  const sortedSkills = skills.sort((a, b) => a.split(',')[0] - b.split(',')[0]);
-  const [catNum, ..._] = sortedSkills[0].split(',');
-  let cat = structure[0][catNum];
-  let subcat = structure[1][catNum];
-  let label = structure[3][catNum];
-
   const onDeleteButtonClick = (cn) => {
     message.warn(`${structure[3][cn]} has been removed`);
     updateSkills((prev) => {
@@ -37,6 +31,18 @@ const Step3 = (props) => {
   };
 
   const renderSkills = () => {
+    if (skills.length == 0) {
+      console.log('skills zero')
+      return null
+    }
+
+    let cat, subcat, label;
+    const sortedSkills = skills.sort((a, b) => a.split(',')[0] - b.split(',')[0]);
+    const [catNum, ..._] = sortedSkills[0].split(',');
+    cat = structure[0][catNum];
+    subcat = structure[1][catNum];
+    label = structure[3][catNum];
+
     return (
       <>
         <Title level={4}>{cat}</Title>
@@ -126,6 +132,7 @@ const Step3 = (props) => {
 
   const renderItem = (item, cat) => (
     <div
+      key={item}
       style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -160,7 +167,8 @@ const Step3 = (props) => {
 
   return (
     <div className={styles.stepForm}>
-      <div class={styles.inputContainer}>
+      <div className={styles.inputContainer}>
+        <label> Add skills: &nbsp; </label>
         <AutoComplete
           placeholder="Add a skill!"
           options={autoCompleteValues}
@@ -177,7 +185,11 @@ const Step3 = (props) => {
         />
       </div>
       <div className={styles.result}>
-        <ul>{structure !== null && sortedSkills ? <>{renderSkills()}</> : null}</ul>
+        <ul>
+          {structure !== null && skills.length > 0 ? (
+            <>{renderSkills()}</>
+          ) : null}
+        </ul>
       </div>
 
       <Button
