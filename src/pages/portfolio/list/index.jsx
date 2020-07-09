@@ -30,16 +30,33 @@ function ProjectList() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      setLoading(true);
-      let data = await axios.post('portfolio/', {
-        userID,
-      });
-      data = data.data;
-      setProjects(data);
-      setLoading(false);
-    };
-    fetchProjects();
+    // const source = axios.CancelToken.source;
+    try {
+      const fetchProjects = async () => {
+        setLoading(true);
+        let data = await axios.post(
+          'portfolio/',
+          {
+            userID,
+          },
+          // {
+          //   cancelToken: source.token,
+          // },
+        );
+        data = data.data;
+        setProjects(data);
+        setLoading(false);
+      };
+      fetchProjects();
+    } catch (err) {
+      // if (!axios.isCancel(err)) {
+        console.log('Request Canceled');
+      // }
+    }
+
+    // return () => {
+    //   source.cancel();
+    // };
   }, []);
 
   const nullData = { pk: -1 };
@@ -52,7 +69,6 @@ function ProjectList() {
   return (
     <PageHeaderWrapper content={content}>
       <div className={styles.cardList}>
-
         <List
           rowKey="id"
           loading={loading}
@@ -66,7 +82,7 @@ function ProjectList() {
             xs: 1,
           }}
           dataSource={[nullData, ...projects]}
-          pagination={{pageSize: 9}}
+          pagination={{ pageSize: 9 }}
           renderItem={(item) => {
             if (item && item.pk !== -1) {
               return (

@@ -31,7 +31,6 @@ class Analysis extends Component {
       .get('project/'.concat(matchID).concat('/'))
       .then((scanRes) => {
         if (scanRes.status === 200) {
-          console.log(scanRes);
           this.setState({
             project: scanRes.data,
           });
@@ -56,7 +55,6 @@ class Analysis extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <GridContent>
         <Helmet>
