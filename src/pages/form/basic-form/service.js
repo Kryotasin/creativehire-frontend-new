@@ -15,13 +15,12 @@ export async function newProject(params,userID) {
     title: params.projectTitle,
     url: params.projectLink,
     author: userID
-  });
+  });   
 }
 
 export async function newScan(params,userID) {
   return axios.post('scan-results/', {
-    projectTitle: params.projectTitle,
-    projectLink: params.projectLink,
+    projectidList: params.projectidList,
     org: params.org,
     jobTitle: params.jobTitle,
     jobLink: params.jobLink,

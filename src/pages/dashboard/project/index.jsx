@@ -7,7 +7,7 @@ import PageLoading from './components/PageLoading';
 import axios from '../../../umiRequestConfig';
 
 const IntroduceRow = React.lazy(() => import('./components/IntroduceRow'));
-const SkillList = React.lazy(() => import('./components/SkillList'));
+const SkillList = React.lazy(() => import('./components/SkillList/index.jsx'));
 
 class Analysis extends Component {
   reqRef = 0;

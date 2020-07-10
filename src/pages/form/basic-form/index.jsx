@@ -97,8 +97,8 @@ const BasicForm = (props) => {
     const { fields, pk } = p;
     const { title } = fields;
     return <Option key={pk} >{title}</Option>
-
   })
+
 
   const ProjectSelectorComponent = (
     <Select
@@ -136,6 +136,10 @@ const BasicForm = (props) => {
         >
         {ProjectSelectorComponent}
         </FormItem>
+        
+        <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+        Or
+        </div>
         <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
         <Button type="secondary" onClick={() => history.push('/portfolio/new')}>
           Add New Project
