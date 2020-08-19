@@ -1,5 +1,6 @@
 import { history } from 'umi';
 import { message } from 'antd';
+import jwt_decode from 'jwt-decode';
 import { AccountLogin } from './service';
 import { getPageQuery, setAuthority } from './utils/utils';
 
@@ -7,12 +8,12 @@ const Model = {
   namespace: 'userAndlogin',
   state: {
     status: undefined,
+    error: undefined,
   },
   effects: {
     *login({ payload }, { call, put }) {
       try{
         const response = yield call(AccountLogin, payload);
-
 
         yield put({
         type: 'changeLoginStatus',
@@ -21,12 +22,15 @@ const Model = {
       }); // Login successfully
 
       if (response.status === 200) {
-        message.success('Login succesful!');
+        message.success('Login succesful!');        
 
         // Set in localStorage
+        localStorage.clear();
 
-        localStorage.setItem('userID', response.data['user']);
-        localStorage.setItem('userKey', response.data['key']);
+        localStorage.setItem("refreshToken", response.data.refresh);
+        localStorage.setItem("accessToken", response.data.access);
+        localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
+        localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
 
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -49,12 +53,16 @@ const Model = {
 
         history.replace(redirect || '/home');
       }
+
+      if(response.status === 401){
+        console.log("401")
+      }
     }
     catch(err) {
       yield put({
         type: 'changeLoginStatus',
         payload: err.response,
-        errors: err.response.data['non_field_errors'][0]
+        errors: err.response.data.detail
       }); // Login failed
     }
     },
@@ -63,7 +71,7 @@ const Model = {
   reducers: {
     changeLoginStatus(state, { payload, errors }) {
       setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, userKey: payload.data['token'], userID: payload.data['id'], error: errors };
+      return { ...state, status: payload.status, error: errors };
     },
   },
 };

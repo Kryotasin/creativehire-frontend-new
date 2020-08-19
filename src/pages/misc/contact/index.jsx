@@ -28,7 +28,7 @@ class ConfirmEmail extends React.Component {
   render() {
     const onFinish = values => {
         const { title, email, description } = values;
-        const userID = localStorage.getItem('userProfileID') ? localStorage.getItem('userProfileID') : -1;
+        const userID = localStorage.getItem('entityID') ? localStorage.getItem('entityID') : -1;
 
         axios.post('misc/contact/', {
             userID: userID,

@@ -9,7 +9,18 @@ const instance = axios.create({
 });
 
 // Where you would set stuff like your 'Authorization' header, etc ...
-instance.defaults.headers.common['Authorization'] = 'AUTH TOKEN FROM INSTANCE';
+// if(Date.now() < JSON.parse(localStorage.getItem('accessTokenDecoded')).exp){
+//     console.log("yues")
+    
+// }
+// else{
+//     console.log("noop")
+// }
+if(localStorage.getItem('accessToken') !== null){
+    instance.defaults.headers.common['Authorization'] = 'Bearer '.concat(localStorage.getItem('accessToken'));
+}
+
+
 
 // Also add/ configure interceptors && all the other cool stuff
 
@@ -29,7 +40,41 @@ instance.interceptors.response.use(response => {
     return response;
 }, error => {
     // console.log(error);
-    return Promise.reject(error);
+    // return Promise.reject(error);
+    const refreshToken = localStorage.getItem('refreshToken');
+    
+    if(refreshToken){
+    return new Promise((resolve) => {
+        const originalRequest = error.config;
+
+        if(error.response && error.response.status === 401 && refreshToken !== null){
+            // originalRequest._retry = true;
+
+            const response = fetch(REACT_APP_AXIOS_BASEURL.concat('/').concat(REACT_APP_AXIOS_API_V1).concat('token/refresh/'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    refresh: refreshToken
+                }),
+            })
+            .then((res) => res.json())
+            .then((res) => {
+                localStorage.removeItem('accessToken');
+                localStorage.setItem('accessToken', res.access)
+                console.log(localStorage.getItem('accessToken'))
+            })
+            .then((res) => {
+                return axios(originalRequest)
+            })
+            resolve(response)
+        }
+        return Promise.reject(error)
+    })
+    }
+        return Promise.reject(error);
+    
 });
 
 

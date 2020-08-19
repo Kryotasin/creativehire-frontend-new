@@ -32,12 +32,11 @@ const Login = props => {
     });
   };
 
-
   return (
     <div className={styles.main}>
       <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
         <Tab key="account" tab="Login">
-          {status === 400 && !submitting && (
+          {(status === 400 || status === 401) && !submitting && (
             <LoginMessage content={error ? error : "Incorrect credentials"} />
           )}
 

@@ -23,7 +23,7 @@ class BaseView extends Component {
 
 
   componentDidMount(){
-    axios.get('userprofile/email-verified/'.concat(localStorage.getItem('userID')))
+    axios.get('entities/email-verified/'.concat(localStorage.getItem('userID')))
     .then(res => {
 
       if(res.data === 'True'){
@@ -45,7 +45,7 @@ class BaseView extends Component {
   };
 
   handleFinish = (values) => {
-    axios.put('userprofile/update-personal-details/'.concat(localStorage.getItem('userID')),{
+    axios.put('entities/update-personal-details/'.concat(localStorage.getItem('userID')),{
       first_name: values.first_name,
       last_name: values.last_name,
       location: values.location
@@ -95,7 +95,7 @@ class BaseView extends Component {
       })
     }
 
-    const userProfilePictureUploadProps = {
+    const entityPictureUploadProps = {
       name: 'file',
       acceptedFiles: '.png',
       multiple: false,
@@ -134,7 +134,7 @@ class BaseView extends Component {
             <img src={logo} alt="avatar" />
           }
         </div>
-        <Upload {...userProfilePictureUploadProps} showUploadList={false}>
+        <Upload {...entityPictureUploadProps} showUploadList={false}>
           <div className={styles.button_view}>
             <Button>
               <UploadOutlined />

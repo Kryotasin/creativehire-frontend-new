@@ -17,6 +17,8 @@ const Model = {
         payload: response,
       }); // Login successfully
 
+      console.log(response)
+
       if (response.status === 'ok') {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -44,8 +46,11 @@ const Model = {
     logout() {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
 
-      localStorage.removeItem('userID');
-      localStorage.removeItem('userKey');
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem('refreshTokenDecoded');
+      localStorage.removeItem('accessTokenDecoded');
+      localStorage.clear();
 
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
@@ -60,7 +65,7 @@ const Model = {
   reducers: {
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, type: payload.type };
+      return { ...state, status: payload.status };
     },
   },
 };

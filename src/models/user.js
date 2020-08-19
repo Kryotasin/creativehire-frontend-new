@@ -8,13 +8,18 @@ const UserModel = {
   effects: {
 
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent, localStorage.getItem('userID'));
+
+      const response = yield call(queryCurrent, JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
+
+
 
       yield put({
         type: 'saveCurrentUser',
         payload: response.data,
       });
     },
+
+
   },
   reducers: {
     saveCurrentUser(state, action) {
