@@ -1,6 +1,7 @@
 // First we need to import axios.js
 // import { extend } from 'umi-request';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
 // Next we make an 'instance' of it
 const instance = axios.create({
@@ -9,22 +10,12 @@ const instance = axios.create({
 });
 
 // Where you would set stuff like your 'Authorization' header, etc ...
-// if(Date.now() < JSON.parse(localStorage.getItem('accessTokenDecoded')).exp){
-//     console.log("yues")
-    
-// }
-// else{
-//     console.log("noop")
-// }
 if(localStorage.getItem('accessToken') !== null){
     instance.defaults.headers.common['Authorization'] = 'Bearer '.concat(localStorage.getItem('accessToken'));
 }
 
 
-
 // Also add/ configure interceptors && all the other cool stuff
-
-
 instance.interceptors.request.use(request => {
     // console.log(request);
     // Edit request config
@@ -42,9 +33,13 @@ instance.interceptors.response.use(response => {
     // console.log(error);
     // return Promise.reject(error);
     const refreshToken = localStorage.getItem('refreshToken');
-    
-    if(refreshToken){
-    return new Promise((resolve) => {
+
+    if(refreshToken !== null && refreshToken !== undefined){
+        const refreshTokenCheck = jwt_decode(refreshToken);
+    }
+
+    if(refreshToken && refreshToken !== null && refreshToken !== undefined && !refreshToken.message){
+        return new Promise((resolve) => {
         const originalRequest = error.config;
 
         if(error.response && error.response.status === 401 && refreshToken !== null){
@@ -73,8 +68,7 @@ instance.interceptors.response.use(response => {
         return Promise.reject(error)
     })
     }
-        return Promise.reject(error);
-    
+        return Promise.reject(error); 
 });
 
 

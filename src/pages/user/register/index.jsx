@@ -1,4 +1,4 @@
-import { Alert, Form, Button, Input, Popover, Progress, Select, message } from 'antd';
+import { Alert, Form, Radio, Button, Input, Popover, Progress, Select, message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { Link, connect, history } from 'umi';
 import styles from './style.less';
@@ -78,7 +78,7 @@ const Register = props => {
   };
 
   const onFinish = (values) => {
-    console.log(props)
+    // console.log(props)
     const { dispatch } = props;
 
     dispatch({
@@ -143,6 +143,7 @@ const Register = props => {
       <h3>Register</h3>
       <Form form={form} name="UserRegister" onFinish={onFinish}>
         <FormItem
+          // label="Email"
           name="email"
           rules={[
             {
@@ -158,7 +159,22 @@ const Register = props => {
           <Input size="large" placeholder="Email" />
         </FormItem>
 
+        <Form.Item name="type" label="Are you a recruiter?"
+          rules={[
+            {
+              required: true,
+              message: 'Please choose one',
+            },
+          ]}
+        >
+          <Radio.Group>
+            <Radio value="2">Yes</Radio>
+            <Radio value="1">No</Radio>
+          </Radio.Group>
+        </Form.Item>
+
         <FormItem
+          // label="First Name"
           name="firstName"
           rules={[
             {
@@ -167,10 +183,11 @@ const Register = props => {
             },
           ]}
         >
-          <Input size="large" placeholder="Jane" />
+          <Input size="large" placeholder="First Name" />
         </FormItem>
 
         <FormItem
+          // label="Last Name"
           name="lastName"
           rules={[
             {
@@ -179,7 +196,7 @@ const Register = props => {
             },
           ]}
         >
-          <Input size="large" placeholder="Doe" />
+          <Input size="large" placeholder="Last Name" />
         </FormItem>
 
         { window.innerWidth > 855 ?
@@ -217,6 +234,7 @@ const Register = props => {
           visible={visible}
         >
           <FormItem
+            // label="Password"
             name="password"
             className={
               form.getFieldValue('password') &&
@@ -225,15 +243,17 @@ const Register = props => {
             }
             rules={[
               {
+                required: true,
                 validator: checkPassword,
               },
             ]}
           >
-            <Input size="large" type="password" placeholder="At least 6 characters, case sensitive" />
+            <Input size="large" type="password" placeholder="Password. 6 characters, case sensitive" />
           </FormItem>
         </Popover>
         :
         <FormItem
+            // label="Password"
             name="password"
             className={
               form.getFieldValue('password') &&
@@ -242,16 +262,18 @@ const Register = props => {
             }
             rules={[
               {
+                required: true,
                 validator: checkPassword,
               },
             ]}
           >
-            <Input size="large" type="password" placeholder="At least 6 digits, case sensitive" />
+            <Input size="large" type="password" placeholder="Password. 6 characters, case sensitive" />
           </FormItem>
         }
 
         
         <FormItem
+          // label="Confirm Password"
           name="confirm"
           rules={[
             {

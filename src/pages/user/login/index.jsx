@@ -41,6 +41,7 @@ const Login = props => {
           )}
 
           <UserName
+            label="Username"
             name="email"
             placeholder="Email address"
             rules={[
@@ -56,7 +57,7 @@ const Login = props => {
           />
           <Password
             name="password"
-            placeholder="password"
+            placeholder="Password"
             rules={[
               {
                 required: true,

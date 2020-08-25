@@ -1,5 +1,8 @@
 import { userRegister } from './service';
 
+import jwt_decode from 'jwt-decode';
+
+
 const Model = {
   namespace: 'userAndregister',
   state: {
@@ -7,28 +10,28 @@ const Model = {
   },
   effects: {
     *submit({ payload }, { call, put }) {
-    try{
-           
+
+    try{ 
+      localStorage.clear();
       const response = yield call(userRegister, payload);
 
-      yield put({
-        type: 'registerHandle',
-        payload: response,
-        errors: ''
-      });
-
-      if(response.status === 201){
-        localStorage.setItem('userID', btoa(response.data['user']));
-        localStorage.setItem('userKey', response.data['key']);
-      }
-      
+      // if(response.status === 201){
+      //   yield put({
+      //     type: 'registerHandle',
+      //     payload: response,
+      //     errors: ''
+      //   });
+  
+      //   localStorage.setItem("refreshToken", response.data.refresh);
+      //   localStorage.setItem("accessToken", response.data.access);
+      //   localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
+      //   localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
+      // }
     }
     catch(errRes){
-      // for (let [key, value] of Object.entries(err.response.data)) {
-      //   console.log(`${key}: ${value}`);
-      // }
-      const errs = Object.keys(errRes.response.data).map(function(key) {
-        return [key.concat(" : ").concat(errRes.response.data[key])];
+      const errs = Object.keys(errRes.response.data).map((key) => {
+        // return [key.concat(" : ").concat(errRes.response.data[key])];
+        return [errRes.response.data[key]];
       });
 
       yield put({
@@ -36,7 +39,25 @@ const Model = {
         payload: errRes.response,
         errors: errs
       });
+      // console.log(errRes.response.data)
+      // console.log(errRes.response.status)
     }
+
+      
+      // else if(response.status === 200 && response.data.email){
+      //   // console.log(response)
+      //   const errs = Object.keys(response).map(function(key) {
+      //     return [key.concat(" : ").concat(response.data[key])];
+      //   });
+  
+      //   yield put({
+      //     type: 'registerHandle',
+      //     payload: 400,
+      //     errors: errs
+      //   });
+      // }
+    // }
+
     },
   },
   reducers: {
