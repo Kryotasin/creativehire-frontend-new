@@ -11,13 +11,13 @@ const instance = axios.create({
 
 // Where you would set stuff like your 'Authorization' header, etc ...
 if(localStorage.getItem('accessToken') !== null){
+    // console.log(localStorage.getItem('accessToken'))
     instance.defaults.headers.common['Authorization'] = 'Bearer '.concat(localStorage.getItem('accessToken'));
 }
 
 
 // Also add/ configure interceptors && all the other cool stuff
 instance.interceptors.request.use(request => {
-    // console.log(request);
     // Edit request config
     return request;
 }, error => {
@@ -32,6 +32,7 @@ instance.interceptors.response.use(response => {
 }, error => {
     // console.log(error);
     // return Promise.reject(error);
+
     const refreshToken = localStorage.getItem('refreshToken');
 
     if(refreshToken !== null && refreshToken !== undefined){
@@ -57,8 +58,9 @@ instance.interceptors.response.use(response => {
             .then((res) => res.json())
             .then((res) => {
                 localStorage.removeItem('accessToken');
-                localStorage.setItem('accessToken', res.access)
-                console.log(localStorage.getItem('accessToken'))
+                localStorage.removeItem('accessTokenDecoded');
+                localStorage.setItem('accessToken', res.access);
+                localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(res.access)));
             })
             .then((res) => {
                 return axios(originalRequest)

@@ -11,8 +11,6 @@ const UserModel = {
 
       const response = yield call(queryCurrent, JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
 
-
-
       yield put({
         type: 'saveCurrentUser',
         payload: response.data,

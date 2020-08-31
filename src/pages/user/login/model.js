@@ -32,6 +32,7 @@ const Model = {
         localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
         localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
 
+
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;

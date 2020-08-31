@@ -30,12 +30,11 @@ class Settings extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const userKey = localStorage.getItem('userKey');
-    const userID = localStorage.getItem('userID');
+    const userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
 
     dispatch({
       type: 'accountAndsettings/fetchCurrent',
-      payload: {userID, userKey}
+      payload: {userID}
     });
     window.addEventListener('resize', this.resize);
     this.resize();

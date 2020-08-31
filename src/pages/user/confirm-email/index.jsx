@@ -24,30 +24,24 @@ const tailLayout = {
 class ConfirmEmail extends React.Component {
 
     state = {
-        loading: false,
+        loading: true,
         message: null,
         description: null,
         type: null
     }
 
+
     componentDidMount(){
 
-    }
-
-  render() {
-
-    const onFinish = values => {
-        this.setState({
-            loading: true
-        });
-        axios.post('api/v1/rest-auth/registration/verify-email/', {
-            'key': values.token
+        axios.put(REACT_APP_AXIOS_API_V1.concat('entities/verify-email/'), {
+            'key': this.props.location.query.key,
+            'id': this.props.location.query.identity,
         })
-        .then(res => {
+        .then(res =>{
             this.setState({
                 loading: false
             });
-            if(res.status === 200 || res.status === 201){
+            if(res.status === 200 && res.data === "True"){
                 this.setState({
                     message: 'Email verified!',
                     description: 'Your email has been verified.',
@@ -58,19 +52,69 @@ class ConfirmEmail extends React.Component {
             else if(res.status !== 200){
                 this.setState({
                     message: 'Email verification failed!',
-                    description: 'Please check the token again If problem persists contact admin@creativehire.co.',
+                    description: 'Please check the token again If problem persists contact us at admin@creativehire.co.',
                     type: 'error'         
                 });
             }
         })
-    };
-    
-    const onFinishFailed = errorInfo => {
-    };
+        .catch(err => {
+            this.setState({
+                loading: false
+            });
+            console.log(err.response)
+            this.setState({
+                message: 'Email verification failed!',
+                description: 'Please check the link again. If problem persists contact us at admin@creativehire.co.',
+                type: 'error'         
+            });
+        })
+        
 
-    const onSubCap = event => {
-        event.preventDefault();
-    };
+    }
+
+  render() {
+
+    
+
+
+
+
+
+    // const onFinish = values => {
+    //     this.setState({
+    //         loading: true
+    //     });
+    //     axios.post('api/v1/rest-auth/registration/verify-email/', {
+    //         'key': values.token
+    //     })
+    //     .then(res => {
+    //         this.setState({
+    //             loading: false
+    //         });
+    //         if(res.status === 200 || res.status === 201){
+    //             this.setState({
+    //                 message: 'Email verified!',
+    //                 description: 'Your email has been verified.',
+    //                 type: 'success'         
+    //             });
+
+    //         }
+    //         else if(res.status !== 200){
+    //             this.setState({
+    //                 message: 'Email verification failed!',
+    //                 description: 'Please check the token again If problem persists contact admin@creativehire.co.',
+    //                 type: 'error'         
+    //             });
+    //         }
+    //     })
+    // };
+    
+    // const onFinishFailed = errorInfo => {
+    // };
+
+    // const onSubCap = event => {
+    //     event.preventDefault();
+    // };
    
 
     return (
@@ -79,59 +123,20 @@ class ConfirmEmail extends React.Component {
                 <meta charSet="utf-8" />
                 <title>Confirm Email</title>
             </Helmet>
-            {
 
-                this.state.loading ?
-  
+        {
+            this.state.loading ? 
                 <Spin indicator={antIcon} />
-                
-                :
-  
-  
-              <Form
-              {...layout}
-              initialValues={{
-                  remember: true,
-              }}
-              ref={this.formRef}
-              onSubmitCapture={onSubCap}
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              >
-              <Form.Item
-                  label="Token"
-                  name="token"
-                  rules={[
-                  {
-                      required: true,
-                      message: 'Please input your token!',
-                  },
-                  ]}
-              >
-                  <Input autoComplete="off" />
-              </Form.Item>
-  
-              <Form.Item {...tailLayout}>
-                <Space size="large">
-                    <Button type="primary" htmlType="submit">
-                    Verify Email
-                    </Button>
-                    <Link style={{marginRight: '10px'}} 
-                        to='/'> Back to home
-                    </Link>
-                </Space>
-              </Form.Item>
-            
-            {
-                this.state.message && this.state.description && this.state.type ? 
-                <Alert {...tailLayout} message = {this.state.message} description = {this.state.description} type={this.state.type} showIcon />
-                :
-                ''
-            }
-              
-              </Form>
-          }
-      </div>
+            :
+            ''
+        }
+        {
+            this.state.message && this.state.description && this.state.type && !this.state.loading ? 
+            <Alert {...tailLayout} message = {this.state.message} description = {this.state.description} type={this.state.type} showIcon />
+            :
+            ''
+        }
+        </div>
     );
   } 
   

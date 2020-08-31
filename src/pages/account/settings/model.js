@@ -18,8 +18,8 @@ const Model = {
 
   },
   reducers: {
-    saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload.data || {} };
+    saveCurrentUser(state, payload) {
+      return { ...state, currentUser: payload.data || {} };
     },
 
     changeNotifyCount(state = {}, action) {

@@ -239,6 +239,15 @@ export default defineConfig({
               path: '/',
               redirect: '/user/login',
             },
+            // {
+            //   path: '/',
+            //   component: '../layouts/UserLayout',
+            //   routes: [
+            //   {
+            //     component: '404',
+            //   },
+            //   ],
+            // },
             {
               component: '404',
             },

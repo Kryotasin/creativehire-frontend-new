@@ -14,19 +14,19 @@ const Model = {
     try{ 
       localStorage.clear();
       const response = yield call(userRegister, payload);
-
-      // if(response.status === 201){
-      //   yield put({
-      //     type: 'registerHandle',
-      //     payload: response,
-      //     errors: ''
-      //   });
+      
+      if(response.status === 201){
+        yield put({
+          type: 'registerHandle',
+          payload: response,
+          errors: ''
+        });
   
-      //   localStorage.setItem("refreshToken", response.data.refresh);
-      //   localStorage.setItem("accessToken", response.data.access);
-      //   localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
-      //   localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
-      // }
+        localStorage.setItem("refreshToken", response.data.refresh);
+        localStorage.setItem("accessToken", response.data.access);
+        localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
+        localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
+      }
     }
     catch(errRes){
       const errs = Object.keys(errRes.response.data).map((key) => {
@@ -39,24 +39,8 @@ const Model = {
         payload: errRes.response,
         errors: errs
       });
-      // console.log(errRes.response.data)
-      // console.log(errRes.response.status)
     }
 
-      
-      // else if(response.status === 200 && response.data.email){
-      //   // console.log(response)
-      //   const errs = Object.keys(response).map(function(key) {
-      //     return [key.concat(" : ").concat(response.data[key])];
-      //   });
-  
-      //   yield put({
-      //     type: 'registerHandle',
-      //     payload: 400,
-      //     errors: errs
-      //   });
-      // }
-    // }
 
     },
   },

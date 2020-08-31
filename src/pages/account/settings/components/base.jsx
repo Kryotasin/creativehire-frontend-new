@@ -23,7 +23,7 @@ class BaseView extends Component {
 
 
   componentDidMount(){
-    axios.get('entities/email-verified/'.concat(localStorage.getItem('userID')))
+    axios.get(REACT_APP_AXIOS_API_V1.concat('entities/').concat('email-verified/').concat(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id))
     .then(res => {
 
       if(res.data === 'True'){
@@ -62,15 +62,15 @@ class BaseView extends Component {
 
 
   render() {
-
     const{ currentUser } = this.props
     
+console.log(currentUser)
     const typeOfImage = (proc) => {
-      return {"type" : "profile_pic", "process": proc, "fileName": currentUser['img_salt']}
+      return {"type" : "profile_pic", "process": proc, "fileName": currentUser['user_img_salt']}
     }
 
     const reloadProfilePicture = () => {
-      axios.post('file-handler/', {
+      axios.post('api/v1/file-handler/', {
           ...typeOfImage('fetch')
       })
       .then(
