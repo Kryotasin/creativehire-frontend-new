@@ -9,6 +9,7 @@ const Model = {
   effects: {
     *fetchCurrent(payload, { call, put }) {
       const response = yield call(queryCurrent, payload.payload);
+      // console.log(response)
       yield put({
         type: 'saveCurrentUser',
         payload: response,
@@ -18,7 +19,7 @@ const Model = {
   },
   reducers: {
     saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload || {} };
+      return { ...state, currentUser: action.payload.data || {} };
     },
 
   },

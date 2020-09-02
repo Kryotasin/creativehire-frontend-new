@@ -7,13 +7,21 @@ import Projects from './components/Projects';
 import Articles from './components/Articles';
 import Applications from './components/Applications';
 import styles from './Center.less';
+import { Select } from 'antd';
+import csc from 'country-state-city'
+import { Typography } from 'antd';
+
+
+const { Option } = Select;
+
+const { Title } = Typography;
 
 const operationTabList = [
   {
-    key: 'articles',
+    key: 'profile',
     tab: (
       <span>
-        Article{' '}
+        Profile{' '}
         <span
           style={{
             fontSize: 14,
@@ -25,10 +33,10 @@ const operationTabList = [
     ),
   },
   {
-    key: 'applications',
+    key: 'portfolio',
     tab: (
       <span>
-        Applications{' '}
+        Portfolio{' '}
         <span
           style={{
             fontSize: 14,
@@ -40,10 +48,25 @@ const operationTabList = [
     ),
   },
   {
-    key: 'projects',
+    key: 'savedjobs',
     tab: (
       <span>
-        Projects{' '}
+        Saved Jobs{' '}
+        <span
+          style={{
+            fontSize: 14,
+          }}
+        >
+          (8)
+        </span>
+      </span>
+    ),
+  },
+  {
+    key: 'appliedjobs',
+    tab: (
+      <span>
+        Applied Jobs{' '}
         <span
           style={{
             fontSize: 14,
@@ -95,7 +118,7 @@ const TagList = ({ tags }) => {
 
   return (
     <div className={styles.tags}>
-      {/* <div className={styles.tagsTitle}>Skills</div>
+      <div className={styles.tagsTitle}>Skills</div>
       {(tags || []).concat(newTags).map(item => (
         <Tag key={item.key}>{item.label}</Tag>
       ))}
@@ -122,27 +145,38 @@ const TagList = ({ tags }) => {
         >
           <PlusOutlined />
         </Tag>
-      )} */}
+      )}
     </div>
   );
 };
 
 class Center extends Component {
-  // static getDerivedStateFromProps(
-  //   props: accountAndcenterProps,
-  //   state: accountAndcenterState,
-  // ) {
-  //   const { match, location } = props;
-  //   const { tabKey } = state;
-  //   const path = match && match.path;
-  //   const urlTabKey = location.pathname.replace(`${path}/`, '');
-  //   if (urlTabKey && urlTabKey !== '/' && tabKey !== urlTabKey) {
-  //     return {
-  //       tabKey: urlTabKey,
-  //     };
-  //   }
-  //   return null;
-  // }
+  
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      options: this.options,
+      value: null,
+    }
+  }
+
+  static getDerivedStateFromProps(
+    props,
+    state
+  ) {
+    const { match, location } = props;
+    const { tabKey } = state;
+    const path = match && match.path;
+    const urlTabKey = location.pathname.replace(`${path}/`, '');
+    if (urlTabKey && urlTabKey !== '/' && tabKey !== urlTabKey) {
+      return {
+        tabKey: urlTabKey,
+      };
+    }
+    return null;
+  }
+
   state = {
     tabKey: 'articles',
   };
@@ -169,71 +203,106 @@ class Center extends Component {
   };
 
   renderChildrenByTabKey = tabKey => {
-    if (tabKey === 'projects') {
+    if (tabKey === 'profile') {
       return <Projects />;
     }
 
-    if (tabKey === 'applications') {
+    if (tabKey === 'portfolio') {
+      return <Projects />;
+    }
+
+    if (tabKey === 'savedjobs') {
       return <Applications />;
     }
 
-    if (tabKey === 'articles') {
+    if (tabKey === 'appliedjobs') {
       return <Articles />;
     }
 
     return null;
   };
 
+  onChange = value => {
+    console.log(`selected ${value}`);
+  }
+
   renderUserInfo = currentUser => (
     <div className={styles.detail}>
-      <p>
-        <ContactsOutlined
-          style={{
-            marginRight: 8,
-          }}
-        />
-        {currentUser.title}
-      </p>
-      <p>
-        <ClusterOutlined
-          style={{
-            marginRight: 8,
-          }}
-        />
-        {currentUser.group}
-      </p>
-      <p>
+      <div className={styles.supplement}>
+      <Title level={4}>{currentUser.entity.first_name + " " + currentUser.entity.last_name}</Title>
+        
+      </div>
+
+      <div className={styles.supplement}>
         <HomeOutlined
           style={{
             marginRight: 8,
           }}
         />
-        {
-          (
-            currentUser.geographic || {
-              province: {
-                label: '',
-              },
-            }
-          ).province.label
+        { currentUser.entity.user_location ? currentUser.entity.user_location :
+          <>
+            <Select
+              showSearch
+              style={{ width: 70 }}
+              placeholder="Select a person"
+              optionFilterProp="children"
+              onChange={this.onChange}
+              optionLabelProp="label"
+              // onFocus={onFocus}
+              // onBlur={onBlur}
+              // onSearch={onSearch}
+              filterOption={(input, option) =>
+                option.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {csc.getAllCountries().map(item => (
+                <Option key={item.id} value={item.sortname} label={item.name}>
+                  <div>
+                    {item.name}
+                  </div>
+                </Option>
+              ))}
+            </Select>
+              <Select
+              showSearch
+              style={{ width: 70 }}
+              placeholder="Select a person"
+              optionFilterProp="children"
+              onChange={this.onChange}
+              optionLabelProp="label"
+              // onFocus={onFocus}
+              // onBlur={onBlur}
+              // onSearch={onSearch}
+              filterOption={(input, option) =>
+                option.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {csc.getAllCountries().map(item => (
+                <Option key={item.id} value={item.sortname} label={item.name}>
+                  <div>
+                    {item.name}
+                  </div>
+                </Option>
+              ))}
+            </Select>
+          </>
         }
-        {
-          (
-            currentUser.geographic || {
-              city: {
-                label: '',
-              },
-            }
-          ).city.label
-        }
-      </p>
+      </div>
+      
+      <div className={styles.supplement}>
+        { currentUser.entity.user_summary}
+      </div>
+
     </div>
   );
 
-  render() {
+
+
+  render() {  
     const { tabKey } = this.state;
     const { currentUser = {}, currentUserLoading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
+    console.log(currentUser) 
     return (
       <GridContent>
         <Row gutter={24}>
@@ -280,7 +349,7 @@ class Center extends Component {
             </Card>
           </Col>
           <Col lg={17} md={24}>
-            {/* <Card
+            <Card
               className={styles.tabsCard}
               bordered={false}
               tabList={operationTabList}
@@ -288,7 +357,7 @@ class Center extends Component {
               onTabChange={this.onTabChange}
             >
               {this.renderChildrenByTabKey(tabKey)}
-            </Card> */}
+            </Card>
           </Col>
         </Row>
       </GridContent>

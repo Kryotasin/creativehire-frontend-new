@@ -9,16 +9,20 @@ const instance = axios.create({
     baseURL: REACT_APP_AXIOS_BASEURL
 });
 
+console.log(localStorage.getItem('accessToken'))
+    
 // Where you would set stuff like your 'Authorization' header, etc ...
-if(localStorage.getItem('accessToken') !== null){
-    // console.log(localStorage.getItem('accessToken'))
-    instance.defaults.headers.common['Authorization'] = 'Bearer '.concat(localStorage.getItem('accessToken'));
-}
+// if(localStorage.getItem('accessToken') !== null){
+
+// }
 
 
 // Also add/ configure interceptors && all the other cool stuff
 instance.interceptors.request.use(request => {
     // Edit request config
+    console.log(request)
+    const token = localStorage.getItem('accessToken');
+    instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     return request;
 }, error => {
     // console.log(error);
@@ -57,6 +61,7 @@ instance.interceptors.response.use(response => {
             })
             .then((res) => res.json())
             .then((res) => {
+                console.log(res)
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('accessTokenDecoded');
                 localStorage.setItem('accessToken', res.access);
