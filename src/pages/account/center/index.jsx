@@ -1,20 +1,23 @@
-import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined } from '@ant-design/icons';
-import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd';
-import React, { Component, useState, useRef } from 'react';
+import { HomeOutlined } from '@ant-design/icons';
+import { Card, Col, Divider, Row, Select, Spin } from 'antd';
+import React, { Component } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
-import { Link, connect } from 'umi';
+import { connect } from 'umi';
+
+import csc from 'country-state-city';
+import styles from './Center.less';
+
+
 import Projects from './components/Projects';
 import Articles from './components/Articles';
 import Applications from './components/Applications';
-import styles from './Center.less';
-import { Select } from 'antd';
-import csc from 'country-state-city'
-import { Typography } from 'antd';
+import TagList from './components/TagList';
 
+import axios from '../../../umiRequestConfig';
 
 const { Option } = Select;
 
-const { Title } = Typography;
+
 
 const operationTabList = [
   {
@@ -27,7 +30,7 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
+          {/* (8) */}
         </span>
       </span>
     ),
@@ -42,7 +45,7 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
+          {/* (8) */}
         </span>
       </span>
     ),
@@ -57,7 +60,7 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
+          {/* (8) */}
         </span>
       </span>
     ),
@@ -72,83 +75,13 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
+          {/* (8) */}
         </span>
       </span>
     ),
   },
 ];
 
-const TagList = ({ tags }) => {
-  const ref = useRef(null);
-  const [newTags, setNewTags] = useState([]);
-  const [inputVisible, setInputVisible] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-
-  const showInput = () => {
-    setInputVisible(true);
-
-    if (ref.current) {
-      // eslint-disable-next-line no-unused-expressions
-      ref.current?.focus();
-    }
-  };
-
-  const handleInputChange = e => {
-    setInputValue(e.target.value);
-  };
-
-  const handleInputConfirm = () => {
-    let tempsTags = [...newTags];
-
-    if (inputValue && tempsTags.filter(tag => tag.label === inputValue).length === 0) {
-      tempsTags = [
-        ...tempsTags,
-        {
-          key: `new-${tempsTags.length}`,
-          label: inputValue,
-        },
-      ];
-    }
-
-    setNewTags(tempsTags);
-    setInputVisible(false);
-    setInputValue('');
-  };
-
-  return (
-    <div className={styles.tags}>
-      <div className={styles.tagsTitle}>Skills</div>
-      {(tags || []).concat(newTags).map(item => (
-        <Tag key={item.key}>{item.label}</Tag>
-      ))}
-      {inputVisible && (
-        <Input
-          ref={ref}
-          type="text"
-          size="small"
-          style={{
-            width: 78,
-          }}
-          value={inputValue}
-          onChange={handleInputChange}
-          onBlur={handleInputConfirm}
-          onPressEnter={handleInputConfirm}
-        />
-      )}
-      {!inputVisible && (
-        <Tag
-          onClick={showInput}
-          style={{
-            borderStyle: 'dashed',
-          }}
-        >
-          <PlusOutlined />
-        </Tag>
-      )}
-    </div>
-  );
-};
 
 class Center extends Component {
   
@@ -156,8 +89,7 @@ class Center extends Component {
     super(props)
 
     this.state = {
-      options: this.options,
-      value: null,
+      structure: undefined,
     }
   }
 
@@ -185,12 +117,25 @@ class Center extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
+    let userID = 16;
+    if (localStorage.getItem('accessTokenDecoded')){
+      userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
+    }
 
     dispatch({
       type: 'accountAndcenter/fetchCurrent',
       payload: {userID}
     });
+
+    if(this.state.structure ===  undefined){
+      axios.get(REACT_APP_AXIOS_API_V1.concat('metrics-structure/'))
+      .then(res => {
+        if(res.status === 200){
+          this.setState({structure: res.data})
+        }
+      })
+    }
+
   }
 
   onTabChange = key => {
@@ -228,10 +173,10 @@ class Center extends Component {
 
   renderUserInfo = currentUser => (
     <div className={styles.detail}>
-      <div className={styles.supplement}>
-      <Title level={4}>{currentUser.entity.first_name + " " + currentUser.entity.last_name}</Title>
+      {/* <div className={styles.supplement}>
+      <Title level={4}>{(currentUser && currentUser !== undefined && currentUser !== null) ? currentUser.entity.first_name + " " + currentUser.entity.last_name : 'No Name'}</Title>
         
-      </div>
+      </div> */}
 
       <div className={styles.supplement}>
         <HomeOutlined
@@ -290,19 +235,18 @@ class Center extends Component {
       </div>
       
       <div className={styles.supplement}>
-        { currentUser.entity.user_summary}
+        { currentUser.entity.user_summary }
       </div>
 
     </div>
   );
 
 
-
   render() {  
     const { tabKey } = this.state;
     const { currentUser = {}, currentUserLoading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
-    console.log(currentUser) 
+    
     return (
       <GridContent>
         <Row gutter={24}>
@@ -318,12 +262,17 @@ class Center extends Component {
                 <div>
                   <div className={styles.avatarHolder}>
                     <img alt="" src={currentUser.avatar} />
-                    <div className={styles.name}>{currentUser.name}</div>
+                    <div className={styles.name}>{currentUser.entity.first_name + " " + currentUser.entity.last_name }</div>
                     <div>{currentUser.signature}</div>
                   </div>
                   {this.renderUserInfo(currentUser)}
                   <Divider dashed />
-                  <TagList tags={currentUser.tags || []} />
+                  {
+                    currentUser && this.state.structure ? 
+                    <TagList tagsInput={JSON.parse(JSON.stringify(currentUser.keywords.ck_keywords)) || []} structure={this.state.structure || []}/>
+                    :
+                    <Spin />
+                  }
                   <Divider
                     style={{
                       marginTop: 16,

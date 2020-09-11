@@ -10,11 +10,28 @@ const instance = axios.create({
 });
 
 console.log(localStorage.getItem('accessToken'))
-    
-// Where you would set stuff like your 'Authorization' header, etc ...
-// if(localStorage.getItem('accessToken') !== null){
 
-// }
+let isRefreshing = false;
+
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+    failedQueue.forEach(prom => {
+        console.log("here", prom)
+    //   if (error) {
+    //     prom.reject(error);
+    //   } else {
+    //     prom.resolve(token);
+    //   }
+    })
+    
+    failedQueue = [];
+  }
+
+// Where you would set stuff like your 'Authorization' header, etc ...
+if(localStorage.getItem('accessToken') !== null && localStorage.getItem('accessToken') !== undefined && localStorage.getItem('accessToken') !== 'undefined'){
+    console.log(jwt_decode(localStorage.getItem('accessToken')).exp - new Date().getTime()/1000)
+}
 
 
 // Also add/ configure interceptors && all the other cool stuff
@@ -29,6 +46,8 @@ instance.interceptors.request.use(request => {
     return Promise.reject(error);
 });
 
+
+
 instance.interceptors.response.use(response => {
     // console.log(response);
     // Edit response config
@@ -36,7 +55,6 @@ instance.interceptors.response.use(response => {
 }, error => {
     // console.log(error);
     // return Promise.reject(error);
-
     const refreshToken = localStorage.getItem('refreshToken');
 
     if(refreshToken !== null && refreshToken !== undefined){
@@ -50,27 +68,43 @@ instance.interceptors.response.use(response => {
         if(error.response && error.response.status === 401 && refreshToken !== null){
             // originalRequest._retry = true;
 
-            const response = fetch(REACT_APP_AXIOS_BASEURL.concat('/').concat(REACT_APP_AXIOS_API_V1).concat('token/refresh/'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    refresh: refreshToken
-                }),
-            })
-            .then((res) => res.json())
-            .then((res) => {
-                console.log(res)
+            if(!isRefreshing){
+                isRefreshing = true;
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('accessTokenDecoded');
-                localStorage.setItem('accessToken', res.access);
-                localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(res.access)));
-            })
-            .then((res) => {
-                return axios(originalRequest)
-            })
-            resolve(response)
+
+                const refreshRequest = fetch(REACT_APP_AXIOS_BASEURL.concat('/').concat(REACT_APP_AXIOS_API_V1).concat('token/refresh/'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        refresh: refreshToken
+                    }),
+                })
+                .then((res) => res.json())
+                .then((res) => {
+                    console.log(res.access)
+                    localStorage.setItem('accessToken', res.access);
+                    localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(res.access)));
+                })
+                .then(() => {
+                    console.log("one")
+                    const token = localStorage.getItem('accessToken');
+                    originalRequest.headers['Authorization'] = `Bearer ${token}`;
+                    instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                    processQueue(null, token)
+
+                    return axios(originalRequest);
+                })
+                .finally(() => {isRefreshing = false})
+                // console.log("two")
+                resolve(refreshRequest)
+            }
+            else{
+                failedQueue.push(originalRequest)
+                console.log(failedQueue)
+            }
         }
         return Promise.reject(error)
     })

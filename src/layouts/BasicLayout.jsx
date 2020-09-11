@@ -11,6 +11,8 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+import jwt_decode from 'jwt-decode';
+
 
 const noMatch = (
   <Result
@@ -59,6 +61,7 @@ const defaultFooterDom = (
   ]}/>
 );
 
+
 const BasicLayout = (props) => {
   const {
     dispatch,
@@ -73,6 +76,27 @@ const BasicLayout = (props) => {
    */
 
   useEffect(() => {
+    if(localStorage.getItem('refreshToken')){
+      try {
+        if(jwt_decode(localStorage.getItem('refreshToken')).exp - new Date().getTime()/1000 < 0 && dispatch){
+          dispatch({
+            type: 'login/logout',
+          });
+        }
+      }
+      catch(err){
+        dispatch({
+          type: 'login/logout',
+        });
+      }
+    }
+    else{
+      dispatch({
+        type: 'login/logout',
+      });
+    }
+
+
     if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
@@ -96,6 +120,10 @@ const BasicLayout = (props) => {
     authority: undefined,
   };
   const {} = useIntl();
+
+
+
+
   return (
     <>
       <ProLayout
