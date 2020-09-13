@@ -1,22 +1,19 @@
-import { HomeOutlined } from '@ant-design/icons';
-import { Card, Col, Divider, Row, Select, Spin } from 'antd';
+import { Card, Col, Divider, Row, Spin, Button } from 'antd';
 import React, { Component } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { connect } from 'umi';
 
-import csc from 'country-state-city';
-import styles from './Center.less';
+import { EditOutlined, EditTwoTone } from '@ant-design/icons';
 
+import styles from './Center.less';
 
 import Projects from './components/Projects';
 import Articles from './components/Articles';
 import Applications from './components/Applications';
 import TagList from './components/TagList';
+import BasicDetails from './components/BasicDetails';
 
 import axios from '../../../umiRequestConfig';
-
-const { Option } = Select;
-
 
 
 const operationTabList = [
@@ -84,14 +81,18 @@ const operationTabList = [
 
 
 class Center extends Component {
-  
   constructor(props) {
     super(props)
 
+    // Bind the this context to the handler function
+    this.handler = this.handler.bind(this);
+
+    // Set some state
     this.state = {
-      structure: undefined,
-    }
-  }
+        editMode: false,
+        structure: undefined,
+    };
+}
 
   static getDerivedStateFromProps(
     props,
@@ -117,7 +118,8 @@ class Center extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    let userID = 16;
+    let userID;
+
     if (localStorage.getItem('accessTokenDecoded')){
       userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
     }
@@ -167,82 +169,13 @@ class Center extends Component {
     return null;
   };
 
-  onChange = value => {
-    console.log(`selected ${value}`);
-  }
+  handler() {
+    this.setState({
+        editMode: false
+    });
+}
 
-  renderUserInfo = currentUser => (
-    <div className={styles.detail}>
-      {/* <div className={styles.supplement}>
-      <Title level={4}>{(currentUser && currentUser !== undefined && currentUser !== null) ? currentUser.entity.first_name + " " + currentUser.entity.last_name : 'No Name'}</Title>
-        
-      </div> */}
-
-      <div className={styles.supplement}>
-        <HomeOutlined
-          style={{
-            marginRight: 8,
-          }}
-        />
-        { currentUser.entity.user_location ? currentUser.entity.user_location :
-          <>
-            <Select
-              showSearch
-              style={{ width: 70 }}
-              placeholder="Select a person"
-              optionFilterProp="children"
-              onChange={this.onChange}
-              optionLabelProp="label"
-              // onFocus={onFocus}
-              // onBlur={onBlur}
-              // onSearch={onSearch}
-              filterOption={(input, option) =>
-                option.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {csc.getAllCountries().map(item => (
-                <Option key={item.id} value={item.sortname} label={item.name}>
-                  <div>
-                    {item.name}
-                  </div>
-                </Option>
-              ))}
-            </Select>
-              <Select
-              showSearch
-              style={{ width: 70 }}
-              placeholder="Select a person"
-              optionFilterProp="children"
-              onChange={this.onChange}
-              optionLabelProp="label"
-              // onFocus={onFocus}
-              // onBlur={onBlur}
-              // onSearch={onSearch}
-              filterOption={(input, option) =>
-                option.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {csc.getAllCountries().map(item => (
-                <Option key={item.id} value={item.sortname} label={item.name}>
-                  <div>
-                    {item.name}
-                  </div>
-                </Option>
-              ))}
-            </Select>
-          </>
-        }
-      </div>
-      
-      <div className={styles.supplement}>
-        { currentUser.entity.user_summary }
-      </div>
-
-    </div>
-  );
-
-
-  render() {  
+  render() { 
     const { tabKey } = this.state;
     const { currentUser = {}, currentUserLoading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
@@ -257,19 +190,18 @@ class Center extends Component {
                 marginBottom: 24,
               }}
               loading={dataLoading}
+              extra={<Button type="link" icon={this.state.editMode?<EditTwoTone />:<EditOutlined />} onClick={() => {
+                this.setState((prevState) => ({editMode: !prevState.editMode}))
+              }}/>}
+              title="Basic Details"
             >
               {!dataLoading && (
                 <div>
-                  <div className={styles.avatarHolder}>
-                    <img alt="" src={currentUser.avatar} />
-                    <div className={styles.name}>{currentUser.entity.first_name + " " + currentUser.entity.last_name }</div>
-                    <div>{currentUser.signature}</div>
-                  </div>
-                  {this.renderUserInfo(currentUser)}
-                  <Divider dashed />
+                  <BasicDetails currentUser={currentUser} editMode={this.state.editMode} action={this.handler}/>
+                  <Divider />
                   {
                     currentUser && this.state.structure ? 
-                    <TagList tagsInput={JSON.parse(JSON.stringify(currentUser.keywords.ck_keywords)) || []} structure={this.state.structure || []}/>
+                    <TagList tagsInput={JSON.parse(JSON.stringify(currentUser.keywords.ck_keywords)) || []} structure={this.state.structure || []} />
                     :
                     <Spin />
                   }
@@ -277,26 +209,27 @@ class Center extends Component {
                     style={{
                       marginTop: 16,
                     }}
-                    dashed
+                    
                   />
-                  {/* <div className={styles.team}>
-                    <div className={styles.teamTitle}>Team</div>
-                    <Row gutter={36}>
-                      {currentUser.notice &&
-                        currentUser.notice.map(item => (
-                          <Col key={item.id} lg={24} xl={12}>
-                            <Link to={item.href}>
-                              <Avatar size="small" src={item.logo} />
-                              {item.member}
-                            </Link>
-                          </Col>
-                        ))}
-                    </Row>
-                  </div> */}
+
                 </div>
               )}
             </Card>
           </Col>
+              {/* <div className={styles.team}>
+                <div className={styles.teamTitle}>Team</div>
+                <Row gutter={36}>
+                  {currentUser.notice &&
+                    currentUser.notice.map(item => (
+                      <Col key={item.id} lg={24} xl={12}>
+                        <Link to={item.href}>
+                          <Avatar size="small" src={item.logo} />
+                          {item.member}
+                        </Link>
+                      </Col>
+                    ))}
+                </Row>
+              </div> */}
           <Col lg={17} md={24}>
             <Card
               className={styles.tabsCard}

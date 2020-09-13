@@ -265,6 +265,7 @@ export default defineConfig({
     REACT_APP_ENV: REACT_APP_ENV || false,
     REACT_APP_AXIOS_BASEURL: REACT_APP_AXIOS_BASEURL || 'https://api.creativehire.co',
     REACT_APP_AXIOS_API_V1: REACT_APP_AXIOS_API_V1 || 'api/v1/',
+    REACT_APP_GEOCODE_REVERSE: 'WOlzRkzBY3Fu04BkIlPNhQtMbDQI83S4',
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION:
       ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
   },

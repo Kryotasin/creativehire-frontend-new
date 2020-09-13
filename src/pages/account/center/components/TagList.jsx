@@ -5,7 +5,7 @@ import styles from './../Center.less';
 import axios from '../../../../umiRequestConfig';
 
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const TagList = ({ tagsInput, structure }) => {
     // const ref = useRef(null);
@@ -62,7 +62,7 @@ const TagList = ({ tagsInput, structure }) => {
           tags[key].forEach(item => {
           if(temp[structure[0][item]]){
             temp[structure[0][item]] = temp[structure[0][item]].concat(item.toString().concat('-').concat(key).concat(','));
-          }
+          } 
           else{
             temp[structure[0][item]] = item.toString().concat('-').concat(key).concat(',');
           }
@@ -121,7 +121,7 @@ const TagList = ({ tagsInput, structure }) => {
                 skills[cats[item]] ? 
                   generateTags(skills[cats[item]].trim().split(','))
                 :
-                <p>No Skills</p>
+                <Text type='secondary'>No Skills</Text>
               }
               {/* {inputVisible && (
                 <Input
