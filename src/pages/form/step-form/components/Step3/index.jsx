@@ -1,19 +1,19 @@
+import { connect, history } from 'umi';
+import { CloseOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { Spin, Form, Button, Divider, Typography, AutoComplete, message } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
 
-import { history } from 'umi';
+import styles from './index.less';
 
 const { Title, Text } = Typography;
 
-import { connect } from 'umi';
-import styles from './index.less';
+
 
 const Step3 = (props) => {
   const [form] = Form.useForm();
   const { project, dispatch, loading, structure } = props;
 
-  const [skills, updateSkills] = useState(project.skills);
+  const [skills, updateSkills] = useState(project.project_keywords);
   const [selected, setSelected] = useState('');
 
   if (!project) {
@@ -30,18 +30,23 @@ const Step3 = (props) => {
     });
   };
 
+
   const renderSkills = () => {
-    if (skills.length == 0) {
+    if (skills.length === 0) {
       console.log('skills zero')
       return null
     }
 
-    let cat, subcat, label;
+    let cat; 
+    let subcat; 
+    let label;
+
     const sortedSkills = skills.sort((a, b) => a.split(',')[0] - b.split(',')[0]);
     const [catNum, ..._] = sortedSkills[0].split(',');
     cat = structure[0][catNum];
     subcat = structure[1][catNum];
     label = structure[3][catNum];
+
 
     return (
       <>
@@ -58,7 +63,7 @@ const Step3 = (props) => {
             onClick={() => {
               onDeleteButtonClick(catNum);
             }}
-          ></Button>
+          />
         </p>
         {sortedSkills.map((skill) => {
           const [cn, start, end] = skill.split(',');
@@ -77,7 +82,7 @@ const Step3 = (props) => {
                     onClick={() => {
                       onDeleteButtonClick(cn);
                     }}
-                  ></Button>
+                  />
                 </p>
               );
             }
@@ -99,7 +104,7 @@ const Step3 = (props) => {
                     onClick={() => {
                       onDeleteButtonClick(cn);
                     }}
-                  ></Button>
+                  />
                 </p>
               </React.Fragment>
             );
@@ -150,7 +155,7 @@ const Step3 = (props) => {
     updateSkills((prev) => [...prev, `${index},-1,-1`]);
   };
 
-  const autoCompleteValues = structure[3]
+  const autoCompleteValues = structure ? structure[3]
     .filter((item) => item.length > 0)
     .map((item) => {
       const index = structure[3].indexOf(item);
@@ -163,69 +168,71 @@ const Step3 = (props) => {
         subcategory,
         index,
       };
-    });
+    }) : '';
 
   return (
-    <div className={styles.stepForm}>
-      <div className={styles.inputContainer}>
-        <label> Add skills: &nbsp; </label>
-        <AutoComplete
-          placeholder="Add a skill!"
-          options={autoCompleteValues}
-          filterOption={(inputValue, option) =>
-            option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
-          }
-          style={{ width: 350 }}
-          notFoundContent="No Skills Found"
-          onSelect={onSelect}
-          onChange={(value) => {
-            setSelected(value);
-          }}
-          value={selected}
-        />
-      </div>
-      <div className={styles.result}>
-        <ul>
-          {structure !== null && skills.length > 0 ? (
-            <>{renderSkills()}</>
-          ) : null}
-        </ul>
-      </div>
+    <div>
+      <div className={styles.stepForm}>
+          <div className={styles.inputContainer}>
+            <label> Add skills: &nbsp; </label>
+            <AutoComplete
+              placeholder="Add a skill!"
+              options={autoCompleteValues}
+              filterOption={(inputValue, option) =>
+                option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+              }
+              style={{ width: 350 }}
+              notFoundContent="No Skills Found"
+              onSelect={onSelect}
+              onChange={(value) => {
+                setSelected(value);
+              }}
+              value={selected}
+            />
+          </div>
+          <div className={styles.result}>
+            <ul>
+              {structure !== null && skills.length > 0 ? (
+                <>{renderSkills()}</>
+              ) : null}
+            </ul>
+          </div>
 
-      <Button
-        onClick={onPrev}
-        style={{
-          marginLeft: 164,
-        }}
-      >
-        Previous
-      </Button>
+          <Button
+            onClick={onPrev}
+            style={{
+              marginLeft: 164,
+            }}
+          >
+            Previous
+          </Button>
 
-      <Button
-        type="primary"
-        onClick={onValidateForm}
-        loading={props.loading}
-        size="large"
-        style={{
-          marginLeft: 16,
-        }}
-      >
-        Add Project
-      </Button>
+          <Button
+            type="primary"
+            onClick={onValidateForm}
+            loading={props.loading}
+            size="large"
+            style={{
+              marginLeft: 16,
+            }}
+          >
+            Add Project
+          </Button>
 
-      <Divider
-        style={{
-          margin: '40px 0 24px',
-        }}
-      />
-      <div className={styles.desc}>
-        <h3>Help</h3>
-        <h4>What is this page?</h4>
-        <p>
-          Here are all the relavant skills we could find on the page. If there are any skills you
-          want to add manually, you can.
-        </p>
-      </div>
+          <Divider
+            style={{
+              margin: '40px 0 24px',
+            }}
+          />
+          <div className={styles.desc}>
+            <h3>Help</h3>
+            <h4>What is this page?</h4>
+            <p>
+              Here are all the relavant skills we could find on the page. If there are any skills you
+              want to add manually, you can.
+            </p>
+          </div>
+        </div>
     </div>
   );
 };

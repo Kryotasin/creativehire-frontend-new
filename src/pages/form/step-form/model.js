@@ -1,4 +1,6 @@
-import { basicProjectDetails, newProject, metricsStructure, submitProjectSkills } from './service';
+import { basicProjectDetails, newProject, submitProjectSkills } from './service';
+
+import { queryStructure } from '../../account/center/service';
 
 const Model = {
   namespace: 'formAndstepForm',
@@ -9,6 +11,7 @@ const Model = {
     project: undefined,
     structure: null,
     loading: false,
+    error: undefined,
   },
   effects: {
     *submitStepForm({ payload }, { call, put }) {
@@ -65,6 +68,7 @@ const Model = {
       });
 
       const newproj = yield call(newProject, payload);
+      console.log(newproj)
 
       if (newproj.status === 201) {
         yield put({
@@ -72,11 +76,11 @@ const Model = {
           payload: newproj.data,
         });
 
-        const metrics_structure = yield call(metricsStructure);
+        const metrics_structure = yield call(queryStructure);
 
         if (metrics_structure.status === 200) {
           yield put({
-            type: 'saveMetricsStructure',
+            type: 'savequeryStructure',
             payload: metrics_structure.data,
           });
         }
@@ -135,7 +139,7 @@ const Model = {
             payload: 'link'
           });
           yield put({
-            type: 'saveMetricsStructure',
+            type: 'savequeryStructure',
             payload: null
           })
         }
@@ -155,7 +159,7 @@ const Model = {
       return { ...state, project: { ...state.project, ...payload } };
     },
 
-    saveMetricsStructure(state, { payload }) {
+    savequeryStructure(state, { payload }) {
       return { ...state, structure: { payload } };
     },
 
@@ -169,6 +173,10 @@ const Model = {
 
     saveProject(state, { payload }) {
       return {...state, project: payload}
+    },
+
+    saveError(state, { payload }) {
+      return {...state, error: payload}
     }
   },
 };

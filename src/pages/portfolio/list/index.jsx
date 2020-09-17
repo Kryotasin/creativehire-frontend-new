@@ -1,4 +1,4 @@
-import { PlusOutlined } from '@ant-design/icons';
+// import { PlusOutlined } from '@ant-design/icons';
 import { Card, List, Typography, Pagination } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -25,7 +25,7 @@ const gaugeColor = (val) => {
 };
 
 function ProjectList() {
-  const userID = localStorage.getItem('userID');
+  const userID = localStorage.getItem('accessTokenDecoded') ? btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id) : null;
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState([]);
 
@@ -34,17 +34,11 @@ function ProjectList() {
     try {
       const fetchProjects = async () => {
         setLoading(true);
-        let data = await axios.post(
-          'portfolio/',
-          {
-            userID,
-          },
-          // {
-          //   cancelToken: source.token,
-          // },
+        let data = await axios.get(
+          REACT_APP_AXIOS_API_V1.concat(`entities/portfolio/${userID}`)
         );
-        data = data.data;
-        setProjects(data);
+        const res = data.data;
+        setProjects(res);
         setLoading(false);
       };
       fetchProjects();
@@ -87,15 +81,15 @@ function ProjectList() {
             if (item && item.pk !== -1) {
               return (
                 <List.Item key={item.pk}>
-                  <Link to={`/project/${item.pk}`}>
+                  <Link to={`project/${item.pk}`}>
                     <Card
                       hoverable
                       className={styles.card}
-                      cover={<img alt="cover" src={item.fields.img} />}
+                      cover={<img alt="cover" src={item.fields.project_img} />}
                     >
                       <Card.Meta
-                        title={item.fields.title}
-                        description={new Date(item.fields.posted_date).toDateString()}
+                        title={item.fields.project_title}
+                        description={new Date(item.fields.project_post_date).toDateString()}
                       />
                     </Card>
                   </Link>

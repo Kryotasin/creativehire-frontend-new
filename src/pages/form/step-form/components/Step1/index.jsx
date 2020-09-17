@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Divider, Input } from 'antd';
+import { Form, Button, Divider, Input, Alert } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -11,6 +11,17 @@ const formItemLayout = {
     span: 19,
   },
 };
+
+const ErrorMessage = ({ content }) => (
+  <Alert
+    style={{
+      marginBottom: 24,
+    }}
+    message={content}
+    type="error"
+    showIcon
+  />
+);
 
 const Step1 = props => {
   const { dispatch, link, loading } = props;
@@ -38,6 +49,10 @@ const Step1 = props => {
         initialValues={link}
         className={styles.stepForm}
       >
+
+        {(status === 400 || status === 401) && !submitting && (
+          <ErrorMessage content={error ? error : "Incorrect credentials"} />
+        )}
 
         <Form.Item
           label="Project Link"

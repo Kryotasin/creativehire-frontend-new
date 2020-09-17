@@ -11,10 +11,15 @@ const SkillList = React.lazy(() => import('./components/SkillList/index.jsx'));
 
 class Analysis extends Component {
   reqRef = 0;
+
   timeoutId = 0;
+
   cat = null;
+
   subcat = null;
+
   label = null;
+
   loading = false;
 
   constructor(props) {

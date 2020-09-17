@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { Select, Form, Input, Button, Tooltip, message, Typography, DatePicker } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Button, Tooltip, message, Typography, DatePicker } from 'antd';
 import { HomeOutlined, EnvironmentTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 import jwt_decode from 'jwt-decode';
 
 import styles from '../Center.less';
 import axios from '../../../../umiRequestConfig';
-import { useEffect } from 'react';
 
 
 const dateFormat = 'YYYY/MM/DD';

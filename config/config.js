@@ -143,7 +143,7 @@ export default defineConfig({
           component: '../layouts/BasicLayout',
           routes: [
             {
-              name: 'Welcome',
+              name: 'Home',
               path: '/home',
               icon: 'home',
               component: '../pages/Welcome',

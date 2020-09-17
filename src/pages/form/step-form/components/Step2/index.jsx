@@ -45,7 +45,7 @@ const Step2 = props => {
   const onValidateForm = async () => {
     const values = await validateFields();
 
-    const final_values = { ...values, 'projectImage': img_list[img_counter+1], ...props.link};
+    const final_values = { ...values, 'projectImage': img_list[img_counter+1], ...props.link, 'projectAuthor': JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id};
 
     if (dispatch) {
       dispatch({
@@ -54,7 +54,6 @@ const Step2 = props => {
       });
     }
   };
-
 
 
   return (

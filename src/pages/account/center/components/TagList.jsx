@@ -1,8 +1,8 @@
 import { Tag, AutoComplete, message, Typography } from 'antd';
 import React, { useState } from 'react';
-import styles from './../Center.less';
 
 import axios from '../../../../umiRequestConfig';
+import styles from '../Center.less';
 
 
 const { Title, Text } = Typography;
@@ -53,7 +53,7 @@ const TagList = ({ tagsInput, structure }) => {
     // };
 
     const skillAPI = info => {
-        return axios.put(REACT_APP_AXIOS_API_V1.concat('entities/candidate-professional-details/').concat(btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id)), info)
+        return axios.put(REACT_APP_AXIOS_API_V1.concat('entities/candidate-complete-details/').concat(btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id)), info)
     }
   
     const getSets = () => {
@@ -79,7 +79,6 @@ const TagList = ({ tagsInput, structure }) => {
     };
 
     const handleClose = (removedTag ) => {
-        console.log(removedTag)
         const item = {
             'type': 'skill-remove',
             'skillType': 'custom',
@@ -87,7 +86,7 @@ const TagList = ({ tagsInput, structure }) => {
         }
         skillAPI(item)
         .then(res => {
-          message.success(`${structure[3][removedTag]} has been removed!`);
+          message.warn(`${structure[3][removedTag]} has been removed!`);
           setTags(res.data)
         })
     }
@@ -98,9 +97,8 @@ const TagList = ({ tagsInput, structure }) => {
       arr.forEach((item, value) =>{
         if(item){
           const split = item.split('-');
-          
           if(structure[3][split[0]].length > 0){
-            output.push(<Tag color={colors.get(split[1])} key={split[0]} onClose={() => handleClose(split[0])} closable='true'>{structure[3][split[0]]}</Tag>)
+            output.push(<Tag color={colors.get(split[1])} key={item} onClose={() => handleClose(split[0])} closable='true'>{structure[3][split[0]]}</Tag>)
           }
         }
       })
@@ -151,14 +149,13 @@ const TagList = ({ tagsInput, structure }) => {
             )
             output.push(x)
       })
-  
       return output;
     }
   
     const renderItem = (item, cat) => (
       
       <div
-        key={item.split(' ')[0]}
+        key={item}
         style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -174,21 +171,27 @@ const TagList = ({ tagsInput, structure }) => {
       setSelected(item);
       // updateSkills((prev) => [...prev, `${index},-1,-1`]);
       
-      const repeat = tags.custom.find(element => element === index);
-  
+      const repeat = tags.custom.includes(index);
+      
       if(repeat) { 
-        message.error('This skill is already present.')
+        message.error(`${item} is already present.`)
       }
       else{
-          const item = {
+          const data = {
             'type': 'skill',
             'skillType': 'custom',
             'skill': index
           }
-        skillAPI(item)
+        skillAPI(data)
         .then(res => {
-          message.success(`${structure[3][index]} has been added!`);
-          setTags(res.data)
+
+          if(res.data === "Duplicate entry for skill"){
+            message.error(`${item} is already present.`)
+          }
+          else{
+            setTags(res.data);
+            message.success(`${structure[3][index]} has been added!`);
+          }
         })
         .catch(err => {
           message.error(err)

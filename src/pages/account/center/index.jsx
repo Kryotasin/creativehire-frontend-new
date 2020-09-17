@@ -5,79 +5,9 @@ import { connect } from 'umi';
 
 import { EditOutlined, EditTwoTone } from '@ant-design/icons';
 
-import styles from './Center.less';
-
-import Projects from './components/Projects';
-import Articles from './components/Articles';
-import Applications from './components/Applications';
 import TagList from './components/TagList';
 import BasicDetails from './components/BasicDetails';
-
-import axios from '../../../umiRequestConfig';
-
-
-const operationTabList = [
-  {
-    key: 'profile',
-    tab: (
-      <span>
-        Profile{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          {/* (8) */}
-        </span>
-      </span>
-    ),
-  },
-  {
-    key: 'portfolio',
-    tab: (
-      <span>
-        Portfolio{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          {/* (8) */}
-        </span>
-      </span>
-    ),
-  },
-  {
-    key: 'savedjobs',
-    tab: (
-      <span>
-        Saved Jobs{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          {/* (8) */}
-        </span>
-      </span>
-    ),
-  },
-  {
-    key: 'appliedjobs',
-    tab: (
-      <span>
-        Applied Jobs{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          {/* (8) */}
-        </span>
-      </span>
-    ),
-  },
-];
+import ProfileTabPane from './components/ProfileTabPane';
 
 
 class Center extends Component {
@@ -90,31 +20,24 @@ class Center extends Component {
     // Set some state
     this.state = {
         editMode: false,
-        structure: undefined,
     };
 }
 
-  static getDerivedStateFromProps(
-    props,
-    state
-  ) {
-    const { match, location } = props;
-    const { tabKey } = state;
-    const path = match && match.path;
-    const urlTabKey = location.pathname.replace(`${path}/`, '');
-    if (urlTabKey && urlTabKey !== '/' && tabKey !== urlTabKey) {
-      return {
-        tabKey: urlTabKey,
-      };
-    }
-    return null;
-  }
-
-  state = {
-    tabKey: 'articles',
-  };
-
-  input = undefined;
+  // static getDerivedStateFromProps(
+  //   props,
+  //   state
+  // ) {
+  //   const { match, location } = props;
+  //   const { tabKey } = state;
+  //   const path = match && match.path;
+  //   const urlTabKey = location.pathname.replace(`${path}/`, '');
+  //   if (urlTabKey && urlTabKey !== '/' && tabKey !== urlTabKey) {
+  //     return {
+  //       tabKey: urlTabKey,
+  //     };
+  //   }
+  //   return null;
+  // }
 
   componentDidMount() {
     const { dispatch } = this.props;
@@ -129,55 +52,21 @@ class Center extends Component {
       payload: {userID}
     });
 
-    if(this.state.structure ===  undefined){
-      axios.get(REACT_APP_AXIOS_API_V1.concat('metrics-structure/'))
-      .then(res => {
-        if(res.status === 200){
-          this.setState({structure: res.data})
-        }
-      })
-    }
+    dispatch({
+      type: 'accountAndcenter/fetchProjects',
+      payload: {userID}
+    });
 
   }
-
-  onTabChange = key => {
-    // If you need to sync state to url
-    // const { match } = this.props;
-    // router.push(`${match.url}/${key}`);
-    this.setState({
-      tabKey: key,
-    });
-  };
-
-  renderChildrenByTabKey = tabKey => {
-    if (tabKey === 'profile') {
-      return <Projects />;
-    }
-
-    if (tabKey === 'portfolio') {
-      return <Projects />;
-    }
-
-    if (tabKey === 'savedjobs') {
-      return <Applications />;
-    }
-
-    if (tabKey === 'appliedjobs') {
-      return <Articles />;
-    }
-
-    return null;
-  };
 
   handler() {
     this.setState({
         editMode: false
     });
-}
+  }
 
   render() { 
-    const { tabKey } = this.state;
-    const { currentUser = {}, currentUserLoading } = this.props;
+    const { currentUser = {}, currentUserLoading, structure = {}, projectList = {} } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
     
     return (
@@ -200,8 +89,8 @@ class Center extends Component {
                   <BasicDetails currentUser={currentUser} editMode={this.state.editMode} action={this.handler}/>
                   <Divider />
                   {
-                    currentUser && this.state.structure ? 
-                    <TagList tagsInput={JSON.parse(JSON.stringify(currentUser.keywords.ck_keywords)) || []} structure={this.state.structure || []} />
+                    currentUser && structure ? 
+                    <TagList tagsInput={JSON.parse(JSON.stringify(currentUser.keywords.ck_keywords)) || []} structure={structure || []} />
                     :
                     <Spin />
                   }
@@ -231,15 +120,10 @@ class Center extends Component {
                 </Row>
               </div> */}
           <Col lg={17} md={24}>
-            <Card
-              className={styles.tabsCard}
-              bordered={false}
-              tabList={operationTabList}
-              activeTabKey={tabKey}
-              onTabChange={this.onTabChange}
-            >
-              {this.renderChildrenByTabKey(tabKey)}
-            </Card>
+          {
+            currentUser && structure ? 
+            <ProfileTabPane projectList={projectList || []} /> : <Spin />
+          }
           </Col>
         </Row>
       </GridContent>
@@ -249,5 +133,7 @@ class Center extends Component {
 
 export default connect(({ loading, accountAndcenter }) => ({
   currentUser: accountAndcenter.currentUser,
+  structure: accountAndcenter.structure,
+  projectList: accountAndcenter.projectList,
   currentUserLoading: loading.effects['accountAndcenter/fetchCurrent'],
 }))(Center);

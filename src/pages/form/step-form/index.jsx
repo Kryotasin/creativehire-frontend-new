@@ -41,7 +41,7 @@ const StepForm = ({ current }) => {
     setStepComponent(component);
   }, [current]);
   return (
-    <PageHeaderWrapper content="Upload your project.">
+    // <PageHeaderWrapper content="Upload your project.">
       <Card bordered={false}>
         <>
           <Steps current={currentStep} className={styles.steps}>
@@ -52,7 +52,7 @@ const StepForm = ({ current }) => {
           {stepComponent}
         </>
       </Card>
-    </PageHeaderWrapper>
+    // </PageHeaderWrapper>
   );
 };
 

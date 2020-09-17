@@ -19,7 +19,7 @@ const Model = {
         type: 'changeLoginStatus',
         payload: response,
         errors: ''
-      }); // Login successfully
+        }); // Login successfully
 
       if (response.status === 200) {
         message.success('Login succesful!');        
