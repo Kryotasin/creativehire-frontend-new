@@ -3,11 +3,10 @@ import { Card, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons'; 
 import { Link } from 'umi';
 
-import TagList from './TagList';
-
 import Projects from './Projects';
 import Articles from './Articles';
 import Applications from './Applications';
+import Profile from './Profile';
 
 import styles from '../Center.less';
 
@@ -83,7 +82,7 @@ const operationTabList = [
 
     const renderChildrenByTabKey = () => {
         if (tabKey === 'profile') {
-          return <Projects />;
+          return <Profile />;
         }
     
         if (tabKey === 'portfolio') {

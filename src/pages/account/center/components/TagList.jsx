@@ -17,7 +17,7 @@ const TagList = ({ tagsInput, structure }) => {
     
     const colors = new Map();
   
-    colors.set('custom', '#2db7f5');
+    colors.set('custom', '#f50');
     colors.set('resume', '#87d068');
     colors.set('projects', '#108ee9');
   
