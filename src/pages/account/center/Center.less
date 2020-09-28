@@ -1,8 +1,36 @@
 @import '~antd/es/style/themes/default.less';
 
+
+.resumeProgress{
+  margin-top: 40%;
+}
+
 .avatarHolder {
+  position: relative;
   margin-bottom: 24px;
   text-align: center;
+
+  .button_view {
+    position: absolute;
+    right: 0;
+    top: 0px;
+    text-align: center;
+    opacity: 1;
+    transition: opacity .35s ease;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 70%;
+    height: 70%;
+  }
+
+  .avatarHolder:hover .overlay {
+    display: block;
+    background: rgba(0, 0, 0, .3);
+  }
 
   & > img {
     width: 104px;
@@ -17,6 +45,10 @@
     font-size: 20px;
     line-height: 28px;
   }
+}
+
+.avatarHolder:hover .button_view {
+  opacity: 1;
 }
 
 .supplement {

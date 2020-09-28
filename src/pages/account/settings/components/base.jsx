@@ -64,7 +64,6 @@ class BaseView extends Component {
   render() {
     const{ currentUser } = this.props
     
-console.log(currentUser)
     const typeOfImage = (proc) => {
       return {"type" : "profile_pic", "process": proc, "fileName": currentUser['user_img_salt']}
     }

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Tooltip, message, Typography, DatePicker } from 'antd';
-import { HomeOutlined, EnvironmentTwoTone } from '@ant-design/icons';
-import moment from 'moment';
+import { Form, Input, Button, Tooltip, message, Typography, DatePicker, Space, Upload } from 'antd';
+import { EnvironmentOutlined, EnvironmentTwoTone, BehanceCircleFilled, LinkedinFilled, DribbbleCircleFilled, UploadOutlined } from '@ant-design/icons';
+// import moment from 'moment';
 import jwt_decode from 'jwt-decode';
 
 import styles from '../Center.less';
 import axios from '../../../../umiRequestConfig';
+import temp from '../../../../assets/anony.png';
 
-
-const dateFormat = 'YYYY/MM/DD';
+// const dateFormat = 'YYYY/MM/DD';
 
 const { Text } = Typography;
 
@@ -25,21 +25,88 @@ function BasicDetails(props) {
     const [ last_name, setLastName ] = useState(currentUser.entity.last_name);
     const [ user_location, setLocation ] = useState(currentUser.entity.user_location);
     const [ user_summary, setSummary ] = useState(currentUser.entity.user_summary);
-    const [ user_dob, setDob ] = useState(currentUser.entity.user_dob);
+    
+    const [ behance_link, setBehance ] = useState(currentUser.entity.user_external_links.behance_link);
+    const [ linkedin_link, setLinkedin ] = useState(currentUser.entity.user_external_links.linkedin_link);
+    const [ dribble_link, setDribble ] = useState(currentUser.entity.user_external_links.dribble_link);
+
+    const [profilepic, setProfilepic] = useState(undefined);
+    // const [ user_dob, setDob ] = useState(currentUser.entity.user_dob);
+
+    const [ candidate_processed, setCP ] = useState(undefined);
+
+    const typeOfImage = (proc) => {
+        return {"type" : "profile_pic", "process": proc, "fileName": currentUser.entity.user_img_salt}
+      }
+  
+      const reloadProfilePicture = () => {
+        axios.post('api/v1/file-handler/', {
+            ...typeOfImage('fetch')
+        })
+        .then(
+            res => {
+              if(res.status === 404){
+                  // Set something to show lack of profile picture.
+                  setTimeout(() => message.error('Profile picture not found.'), 100);
+              }
+              else if (res.status === 200 && res.data !== 'ErrorResponseMetadata'){
+                setProfilepic(res.data);
+            }
+              
+              else if(res.status === 200 && res.data === 'ErrorResponseMetadata'){
+                // Set something to show lack of profile picture.
+                setTimeout(() => message.error('Profile picture not found.'), 100);
+            }      
+    
+           
+        })
+      }
+
+    const entityPictureUploadProps = {
+        name: 'file',
+        acceptedFiles: '.png',
+        multiple: false,
+        method: 'post',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+        data: typeOfImage("upload"),
+        action: 'http://localhost:3001/api/v1/file-handler/',
+        onRemove(file){
+            axios.post('file-handler/', {
+                "file": file.name,
+                ...typeOfImage('remove')
+            });
+        },
+        
+        onChange(info) {
+          const { status } = info.file;
+  
+          if (status === 'done') {
+            message.success(`${info.file.name} file uploaded successfully.`);
+            reloadProfilePicture();
+          } else if (status === 'error') {
+            message.error(`${info.file.name} file upload failed.`.concat(info));
+          }
+        },
+      };
 
     const handleUpdate = (values) => {
 
         if(user_location){
-            console.log("here")
             values.user_location = user_location;
         }
 
-        if(values.user_dob){
-            values.user_dob = values.user_dob._d.toString().replace('(Pacific Daylight Time)', '');
-        }
+        const user_external_links = {
+            "behance_link": values.behance_link,
+            "linkedin_link": values.linkedin_link,
+            "dribble_link": values.dribble_link,
+        };
 
-        console.log(values);
-        console.log(currentUser)
+        // if(values.user_dob){
+        //     values.user_dob = values.user_dob._d.toString().replace('(Pacific Daylight Time)', '');
+        // }
+
         // dt = datetime.strptime('Tue Sep 08 2020 23:35:02 GMT-0700', '%a %b %d %Y %X %Z%z')  
         axios.put(REACT_APP_AXIOS_API_V1.concat('entities/update-personal-details/').concat(btoa(jwt_decode(localStorage.getItem('accessToken')).user_id)),{
             'email': currentUser.entity.email,
@@ -47,16 +114,19 @@ function BasicDetails(props) {
             'last_name': values.last_name,
             'user_location': values.user_location,
             'user_summary': values.user_summary,
-            'user_dob': values.user_dob
+            // 'user_dob': values.user_dob
+            'user_external_links': user_external_links
         })
         .then((res) => {
             setFirstName(res.data.first_name);
             setLastName(res.data.last_name);
             setLocation(res.data.user_location);
             setSummary(res.data.user_summary);
-            setDob(res.data.user_dob);
+            setBehance(res.data.user_external_links.behance_link);
+            setLinkedin(res.data.user_external_links.linkedin_link);
+            setDribble(res.data.user_external_links.dribble_link);
+            // setDob(res.data.user_dob);
             action();
-            console.log(res)
         });
     }
 
@@ -84,26 +154,54 @@ function BasicDetails(props) {
         </Tooltip>
     );
     
-    const disabledDate = (current) => {
-        // Can not select days before today and today
-        return current && current > moment().endOf('day');
-    }
+    // const disabledDate = (current) => {
+    //     // Can not select days before today and today
+    //     return current && current > moment().endOf('day');
+    // }
 
     useEffect(()=>{
         // let formBaseData = {
         //     user_dob: currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null
         //   }
         // formBaseData = { ...currentUser.entity, ...formBaseData };
-        currentUser.entity.user_dob = currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null;
-    })
+        // currentUser.entity.user_dob = currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null;
+        const cu = currentUser.entity;
+        cu.behance_link = behance_link;
+        cu.linkedin_link = linkedin_link;
+        cu.dribble_link = dribble_link;
+
+        setCP(cu);
+        reloadProfilePicture();
+    },[])
 
     return(
         <>
             <div className={styles.avatarHolder}>
-                <img alt="" src={currentUser.avatar} />
+            {
+                editMode ? 
+                ''
+                :
+                <>
+                {
+                    profilepic ?
+                    <img src={`data:image/png;base64,${profilepic}`} alt="avatar" />
+                    :
+                    <img alt={profilepic || "Default pic"} src={profilepic || temp} />
+                }
+
+                    <div className={styles.overlay} />
+                    <Upload {...entityPictureUploadProps} showUploadList={false}>
+                        <div className={styles.button_view}>
+                            <Button  shape="round" icon={<UploadOutlined />} />
+                        </div>
+                    
+                    </Upload>
+                </>
+            }
+
             {
                 editMode ?
-                <Form initialValues={ currentUser.entity } onFinish={handleUpdate}>
+                <Form initialValues={ candidate_processed } onFinish={handleUpdate}>
                     <Form.Item name={['first_name']} label="First Name">
                         <Input />
                     </Form.Item>
@@ -116,10 +214,22 @@ function BasicDetails(props) {
                         {user_location ? user_location.adminArea5.concat(', ').concat(user_location.adminArea3).concat(', ').concat(user_location.adminArea1) : 'Location not set'} {suffix}
                     </Form.Item>
 
-                    <Form.Item name={['user_dob']} label="Date of Birth">
+                    {/* <Form.Item name={['user_dob']} label="Date of Birth">
                         <DatePicker format={dateFormat} disabledDate={disabledDate} />
-                    </Form.Item>
+                    </Form.Item> */}
 
+                    <Form.Item name={['behance_link']} label="Behance">
+                        <Input type="url"  />
+                    </Form.Item>
+                    
+                    <Form.Item name={['linkedin_link']} label="Linkedin">
+                        <Input type="url" />
+                    </Form.Item>
+                    
+                    <Form.Item name={['dribble_link']} label="Dribbble">
+                        <Input type="url" />
+                    </Form.Item>
+                    
                     <Form.Item name={['user_summary']} label="Summary">
                         <Input.TextArea />
                     </Form.Item>
@@ -132,19 +242,48 @@ function BasicDetails(props) {
                 </Form>
                 :
                 <>
-                    <div className={styles.name}>{first_name + " " + last_name }</div>
+                    <div className={styles.name}>{first_name.concat(" ").concat(last_name) }</div>
                 </>
             }
-            
-            </div>
 
+            {
+                editMode ?
+                ''
+                :
+                <Space style={{marginTop: "5%"}} size="large">
+                    {
+                        behance_link ? 
+                        <a href={currentUser.entity.user_external_links.behance_link}><BehanceCircleFilled style={{ fontSize: '2.3em', color: '#000' }}/></a>
+                        :
+                        <BehanceCircleFilled style={{ fontSize: '2.3em' }}/>
+                    }
+
+                    {
+                        linkedin_link ? 
+                        <a to={currentUser.entity.user_external_links.linkedin_link}><LinkedinFilled style={{ fontSize: '2.3em', color: '#0072b1' }}/></a>
+                        :
+                        <LinkedinFilled style={{ fontSize: '2.3em' }}/>
+                    }
+
+                
+                    {
+                        dribble_link ? 
+                        <a to={currentUser.entity.user_external_links.dribble_link}><DribbbleCircleFilled style={{ fontSize: '2.3em', color: '#ea4c89' }}/></a>
+                        :
+                        <DribbbleCircleFilled style={{ fontSize: '2.3em' }}/>
+                    }
+
+                </Space>
+            }
+
+            </div>
 
             <div className={styles.detail}>
     
             <div className={styles.supplement}>
             { editMode ? '':    
                 <>        
-                    <HomeOutlined
+                    <EnvironmentOutlined
                         style={{
                         marginRight: 8,
                         }}

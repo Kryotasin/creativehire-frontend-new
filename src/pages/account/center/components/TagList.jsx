@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import axios from '../../../../umiRequestConfig';
 import styles from '../Center.less';
 
-
 const { Title, Text } = Typography;
+
+
 
 const TagList = ({ tagsInput, structure }) => {
     // const ref = useRef(null);
@@ -13,7 +14,7 @@ const TagList = ({ tagsInput, structure }) => {
     // const [inputVisible, setInputVisible] = useState(false);
     // const [inputValue, setInputValue] = useState('');
     const [selected, setSelected] = useState('');
-    const [tags, setTags] = useState(tagsInput)
+    const [tags, setTags] = useState(tagsInput);
     
     const colors = new Map();
   
@@ -98,7 +99,8 @@ const TagList = ({ tagsInput, structure }) => {
         if(item){
           const split = item.split('-');
           if(structure[3][split[0]].length > 0){
-            output.push(<Tag color={colors.get(split[1])} key={item} onClose={() => handleClose(split[0])} closable='true'>{structure[3][split[0]]}</Tag>)
+            // output.push(<Tag color={colors.get(split[1])} key={item} onClose={() => handleClose(split[0])} closable='false'>{structure[3][split[0]]}</Tag>)
+            output.push(<Tag color={colors.get(split[1])} key={item} >{structure[3][split[0]]}</Tag>)
           }
         }
       })
@@ -219,7 +221,7 @@ const TagList = ({ tagsInput, structure }) => {
     return (
       <div className={styles.tags}>
         <Title level={4}>Skills</Title>
-        <AutoComplete
+        {/* <AutoComplete
             placeholder="Add skill"
             options={autoCompleteValues}
             filterOption={(inputValue, option) =>
@@ -232,7 +234,7 @@ const TagList = ({ tagsInput, structure }) => {
               setSelected(value);
             }}
             value={selected}
-        />
+        /> */}
         {        
           generateKeys()
         }

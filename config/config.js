@@ -12,6 +12,8 @@ const {
   REACT_APP_AXIOS_API_V1,
   REACT_APP_ENV,
   GA_KEY,
+  REACT_APP_GEOCODE_REVERSE,
+  REACT_APP_S3_RESUME_BASE_URL_HOME
 } = process.env;
 export default defineConfig({
   hash: true,
@@ -265,7 +267,8 @@ export default defineConfig({
     REACT_APP_ENV: REACT_APP_ENV || false,
     REACT_APP_AXIOS_BASEURL: REACT_APP_AXIOS_BASEURL || 'https://api.creativehire.co',
     REACT_APP_AXIOS_API_V1: REACT_APP_AXIOS_API_V1 || 'api/v1/',
-    REACT_APP_GEOCODE_REVERSE: 'WOlzRkzBY3Fu04BkIlPNhQtMbDQI83S4',
+    REACT_APP_GEOCODE_REVERSE: REACT_APP_GEOCODE_REVERSE || 'WOlzRkzBY3Fu04BkIlPNhQtMbDQI83S4',
+    REACT_APP_S3_RESUME_BASE_URL_HOME: REACT_APP_S3_RESUME_BASE_URL_HOME || 'https://creativehire-resume.s3.us-east-2.amazonaws.com/',
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION:
       ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
   },

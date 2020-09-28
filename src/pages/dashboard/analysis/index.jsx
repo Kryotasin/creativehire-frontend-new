@@ -106,8 +106,8 @@ class Analysis extends Component {
               <Suspense fallback={null}>
                 {
                   this.state.match && this.state.structure && (<TopSearch 
-                match={this.state.match}
-                structure={this.state.structure}
+                  match={this.state.match}
+                  structure={this.state.structure}
                 />)
                 }
               </Suspense>

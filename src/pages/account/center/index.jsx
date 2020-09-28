@@ -1,13 +1,16 @@
-import { Card, Col, Divider, Row, Spin, Button } from 'antd';
+import { Card, Col, Divider, Row, Spin, Button, Space } from 'antd';
 import React, { Component } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { connect } from 'umi';
 
-import { EditOutlined, EditTwoTone } from '@ant-design/icons';
+import { EditOutlined, EditTwoTone, LoadingOutlined } from '@ant-design/icons';
+import styles from './Center.less';
 
 import TagList from './components/TagList';
 import BasicDetails from './components/BasicDetails';
 import ProfileTabPane from './components/ProfileTabPane';
+import FileUploader from './components/Profile/FileUploader';
+
 
 
 class Center extends Component {
@@ -66,9 +69,10 @@ class Center extends Component {
   }
 
   render() { 
-    const { currentUser = {}, currentUserLoading, structure = {}, projectList = {} } = this.props;
+    const { currentUser = {}, currentUserLoading, structure = {}, projectList = {}, fileuploading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
-    
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+console.log(fileuploading)
     return (
       <GridContent>
         <Row gutter={24}>
@@ -79,7 +83,7 @@ class Center extends Component {
                 marginBottom: 24,
               }}
               loading={dataLoading}
-              extra={<Button type="link" icon={this.state.editMode?<EditTwoTone />:<EditOutlined />} onClick={() => {
+              extra={<Button type="link" icon={this.state.editMode?<EditOutlined />:<EditTwoTone />} onClick={() => {
                 this.setState((prevState) => ({editMode: !prevState.editMode}))
               }}/>}
               title="Basic Details"
@@ -88,12 +92,24 @@ class Center extends Component {
                 <div>
                   <BasicDetails currentUser={currentUser} editMode={this.state.editMode} action={this.handler}/>
                   <Divider />
-                  {
-                    currentUser && structure ? 
-                    <TagList tagsInput={JSON.parse(JSON.stringify(currentUser.keywords.ck_keywords)) || []} structure={structure || []} />
-                    :
-                    <Spin />
-                  }
+                  
+                  <Space size="large" direction="vertical">
+                    <Space size="large">
+                      <FileUploader />
+                      {fileuploading ? 
+                          <Spin />
+                      :
+                      ''
+                      }
+                    </Space>
+                    {
+                      currentUser && structure ? 
+                      <TagList tagsInput={JSON.parse(JSON.stringify(currentUser.keywords.ck_keywords)) || []} structure={structure || []} />
+                      :
+                      <Spin />
+                    }
+                  </Space>
+
                   <Divider
                     style={{
                       marginTop: 16,
@@ -136,4 +152,5 @@ export default connect(({ loading, accountAndcenter }) => ({
   structure: accountAndcenter.structure,
   projectList: accountAndcenter.projectList,
   currentUserLoading: loading.effects['accountAndcenter/fetchCurrent'],
+  fileuploading: accountAndcenter.fileuploading
 }))(Center);
