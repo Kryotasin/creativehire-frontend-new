@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import CountriesAuthorized from './CountriesAuthorized';
 import WorkExperience from './WorkExperience';
+import Education from './Education';
 
 const Profile = () => {
 
@@ -9,6 +10,7 @@ const Profile = () => {
     <>
       <CountriesAuthorized />
       <WorkExperience />
+      <Education />
     </>
   );
 };

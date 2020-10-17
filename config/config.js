@@ -149,17 +149,20 @@ export default defineConfig({
               path: '/home',
               icon: 'home',
               component: '../pages/Welcome',
+              hideInMenu: true,
             },
             {
               name: 'How it Works',
               path: '/how-it-works',
               icon: 'question',
               component: '../pages/HowitWorks',
+              hideInMenu: true,
             },
             {
               path: '/scan',
               icon: 'scan',
               name: 'Scan',
+              hideInMenu: true,
               routes: [
                 {
                   path: '/scan',
@@ -229,12 +232,12 @@ export default defineConfig({
                   path: '/account/center',
                   component: './account/center',
                 },
-                {
-                  name: 'Account Settings',
-                  icon: 'setting',
-                  path: '/account/settings',
-                  component: './account/settings',
-                },
+                // {
+                //   name: 'Account Settings',
+                //   icon: 'setting',
+                //   path: '/account/settings',
+                //   component: './account/settings',
+                // },
               ],
             },
             {

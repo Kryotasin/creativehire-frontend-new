@@ -19,7 +19,7 @@ const titles = ["UX Designer", "UI Designer", "UX/UI Designer", "Interaction Des
 const types = ["Full-Time", "Part-Time", "Internship/Co-op", "Volunteer", "Pro Bono"]
 
 
-const WorkExperience = props => {
+const Education = props => {
   const { dispatch, projectList, candidate_store } = props;
   const [ titlesList, setTitleList ] = useState(undefined);
   const [ typesList, setTypesList ] = useState(undefined);
@@ -38,7 +38,7 @@ const WorkExperience = props => {
   useEffect(() => {
       
       if(candidate_store !== undefined && workList === undefined){
-          
+      console.log(candidate_store.candidate_work_exp)    
             const temp = [];
 
             if(candidate_store.candidate_work_exp){
@@ -67,10 +67,8 @@ const WorkExperience = props => {
     <div className="parts">
         <Divider />
       <div className={styles.name}>
-        Work History
+        Education
       </div>
-
-      <Text strong>Total Years of Experience (YoE):</Text> <Text mark>{yoe} years</Text>
 
     {
         initLoading ? 
@@ -145,13 +143,13 @@ const WorkExperience = props => {
             <Form
                 form={form}
                 layout="vertical"
-                name="new_work_exp"
+                name="new_education"
                 // initialValues={workMod}
                 preserve="false"
             >
                 <Form.Item
-                name="title"
-                label="Title"
+                name="school"
+                label="School"
                 rules={[
                     {
                     required: true,
@@ -177,12 +175,13 @@ const WorkExperience = props => {
                 </Form.Item>
 
                 <Form.Item
-                name="type"
-                label="Type of Employment"
+                name="degree"
+                label="Degree"
+                placeholder="Ex: Bachelor's Degreee"
                 rules={[
                     {
                     required: true,
-                    message: 'Please select one!',
+                    message: 'Please enter degree type!',
                     },
                 ]}
                 >
@@ -277,4 +276,4 @@ export default connect(({ accountAndcenter }) => ({
   currentUser: accountAndcenter.currentUser,
   candidate_store: accountAndcenter.candidate_store,
   projectList: accountAndcenter.projectList,
-}))(WorkExperience);
+}))(Education);
