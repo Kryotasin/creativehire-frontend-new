@@ -5,6 +5,8 @@ const Model = {
   state: {
     currentUser: {},
     projectList: [],
+    candidate_store: undefined,
+
     structure: {},
     fileuploading: false,
   },
@@ -12,12 +14,14 @@ const Model = {
     *fetchCurrent(payload, { call, put }) {
       const response = yield call(queryCurrent, payload.payload);
       
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
-      
+
       if(response.status === 200){
+
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response,
+        });
+        
         const struct = yield call(queryStructure);
 
         if(struct.status === 200){
@@ -63,12 +67,27 @@ const Model = {
           payload: val.payload
         });
         
-    }
+    },
+
+    // *uploadProfileData(payload, { call, put }) {
+    //   const response = yield call(resumeText, payload.payload);
+    
+    //   if(response.status === 200){
+    //     yield put({
+    //       type: 'saveProjects',
+    //       payload: response.data,
+    //     });
+    //   }
+    // },
 
   },
   reducers: {
     saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload.data || {} };
+      return { ...state, currentUser: action.payload.data || {}, candidate_store: action.payload.data.candidate || {} };
+    },
+
+    saveCandidateStore(state, action) {
+      return { ...state, candidate_store: action.payload || {} };
     },
 
     saveStructure(state, action) {

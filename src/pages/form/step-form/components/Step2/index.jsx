@@ -105,7 +105,7 @@ const Step2 = props => {
               style={{
                 minHeight: 32,
               }}
-              placeholder="Paste complete job decription here"
+              placeholder="Write a few lines about the project"
               rows={4}
             />
           </Form.Item>

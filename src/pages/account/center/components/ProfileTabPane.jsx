@@ -89,7 +89,7 @@ const operationTabList = [
           return (
             <Space size="large" direction="vertical">
               <Link to="/portfolio/new"><PlusOutlined />  Add New </Link>
-              <Projects projectList={projectList}/>
+              <Projects />
             </Space>
           );
         }

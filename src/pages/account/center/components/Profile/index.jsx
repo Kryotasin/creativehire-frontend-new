@@ -1,19 +1,14 @@
 import React, { useEffect } from 'react';
 
 import CountriesAuthorized from './CountriesAuthorized';
+import WorkExperience from './WorkExperience';
 
-import styles from './index.less';
-
-const Profile = props => {
-  // const { currentUser } = props;
-
-  useEffect(() => {
-    // console.log(currentUser)
-  })
+const Profile = () => {
 
   return (
     <>
       <CountriesAuthorized />
+      <WorkExperience />
     </>
   );
 };

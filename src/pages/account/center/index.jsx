@@ -9,7 +9,7 @@ import styles from './Center.less';
 import TagList from './components/TagList';
 import BasicDetails from './components/BasicDetails';
 import ProfileTabPane from './components/ProfileTabPane';
-import FileUploader from './components/Profile/FileUploader';
+import FileUploader from './components/FileUploader';
 
 
 
@@ -72,7 +72,7 @@ class Center extends Component {
     const { currentUser = {}, currentUserLoading, structure = {}, projectList = {}, fileuploading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-console.log(fileuploading)
+    
     return (
       <GridContent>
         <Row gutter={24}>
@@ -138,7 +138,7 @@ console.log(fileuploading)
           <Col lg={17} md={24}>
           {
             currentUser && structure ? 
-            <ProfileTabPane projectList={projectList || []} /> : <Spin />
+            <ProfileTabPane /> : <Spin />
           }
           </Col>
         </Row>

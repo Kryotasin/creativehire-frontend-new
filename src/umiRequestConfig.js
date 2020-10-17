@@ -9,8 +9,6 @@ const instance = axios.create({
     baseURL: REACT_APP_AXIOS_BASEURL
 });
 
-console.log(localStorage.getItem('accessToken'))
-
 let isRefreshing = false;
 
 let failedQueue = [];
@@ -37,9 +35,14 @@ if(localStorage.getItem('accessToken') !== null && localStorage.getItem('accessT
 // Also add/ configure interceptors && all the other cool stuff
 instance.interceptors.request.use(request => {
     // Edit request config
-    console.log(request)
-    const token = localStorage.getItem('accessToken');
-    instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    console.log(request);
+
+    if(localStorage.getItem('accessToken') !== null && localStorage.getItem('accessToken') !== undefined && localStorage.getItem('accessToken') !== 'undefined'){
+        console.log(jwt_decode(localStorage.getItem('accessToken')).exp - new Date().getTime()/1000)
+        const token = localStorage.getItem('accessToken');
+        instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+    
     return request;
 }, error => {
     // console.log(error);

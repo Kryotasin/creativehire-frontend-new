@@ -26,14 +26,15 @@ function BasicDetails(props) {
     const [ user_location, setLocation ] = useState(currentUser.entity.user_location);
     const [ user_summary, setSummary ] = useState(currentUser.entity.user_summary);
     
-    const [ behance_link, setBehance ] = useState(currentUser.entity.user_external_links.behance_link);
-    const [ linkedin_link, setLinkedin ] = useState(currentUser.entity.user_external_links.linkedin_link);
-    const [ dribble_link, setDribble ] = useState(currentUser.entity.user_external_links.dribble_link);
+    const [ behance_link, setBehance ] = useState(undefined);
+    const [ linkedin_link, setLinkedin ] = useState(undefined);
+    const [ dribble_link, setDribble ] = useState(undefined);
 
     const [profilepic, setProfilepic] = useState(undefined);
     // const [ user_dob, setDob ] = useState(currentUser.entity.user_dob);
 
     const [ candidate_processed, setCP ] = useState(undefined);
+
 
     const typeOfImage = (proc) => {
         return {"type" : "profile_pic", "process": proc, "fileName": currentUser.entity.user_img_salt}
@@ -61,6 +62,28 @@ function BasicDetails(props) {
            
         })
       }
+
+      
+    useEffect(()=>{
+        // let formBaseData = {
+        //     user_dob: currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null
+        //   }
+        // formBaseData = { ...currentUser.entity, ...formBaseData };
+        // currentUser.entity.user_dob = currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null;
+        if(currentUser.entity.user_external_links){
+            setBehance(currentUser.entity.user_external_links.behance_link);
+            setLinkedin(currentUser.entity.user_external_links.linkedin_link);
+            setDribble(currentUser.entity.user_external_links.dribble_link);
+            
+            const cu = currentUser.entity;
+            cu.behance_link = currentUser.entity.user_external_links.behance_link;
+            cu.linkedin_link = currentUser.entity.user_external_links.linkedin_link;
+            cu.dribble_link = currentUser.entity.user_external_links.dribble_link;
+
+            setCP(cu);
+        }
+        reloadProfilePicture();
+    },[]);
 
     const entityPictureUploadProps = {
         name: 'file',
@@ -159,20 +182,7 @@ function BasicDetails(props) {
     //     return current && current > moment().endOf('day');
     // }
 
-    useEffect(()=>{
-        // let formBaseData = {
-        //     user_dob: currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null
-        //   }
-        // formBaseData = { ...currentUser.entity, ...formBaseData };
-        // currentUser.entity.user_dob = currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null;
-        const cu = currentUser.entity;
-        cu.behance_link = behance_link;
-        cu.linkedin_link = linkedin_link;
-        cu.dribble_link = dribble_link;
 
-        setCP(cu);
-        reloadProfilePicture();
-    },[])
 
     return(
         <>
