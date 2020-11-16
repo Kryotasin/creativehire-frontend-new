@@ -70,7 +70,7 @@ export default defineConfig({
               name: 'Register',
               icon: 'smile',
               path: '/user/register',
-              component: './user/register',
+              component: './user/register-step-form',
             },
             {
               name: 'Confirm Email',

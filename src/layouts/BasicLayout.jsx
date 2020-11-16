@@ -101,6 +101,10 @@ const BasicLayout = (props) => {
       dispatch({
         type: 'user/fetchCurrent',
       });
+      
+      dispatch({
+        type: 'user/fetchMinJobs',
+      });
     }
   }, []);
   /**

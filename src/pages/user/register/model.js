@@ -4,7 +4,7 @@ import jwt_decode from 'jwt-decode';
 
 
 const Model = {
-  namespace: 'userAndregister',
+  namespace: 'userAndregisterOld',
   state: {
     status: undefined,
   },

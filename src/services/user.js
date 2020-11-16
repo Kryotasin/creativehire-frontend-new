@@ -9,6 +9,18 @@ export async function queryCurrent(params) {
   });
 }
 
+export async function queryMinJobs(user_id) {
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('job-provider/'),
+  {
+    user_id
+  }
+  ,{
+    headers: {
+      'Authorization': 'Bearer '.concat(localStorage.getItem('accessToken'))
+    }
+  });
+}
+
 
 export async function query() {
   return request('/api/users');

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Tooltip, message, Typography, DatePicker, Space, Upload } from 'antd';
 import { EnvironmentOutlined, EnvironmentTwoTone, BehanceCircleFilled, LinkedinFilled, DribbbleCircleFilled, UploadOutlined } from '@ant-design/icons';
-// import moment from 'moment';
 import jwt_decode from 'jwt-decode';
 
 import styles from '../Center.less';
@@ -48,7 +47,7 @@ function BasicDetails(props) {
             res => {
               if(res.status === 404){
                   // Set something to show lack of profile picture.
-                  setTimeout(() => message.error('Profile picture not found.'), 100);
+                  setTimeout(() => message.warning('Profile picture not found.'), 100);
               }
               else if (res.status === 200 && res.data !== 'ErrorResponseMetadata'){
                 setProfilepic(res.data);
@@ -56,7 +55,7 @@ function BasicDetails(props) {
               
               else if(res.status === 200 && res.data === 'ErrorResponseMetadata'){
                 // Set something to show lack of profile picture.
-                setTimeout(() => message.error('Profile picture not found.'), 100);
+                setTimeout(() => message.warning('Profile picture not found.'), 100);
             }      
     
            
@@ -70,6 +69,7 @@ function BasicDetails(props) {
         //   }
         // formBaseData = { ...currentUser.entity, ...formBaseData };
         // currentUser.entity.user_dob = currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null;
+        
         if(currentUser.entity.user_external_links){
             setBehance(currentUser.entity.user_external_links.behance_link);
             setLinkedin(currentUser.entity.user_external_links.linkedin_link);
@@ -82,8 +82,14 @@ function BasicDetails(props) {
 
             setCP(cu);
         }
-        reloadProfilePicture();
+        else{
+            setCP(currentUser.entity);
+        }
     },[]);
+
+    useEffect(() => {
+        reloadProfilePicture();
+    },[])
 
     const entityPictureUploadProps = {
         name: 'file',
@@ -119,6 +125,9 @@ function BasicDetails(props) {
         if(user_location){
             values.user_location = user_location;
         }
+        else{
+            values.user_location = null;
+        }
 
         const user_external_links = {
             "behance_link": values.behance_link,
@@ -148,6 +157,13 @@ function BasicDetails(props) {
             setBehance(res.data.user_external_links.behance_link);
             setLinkedin(res.data.user_external_links.linkedin_link);
             setDribble(res.data.user_external_links.dribble_link);
+            
+            const cu = res.data;
+            cu.behance_link = res.data.user_external_links.behance_link;
+            cu.linkedin_link = res.data.user_external_links.linkedin_link;
+            cu.dribble_link = res.data.user_external_links.dribble_link;
+
+            setCP(cu);
             // setDob(res.data.user_dob);
             action();
         });

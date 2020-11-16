@@ -6,7 +6,7 @@ export async function newJobpost(params, userID) {
     link_jp: params.jobLink,
     title: params.jobTitle,
     description: params.jobDescription,
-    job_poster_id: userID,
+    entity: userID,
   });
 }
 

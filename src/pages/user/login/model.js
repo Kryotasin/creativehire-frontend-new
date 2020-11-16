@@ -4,6 +4,15 @@ import jwt_decode from 'jwt-decode';
 import { AccountLogin } from './service';
 import { getPageQuery, setAuthority } from './utils/utils';
 
+let interval;
+
+function check(redirect){
+  if(localStorage.getItem('accessTokenDecoded') !== undefined || localStorage.getItem('accessTokenDecoded') !== null){
+    clearInterval(interval);
+    history.replace(redirect || '/home');
+  }
+}
+
 const Model = {
   namespace: 'userAndlogin',
   state: {
@@ -32,6 +41,7 @@ const Model = {
         localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
         localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
 
+        
 
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -51,8 +61,8 @@ const Model = {
             return;
           }
         }
-
-        history.replace(redirect || '/home');
+        
+        interval = setInterval(check, 1500, redirect);
       }
 
       if(response.status === 401){

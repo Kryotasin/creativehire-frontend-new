@@ -1,9 +1,27 @@
-import { Alert, Form, Radio, Button, Input, Popover, Progress, Select, message } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { Link, connect, history } from 'umi';
-import styles from './style.less';
+import { Alert, Form, Radio, Button, Input, Popover, Progress, Divider, message, Tooltip } from 'antd';
+import { connect, Link } from 'umi';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
-const FormItem = Form.Item;
+import styles from './index.less';
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 12 },
+    md: { span: 12 },
+    lg: { span: 12 },
+    xl: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 12 },
+    md: { span: 10, offset: 2 },
+    lg: { span: 10, offset: 2 },
+    xl: { span: 16, offset: 2 },
+  },
+};
+
 const passwordStatusMap = {
   ok: <div className={styles.success}>Stregth: Poor</div>,
   pass: <div className={styles.warning}>Stregth: Medium</div>,
@@ -27,10 +45,8 @@ const RegisterMessage = ({ content }) => (
 );
 
 
-
-const Register = props => {
-  const{ userAndregisterOld = {}, submitting} = props;
-  const { status, error } = userAndregisterOld;
+const Step1 = props => {
+  const{ dispatch, userAndregister = {}, submitting, errorMessages, status} = props;
 
   const [visible, setVisible] = useState(false);
   const [popover, setPopover] = useState(false);
@@ -38,23 +54,21 @@ const Register = props => {
   let interval;
   const [form] = Form.useForm();
 
+  const { validateFields } = form;
+
+  const onValidateForm = async () => {
+    const values = await validateFields();
+    
+    dispatch({
+      type: 'userAndregister/registerUserAndGetLinks',
+      payload: values,
+    });
+      
+  };
+
   useEffect(() => {
-    if (!userAndregisterOld) {
-      return;
-    }
-
-    const account = form.getFieldValue('email');
-
-    if (status === 201) {
-      message.success('Registration Successul');
-      history.push({
-        pathname: '/user/register-result',
-        state: {
-          account,
-        },
-      });
-    }
-  }, [userAndregisterOld]);
+    
+  }, [userAndregister])
 
   useEffect(
     () => () => {
@@ -75,16 +89,6 @@ const Register = props => {
     }
 
     return 'poor';
-  };
-
-  const onFinish = (values) => {
-    // console.log(props)
-    const { dispatch } = props;
-
-    dispatch({
-      type: 'userAndregisterOld/submit',
-      payload: { ...values },
-    });
   };
 
   const checkConfirm = (_, value) => {
@@ -139,12 +143,20 @@ const Register = props => {
   };
 
   return (
-    <div className={styles.main}>
-      <h3>Register</h3>
-      <Form form={form} name="UserRegister" onFinish={onFinish}>
-        <FormItem
-          // label="Email"
+    <>
+      <Form
+        {...formItemLayout}
+        form={form}
+        layout="horizontal"
+        className={styles.stepForm}
+        colon={false}
+        labelAlign="left"
+      >
+
+        <Form.Item
+          label="Email"
           name="email"
+          hasFeedback
           rules={[
             {
               required: true,
@@ -156,10 +168,39 @@ const Register = props => {
             },
           ]}
         >
-          <Input size="large" placeholder="Email" />
-        </FormItem>
+          <Input size="large" placeholder="don@norman.com" />
+        </Form.Item>
+
+        <Form.Item
+          hasFeedback
+          label={
+            <span>
+            Portfolio URL&nbsp;
+            <Tooltip title="Enter your portfolio URL so we can fetch your projects">
+              <InfoCircleOutlined />
+            </Tooltip>
+          </span>
+          }
+          
+          name="portfolio"
+          rules={[
+            {
+              // required: true,
+              message: 'Please enter your portfolio url',
+            },
+            {
+              type: 'url',
+              message: 'Invalid url',
+            },
+          ]}
+          
+          tooltip={{ title: 'Tooltip with customize icon', icon: <InfoCircleOutlined /> }}
+        >
+          <Input size="large" placeholder="http://www.myportfolio.com/" />
+        </Form.Item>
 
         <Form.Item name="type" label="Are you a recruiter?"
+         hasFeedback
           rules={[
             {
               required: true,
@@ -173,8 +214,9 @@ const Register = props => {
           </Radio.Group>
         </Form.Item>
 
-        <FormItem
-          // label="First Name"
+        <Form.Item
+          hasFeedback
+          label="First Name"
           name="firstName"
           rules={[
             {
@@ -183,11 +225,11 @@ const Register = props => {
             },
           ]}
         >
-          <Input size="large" placeholder="First Name" />
-        </FormItem>
+          <Input size="large" placeholder="Don" />
+        </Form.Item>
 
-        <FormItem
-          // label="Last Name"
+        <Form.Item
+          label="Last Name"
           name="lastName"
           rules={[
             {
@@ -196,8 +238,8 @@ const Register = props => {
             },
           ]}
         >
-          <Input size="large" placeholder="Last Name" />
-        </FormItem>
+          <Input size="large" placeholder="Norman" />
+        </Form.Item>
 
         { window.innerWidth > 855 ?
         <Popover
@@ -233,8 +275,9 @@ const Register = props => {
           placement="right"
           visible={visible}
         >
-          <FormItem
-            // label="Password"
+          <Form.Item
+            hasFeedback
+            label="Password"
             name="password"
             className={
               form.getFieldValue('password') &&
@@ -248,12 +291,13 @@ const Register = props => {
               },
             ]}
           >
-            <Input size="large" type="password" placeholder="Password. 6 characters, case sensitive" />
-          </FormItem>
+            <Input.Password size="large" placeholder="Password. 6 characters, case sensitive" />
+          </Form.Item>
         </Popover>
         :
-        <FormItem
-            // label="Password"
+        <Form.Item
+            hasFeedback
+            label="Password"
             name="password"
             className={
               form.getFieldValue('password') &&
@@ -267,13 +311,14 @@ const Register = props => {
               },
             ]}
           >
-            <Input size="large" type="password" placeholder="Password. 6 characters, case sensitive" />
-          </FormItem>
+            <Input.Password size="large" placeholder="Password. 6 characters, case sensitive" />
+          </Form.Item>
         }
 
         
-        <FormItem
-          // label="Confirm Password"
+        <Form.Item
+          hasFeedback
+          label="Confirm Password"
           name="confirm"
           rules={[
             {
@@ -285,33 +330,49 @@ const Register = props => {
             },
           ]}
         >
-          <Input size="large" type="password" placeholder="Confirm password" />
-        </FormItem>
+          <Input.Password size="large" placeholder="" />
+        </Form.Item>
 
-        {status === 400 && !submitting && (
-            <RegisterMessage content={error ? error : "Incorrect credentials"} />
-          )}
+        {(status === 400 || status === 500 || status === 401) && !submitting  && (
+            <RegisterMessage content={errorMessages ? errorMessages : "Incorrect credentials"} />
+        )}
 
-        <FormItem>
-          <Button
-            size="large"
-            loading={submitting}
-            className={styles.submit}
-            type="primary"
-            htmlType="submit"
-          >
-            Register
-          </Button>
-          <Link className={styles.login} to="/user/login">
-            Already registered?
-          </Link>
-        </FormItem>
+        <Form.Item label={            
+            <Button
+              size="large"
+              onClick={onValidateForm} 
+              loading={props.loading}
+              className={styles.submit}
+              type="primary"
+              htmlType="submit"
+            >
+              Register
+            </Button>}>
+
+            <Link className={styles.login} to="/user/login">
+              Already registered?
+            </Link>
+        </Form.Item>
       </Form>
-    </div>
+      <Divider
+        style={{
+          margin: '40px 0 24px',
+        }}
+      />
+      <div className={styles.desc}>
+        <h3>Help</h3>
+        <h4>What is this?</h4>
+        <p>
+          Enter your details and create an account on Creativehire. We will try to fetch your project links for the next step.
+        </p>
+      </div>
+    </>
   );
 };
 
-export default connect(({ userAndregisterOld, loading }) => ({
-  userAndregisterOld,
-  submitting: loading.effects['userAndregisterOld/submit'],
-}))(Register);
+export default connect(({ userAndregister }) => ({
+  link: userAndregister.link,
+  loading: userAndregister.loading,
+  errorMessages: userAndregister.errorMessages,
+  status: userAndregister.status
+}))(Step1);

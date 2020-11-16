@@ -68,7 +68,6 @@ const Model = {
       });
 
       const newproj = yield call(newProject, payload);
-      console.log(newproj)
 
       if (newproj.status === 201) {
         yield put({

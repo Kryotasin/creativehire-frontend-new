@@ -1,9 +1,11 @@
-import { queryCurrent } from '@/services/user';
+import { queryCurrent, queryMinJobs } from '@/services/user';
 
 const UserModel = {
   namespace: 'user',
   state: {
     currentUser: {},
+    reccommended_jobs: undefined,
+    all_jobs: undefined
   },
   effects: {
 
@@ -17,11 +19,25 @@ const UserModel = {
       });
     },
 
+    *fetchMinJobs(_, { call, put }) {
+
+      const response = yield call(queryMinJobs, JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
+
+      yield put({
+        type: 'saveMinJobs',
+        payload: response.data,
+      });
+    },
+
 
   },
   reducers: {
     saveCurrentUser(state, action) {
       return { ...state, currentUser: action.payload || {} };
+    },
+
+    saveMinJobs(state, action) {
+      return { ...state, reccommended_jobs: action.payload || {}, all_jobs: action.payload.all_jobs || {} };
     },
 
     changeNotifyCount(

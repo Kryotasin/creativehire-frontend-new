@@ -21,6 +21,7 @@ const formItemLayout = {
 const Step2 = props => {
   const [form] = Form.useForm();
   const { data, dispatch, submitting } = props;
+  const [img_counter, setImgCount] = useState(0);
 
   if (!data) {
     return <Spin />;
@@ -40,7 +41,6 @@ const Step2 = props => {
 
   const { title, description, img_list } = data;
 
-  const [img_counter, setImgCount] = useState(0);
 
   const onValidateForm = async () => {
     const values = await validateFields();

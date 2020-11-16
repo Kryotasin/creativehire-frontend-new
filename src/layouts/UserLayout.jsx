@@ -45,7 +45,7 @@ const UserLayout = (props) => {
                 <span className={styles.title}>Creativehire</span>
               </Link>
             </div>
-            <div className={styles.desc}>Evaluate the strength of your portfolio</div>
+            <div className={styles.desc}>Disrupting the UX hiring process</div>
           </div>
           {children}
         </div>
