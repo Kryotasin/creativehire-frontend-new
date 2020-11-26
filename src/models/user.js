@@ -1,10 +1,12 @@
-import { queryCurrent, queryMinJobs } from '@/services/user';
+import { queryCurrent, queryRecommendedJobs, querySavedJobs, queryRandomJobs } from '@/services/user';
 
 const UserModel = {
   namespace: 'user',
   state: {
     currentUser: {},
     reccommended_jobs: undefined,
+    saved_jobs: undefined,
+    random_jobs: undefined,
     all_jobs: undefined
   },
   effects: {
@@ -19,12 +21,32 @@ const UserModel = {
       });
     },
 
-    *fetchMinJobs(_, { call, put }) {
+    *fetchRecommendedJobs(_, { call, put }) {
 
-      const response = yield call(queryMinJobs, JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
+      const response = yield call(queryRecommendedJobs, JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
 
       yield put({
-        type: 'saveMinJobs',
+        type: 'saveRecommendedJobs',
+        payload: response.data,
+      });
+    },
+
+    *fetchSavedJobs(_, { call, put }) {
+
+      const response = yield call(querySavedJobs, JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
+
+      yield put({
+        type: 'saveSavedJobs',
+        payload: response.data,
+      });
+    },
+
+    *fetchRandomJobs(_, { call, put }) {
+
+      const response = yield call(queryRandomJobs, JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
+
+      yield put({
+        type: 'saveRandomJobs',
         payload: response.data,
       });
     },
@@ -36,8 +58,16 @@ const UserModel = {
       return { ...state, currentUser: action.payload || {} };
     },
 
-    saveMinJobs(state, action) {
-      return { ...state, reccommended_jobs: action.payload || {}, all_jobs: action.payload.all_jobs || {} };
+    saveRecommendedJobs(state, action) {
+      return { ...state, reccommended_jobs: action.payload || {} };
+    },
+
+    saveSavedJobs(state, action) {
+      return { ...state, saved_jobs: action.payload || {} };
+    },
+
+    saveRandomJobs(state, action) {
+      return { ...state, random_jobs: action.payload || {} };
     },
 
     changeNotifyCount(

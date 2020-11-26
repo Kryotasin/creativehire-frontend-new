@@ -18,6 +18,7 @@ const Model = {
   state: {
     status: undefined,
     error: undefined,
+    // submitting: false
   },
   effects: {
     *login({ payload }, { call, put }) {
@@ -31,6 +32,12 @@ const Model = {
         }); // Login successfully
 
       if (response.status === 200) {
+
+        // yield put({
+        //   type: 'changeSubmiting',
+        //   submitting: true,
+        // }); // Change submitting to True
+
         message.success('Login succesful!');        
 
         // Set in localStorage
@@ -62,6 +69,11 @@ const Model = {
           }
         }
         
+        // yield put({
+        //   type: 'changeSubmiting',
+        //   submitting: false,
+        // }); // Change submitting to False
+
         interval = setInterval(check, 1500, redirect);
       }
 
@@ -83,6 +95,10 @@ const Model = {
     changeLoginStatus(state, { payload, errors }) {
       setAuthority(payload.currentAuthority);
       return { ...state, status: payload.status, error: errors };
+    },
+
+    changeSubmiting(state, payload) {
+      return { ...state, submitting: payload}
     },
   },
 };

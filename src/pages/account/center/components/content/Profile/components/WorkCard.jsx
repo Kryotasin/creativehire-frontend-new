@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { List, Typography, Button, Modal, Form, DatePicker, Input, Select } from 'antd';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/en_US';
-import axios from '../../../../../../umiRequestConfig';
+import axios from '../../../../../../../umiRequestConfig';
 
 import styles from '../index.less';
 

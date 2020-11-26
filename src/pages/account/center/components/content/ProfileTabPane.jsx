@@ -8,7 +8,7 @@ import Articles from './Articles';
 import Applications from './Applications';
 import Profile from './Profile';
 
-import styles from '../Center.less';
+import styles from '../../Center.less';
 
 const operationTabList = [
     {

@@ -28,12 +28,10 @@ const FileUploader = props => {
     onChange(info) {
       // if (info.file.status !== 'uploading') {        
       // }
-      
+      // console.log(info.fileList.filter(file => file.type !== "application/pdf"));
+
+
       if (info.file.status === 'done') {
-        dispatch({
-          type: 'accountAndcenter/setfileuploading',
-          payload: true
-        });
 
         dispatch({
           type: 'accountAndcenter/uploadResumeKeywords',
@@ -44,10 +42,6 @@ const FileUploader = props => {
           }
         });
 
-        dispatch({
-          type: 'accountAndcenter/setfileuploading',
-          payload: false
-        });
         message.success(`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
         console.log(info)
@@ -55,10 +49,20 @@ const FileUploader = props => {
       }
 
     },
-    beforeUpload(fileList) {
-      delete fileList[0];
+    beforeUpload(file) {
+      const isPDF = file.type === 'application/pdf';
+      
+      if(!isPDF){
+        message.error('Upload only PDF documents < 1MB', 5);
+      }
 
-      console.log(fileList)
+      const isLt1M = file.size / 1024 / 1024 < 1;
+
+      if(!isLt1M){
+        message.error('File should be smaller than 1 MB.', 5);
+      }
+
+      return isPDF && isLt1M;
     },
     defaultFileList: [
       {

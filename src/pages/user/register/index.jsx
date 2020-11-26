@@ -1,5 +1,7 @@
 import { Alert, Form, Radio, Button, Input, Popover, Progress, Select, message } from 'antd';
 import React, { useState, useEffect } from 'react';
+
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Link, connect, history } from 'umi';
 import styles from './style.less';
 
@@ -267,7 +269,7 @@ const Register = props => {
               },
             ]}
           >
-            <Input size="large" type="password" placeholder="Password. 6 characters, case sensitive" />
+            <Input size="large" type="password" placeholder="Password. 6 characters, case sensitive"/>
           </FormItem>
         }
 

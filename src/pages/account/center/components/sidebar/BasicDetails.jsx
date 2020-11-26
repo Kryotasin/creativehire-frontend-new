@@ -3,9 +3,9 @@ import { Form, Input, Button, Tooltip, message, Typography, DatePicker, Space, U
 import { EnvironmentOutlined, EnvironmentTwoTone, BehanceCircleFilled, LinkedinFilled, DribbbleCircleFilled, UploadOutlined } from '@ant-design/icons';
 import jwt_decode from 'jwt-decode';
 
-import styles from '../Center.less';
-import axios from '../../../../umiRequestConfig';
-import temp from '../../../../assets/anony.png';
+import styles from '../../Center.less';
+import axios from '../../../../../umiRequestConfig';
+import temp from '../../../../../assets/anony.png';
 
 // const dateFormat = 'YYYY/MM/DD';
 
@@ -19,24 +19,30 @@ const layout = {
 
 function BasicDetails(props) {
 
-    const { currentUser, editMode, action } = props;
-    const [ first_name, setFirstName ] = useState(currentUser.entity.first_name);
-    const [ last_name, setLastName ] = useState(currentUser.entity.last_name);
-    const [ user_location, setLocation ] = useState(currentUser.entity.user_location);
-    const [ user_summary, setSummary ] = useState(currentUser.entity.user_summary);
+    const { entity, editMode, action } = props;
+    const [ first_name, setFirstName ] = useState(entity.first_name);
+    const [ last_name, setLastName ] = useState(entity.last_name);
+    const [ user_location, setLocation ] = useState(entity.user_location);
+    const [ user_summary, setSummary ] = useState(entity.user_summary);
     
     const [ behance_link, setBehance ] = useState(undefined);
     const [ linkedin_link, setLinkedin ] = useState(undefined);
     const [ dribble_link, setDribble ] = useState(undefined);
 
     const [profilepic, setProfilepic] = useState(undefined);
-    // const [ user_dob, setDob ] = useState(currentUser.entity.user_dob);
+    // const [ user_dob, setDob ] = useState(entity.user_dob);
 
     const [ candidate_processed, setCP ] = useState(undefined);
 
+    // useEffect(() => {
+    //     if(entity){
+    //         console.log(typeof(entity))
+    //     }
+    // }, [entity])
+
 
     const typeOfImage = (proc) => {
-        return {"type" : "profile_pic", "process": proc, "fileName": currentUser.entity.user_img_salt}
+        return {"type" : "profile_pic", "process": proc, "fileName": entity.user_img_salt}
       }
   
       const reloadProfilePicture = () => {
@@ -65,25 +71,25 @@ function BasicDetails(props) {
       
     useEffect(()=>{
         // let formBaseData = {
-        //     user_dob: currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null
+        //     user_dob: entity.user_dob ? moment(entity.user_dob) : null
         //   }
-        // formBaseData = { ...currentUser.entity, ...formBaseData };
-        // currentUser.entity.user_dob = currentUser.entity.user_dob ? moment(currentUser.entity.user_dob) : null;
+        // formBaseData = { ...entity, ...formBaseData };
+        // entity.user_dob = entity.user_dob ? moment(entity.user_dob) : null;
         
-        if(currentUser.entity.user_external_links){
-            setBehance(currentUser.entity.user_external_links.behance_link);
-            setLinkedin(currentUser.entity.user_external_links.linkedin_link);
-            setDribble(currentUser.entity.user_external_links.dribble_link);
+        if(entity.user_external_links){
+            setBehance(entity.user_external_links.behance_link);
+            setLinkedin(entity.user_external_links.linkedin_link);
+            setDribble(entity.user_external_links.dribble_link);
             
-            const cu = currentUser.entity;
-            cu.behance_link = currentUser.entity.user_external_links.behance_link;
-            cu.linkedin_link = currentUser.entity.user_external_links.linkedin_link;
-            cu.dribble_link = currentUser.entity.user_external_links.dribble_link;
+            const cu = entity;
+            cu.behance_link = entity.user_external_links.behance_link;
+            cu.linkedin_link = entity.user_external_links.linkedin_link;
+            cu.dribble_link = entity.user_external_links.dribble_link;
 
             setCP(cu);
         }
         else{
-            setCP(currentUser.entity);
+            setCP(entity);
         }
     },[]);
 
@@ -141,7 +147,7 @@ function BasicDetails(props) {
 
         // dt = datetime.strptime('Tue Sep 08 2020 23:35:02 GMT-0700', '%a %b %d %Y %X %Z%z')  
         axios.put(REACT_APP_AXIOS_API_V1.concat('entities/update-personal-details/').concat(btoa(jwt_decode(localStorage.getItem('accessToken')).user_id)),{
-            'email': currentUser.entity.email,
+            'email': entity.email,
             'first_name': values.first_name,
             'last_name': values.last_name,
             'user_location': values.user_location,
@@ -279,14 +285,14 @@ function BasicDetails(props) {
                 <Space style={{marginTop: "5%"}} size="large">
                     {
                         behance_link ? 
-                        <a href={currentUser.entity.user_external_links.behance_link}><BehanceCircleFilled style={{ fontSize: '2.3em', color: '#000' }}/></a>
+                        <a href={entity.user_external_links.behance_link}><BehanceCircleFilled style={{ fontSize: '2.3em', color: '#000' }}/></a>
                         :
                         <BehanceCircleFilled style={{ fontSize: '2.3em' }}/>
                     }
 
                     {
                         linkedin_link ? 
-                        <a to={currentUser.entity.user_external_links.linkedin_link}><LinkedinFilled style={{ fontSize: '2.3em', color: '#0072b1' }}/></a>
+                        <a to={entity.user_external_links.linkedin_link}><LinkedinFilled style={{ fontSize: '2.3em', color: '#0072b1' }}/></a>
                         :
                         <LinkedinFilled style={{ fontSize: '2.3em' }}/>
                     }
@@ -294,7 +300,7 @@ function BasicDetails(props) {
                 
                     {
                         dribble_link ? 
-                        <a to={currentUser.entity.user_external_links.dribble_link}><DribbbleCircleFilled style={{ fontSize: '2.3em', color: '#ea4c89' }}/></a>
+                        <a to={entity.user_external_links.dribble_link}><DribbbleCircleFilled style={{ fontSize: '2.3em', color: '#ea4c89' }}/></a>
                         :
                         <DribbbleCircleFilled style={{ fontSize: '2.3em' }}/>
                     }
@@ -314,7 +320,7 @@ function BasicDetails(props) {
                         marginRight: 8,
                         }}
                     />
-                    { currentUser && user_location ? user_location.adminArea5.concat(', ').concat(user_location.adminArea3).concat(', ').concat(user_location.adminArea1) :
+                    { entity && user_location ? user_location.adminArea5.concat(', ').concat(user_location.adminArea3).concat(', ').concat(user_location.adminArea1) :
                         <Text strong>Location not set</Text>
                     }
                 </>

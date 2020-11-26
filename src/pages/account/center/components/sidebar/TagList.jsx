@@ -1,26 +1,30 @@
-import { Tag, AutoComplete, message, Typography } from 'antd';
-import React, { useState } from 'react';
+import { Tag, AutoComplete, message, Typography, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
 
-import axios from '../../../../umiRequestConfig';
-import styles from '../Center.less';
+import axios from '../../../../../umiRequestConfig';
+import styles from '../../Center.less';
 
 const { Title, Text } = Typography;
 
 
 
-const TagList = ({ tagsInput, structure }) => {
+const TagList = ({ keywords_part_input, structure }) => {
     // const ref = useRef(null);
     // const [newTags, setNewTags] = useState([]);
     // const [inputVisible, setInputVisible] = useState(false);
     // const [inputValue, setInputValue] = useState('');
-    const [selected, setSelected] = useState('');
-    const [tags, setTags] = useState(tagsInput);
+    // const [selected, setSelected] = useState('');
+    const [tags, setTags] = useState({});
     
     const colors = new Map();
   
     colors.set('custom', '#f50');
     colors.set('resume', '#87d068');
     colors.set('projects', '#108ee9');
+
+    useEffect(() => {
+      setTags(keywords_part_input.ck_keywords);
+    }, [keywords_part_input]);
   
     // const showInput = () => {
     //   setInputVisible(true);
@@ -53,9 +57,9 @@ const TagList = ({ tagsInput, structure }) => {
     //   setInputValue('');
     // };
 
-    const skillAPI = info => {
-        return axios.put(REACT_APP_AXIOS_API_V1.concat('entities/candidate-complete-details/').concat(btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id)), info)
-    }
+    // const skillAPI = info => {
+    //     return axios.put(REACT_APP_AXIOS_API_V1.concat('entities/candidate-complete-details/').concat(btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id)), info)
+    // }
   
     const getSets = () => {
       const temp = {};
@@ -79,18 +83,18 @@ const TagList = ({ tagsInput, structure }) => {
       });
     };
 
-    const handleClose = (removedTag ) => {
-        const item = {
-            'type': 'skill-remove',
-            'skillType': 'custom',
-            'skill': removedTag.toString()
-        }
-        skillAPI(item)
-        .then(res => {
-          message.warn(`${structure[3][removedTag]} has been removed!`);
-          setTags(res.data)
-        })
-    }
+    // const handleClose = (removedTag ) => {
+    //     const item = {
+    //         'type': 'skill-remove',
+    //         'skillType': 'custom',
+    //         'skill': removedTag.toString()
+    //     }
+    //     skillAPI(item)
+    //     .then(res => {
+    //       message.warn(`${structure[3][removedTag]} has been removed!`);
+    //       setTags(res.data)
+    //     })
+    // }
   
     const generateTags = arr => {
       const output = [];
@@ -154,69 +158,69 @@ const TagList = ({ tagsInput, structure }) => {
       return output;
     }
   
-    const renderItem = (item, cat) => (
+    // const renderItem = (item, cat) => (
       
-      <div
-        key={item}
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        {item}
-        <span style={{ fontSize: '0.8em' }}>{cat}</span>
-      </div>
-    );
+    //   <div
+    //     key={item}
+    //     style={{
+    //       display: 'flex',
+    //       justifyContent: 'space-between',
+    //     }}
+    //   >
+    //     {item}
+    //     <span style={{ fontSize: '0.8em' }}>{cat}</span>
+    //   </div>
+    // );
   
-    const onSelect = (label, option) => {
-      const { item, category, subcategory, index } = option;
-      setSelected(item);
-      // updateSkills((prev) => [...prev, `${index},-1,-1`]);
+    // const onSelect = (label, option) => {
+    //   const { item, category, subcategory, index } = option;
+    //   setSelected(item);
+    //   // updateSkills((prev) => [...prev, `${index},-1,-1`]);
       
-      const repeat = tags.custom.includes(index);
+    //   const repeat = tags.custom.includes(index);
       
-      if(repeat) { 
-        message.error(`${item} is already present.`)
-      }
-      else{
-          const data = {
-            'type': 'skill',
-            'skillType': 'custom',
-            'skill': index
-          }
-        skillAPI(data)
-        .then(res => {
+    //   if(repeat) { 
+    //     message.error(`${item} is already present.`)
+    //   }
+    //   else{
+    //       const data = {
+    //         'type': 'skill',
+    //         'skillType': 'custom',
+    //         'skill': index
+    //       }
+    //     skillAPI(data)
+    //     .then(res => {
 
-          if(res.data === "Duplicate entry for skill"){
-            message.error(`${item} is already present.`)
-          }
-          else{
-            setTags(res.data);
-            message.success(`${structure[3][index]} has been added!`);
-          }
-        })
-        .catch(err => {
-          message.error(err)
-        })
-      }
+    //       if(res.data === "Duplicate entry for skill"){
+    //         message.error(`${item} is already present.`)
+    //       }
+    //       else{
+    //         setTags(res.data);
+    //         message.success(`${structure[3][index]} has been added!`);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       message.error(err)
+    //     })
+    //   }
       
   
-    };
+    // };
   
-    const autoCompleteValues = structure[3]
-      .filter((item) => item.length > 0)
-      .map((item) => {
-        const index = structure[3].indexOf(item);
-        const category = structure[0][index];
-        const subcategory = structure[1][index];
-        return {
-          value: renderItem(item, category),
-          item,
-          category,
-          subcategory,
-          index,
-        };
-      });
+    // const autoCompleteValues = structure[3]
+    //   .filter((item) => item.length > 0)
+    //   .map((item) => {
+    //     const index = structure[3].indexOf(item);
+    //     const category = structure[0][index];
+    //     const subcategory = structure[1][index];
+    //     return {
+    //       value: renderItem(item, category),
+    //       item,
+    //       category,
+    //       subcategory,
+    //       index,
+    //     };
+    //   });
   
     return (
       <div className={styles.tags}>
@@ -236,7 +240,10 @@ const TagList = ({ tagsInput, structure }) => {
             value={selected}
         /> */}
         {        
+          tags !== {} ? 
           generateKeys()
+          :
+          <Spin />
         }
       </div>
     );

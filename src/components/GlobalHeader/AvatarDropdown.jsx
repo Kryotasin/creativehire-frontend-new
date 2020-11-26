@@ -50,12 +50,12 @@ class AvatarDropdown extends React.Component {
             My Account
           </Menu.Item>
         )}
-        {menu && (
+        {/* {menu && (
           <Menu.Item key="settings">
             <SettingOutlined />
             Account settings
           </Menu.Item>
-        )}
+        )} */}
         {menu && <Menu.Divider />}
 
         <Menu.Item key="logout">

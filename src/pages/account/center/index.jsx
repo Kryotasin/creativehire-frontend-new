@@ -6,10 +6,10 @@ import { connect } from 'umi';
 import { EditOutlined, EditTwoTone, LoadingOutlined } from '@ant-design/icons';
 import styles from './Center.less';
 
-import TagList from './components/TagList';
-import BasicDetails from './components/BasicDetails';
-import ProfileTabPane from './components/ProfileTabPane';
-import FileUploader from './components/FileUploader';
+import TagList from './components/sidebar/TagList';
+import BasicDetails from './components/sidebar/BasicDetails';
+import ProfileTabPane from './components/content/ProfileTabPane';
+import FileUploader from './components/sidebar/FileUploader';
 
 
 
@@ -49,12 +49,7 @@ class Center extends Component {
     if (localStorage.getItem('accessTokenDecoded')){
       userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
     }
-
-    dispatch({
-      type: 'accountAndcenter/fetchCurrent',
-      payload: {userID}
-    });
-
+    
     dispatch({
       type: 'accountAndcenter/fetchProjects',
       payload: {userID}
@@ -69,7 +64,7 @@ class Center extends Component {
   }
 
   render() { 
-    const { currentUser = {}, currentUserLoading, structure = {}, projectList = {}, fileuploading } = this.props;
+    const { currentUser = {}, entity_part = {}, keywords_part = {}, currentUserLoading, structure = {}, projectList = {}, fileuploading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
     
@@ -90,21 +85,21 @@ class Center extends Component {
             >
               {!dataLoading && (
                 <div>
-                  <BasicDetails currentUser={currentUser} editMode={this.state.editMode} action={this.handler}/>
+                  <BasicDetails entity={entity_part} editMode={this.state.editMode} action={this.handler}/>
                   <Divider />
                   
                   <Space size="large" direction="vertical">
                     <Space size="large">
                       <FileUploader />
-                      {fileuploading ? 
+                      {/* {fileuploading ? 
                           <Spin />
                       :
                       ''
-                      }
+                      } */}
                     </Space>
                     {
                       currentUser && structure ? 
-                      <TagList tagsInput={JSON.parse(JSON.stringify(currentUser.keywords.ck_keywords)) || []} structure={structure || []} />
+                      <TagList keywords_part_input={keywords_part || []} structure={structure || []} />
                       :
                       <Spin />
                     }
@@ -149,6 +144,9 @@ class Center extends Component {
 
 export default connect(({ loading, accountAndcenter }) => ({
   currentUser: accountAndcenter.currentUser,
+  entity_part: accountAndcenter.entity_part,
+  keywords_part: accountAndcenter.keywords_part,
+  candidate_part: accountAndcenter.candidate_part,
   structure: accountAndcenter.structure,
   projectList: accountAndcenter.projectList,
   currentUserLoading: loading.effects['accountAndcenter/fetchCurrent'],

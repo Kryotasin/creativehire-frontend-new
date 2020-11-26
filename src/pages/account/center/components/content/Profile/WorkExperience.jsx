@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import locale from 'antd/es/date-picker/locale/en_US';
 import moment from 'moment';
 import styles from './index.less';
-import axios from '../../../../../umiRequestConfig';
+import axios from '../../../../../../umiRequestConfig';
 import WorkCard from './components/WorkCard';
 
 const { Text } = Typography;
@@ -20,7 +20,7 @@ const types = ["Full-Time", "Part-Time", "Internship/Co-op", "Volunteer", "Pro B
 
 
 const WorkExperience = props => {
-  const { dispatch, projectList, candidate_store } = props;
+  const { dispatch, projectList, candidate_part } = props;
   const [ titlesList, setTitleList ] = useState(undefined);
   const [ typesList, setTypesList ] = useState(undefined);
 
@@ -37,21 +37,22 @@ const WorkExperience = props => {
 
   useEffect(() => {
       
-      if(candidate_store !== undefined && workList === undefined){
+      if(Object.keys(candidate_part).length !== 0 && workList === undefined){
           
             const temp = [];
 
-            if(candidate_store.candidate_work_exp){
-                Object.entries(candidate_store.candidate_work_exp).forEach(e => {
+            if(candidate_part.candidate_work_exp){
+                Object.entries(candidate_part.candidate_work_exp).forEach(e => {
                     temp.push(e[1]);
                 })
             }
             setWorkList(temp);
             
-            setYoe((candidate_store.candidate_yoe * 0.000114155).toFixed(2));
+            setYoe((candidate_part.candidate_yoe * 0.000114155).toFixed(2));
             setInitLoading(false);
       }    
-  }, [candidate_store]);
+
+  }, [candidate_part]);
 
 
   const handleCancel = () => {
@@ -82,9 +83,9 @@ const WorkExperience = props => {
                 temp.push(x[1]);
             })
             setWorkList(temp);
-        }} workList={workList} titles={titles} types={types} projectList={projectList} candidate_store={candidate_store} test={async (e) => { 
+        }} workList={workList} titles={titles} types={types} projectList={projectList} candidate_part={candidate_part} test={async (e) => { 
             return dispatch({
-                type: 'accountAndcenter/saveCandidateStore',
+                type: 'accountAndcenter/saveCandidatePart',
                 payload: e
               });
               
@@ -275,6 +276,6 @@ const WorkExperience = props => {
 
 export default connect(({ accountAndcenter }) => ({
   currentUser: accountAndcenter.currentUser,
-  candidate_store: accountAndcenter.candidate_store,
+  candidate_part: accountAndcenter.candidate_part,
   projectList: accountAndcenter.projectList,
 }))(WorkExperience);

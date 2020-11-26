@@ -4,8 +4,12 @@ const Model = {
   namespace: 'accountAndcenter',
   state: {
     currentUser: {},
+
+    entity_part: {},
+    candidate_part: {},
+    keywords_part: {},
+    
     projectList: [],
-    candidate_store: undefined,
 
     structure: {},
     fileuploading: false,
@@ -43,31 +47,34 @@ const Model = {
       }
     },
 
+    *fetchStructure(payload, { call, put }) {
+      const struct = yield call(queryStructure);
+
+        if(struct.status === 200){
+          yield put({
+            type: 'saveStructure',
+            payload: struct,
+          });
+        }
+    },
+
     *uploadResumeKeywords(payload, { call, put }) {
       const response = yield call(resumeText, payload.payload);
     
       if(response.status === 200){
-        // yield put({
-        //   type: 'saveProjects',
-        //   payload: response.data,
-        // });
-        console.log(response)
-        // yield put({
-        //   type: 'saveFileUploading',
-        //   payload: false
-        // });
+        yield put({
+          type: 'saveKeywordsPart',
+          payload: response.data,
+        });
       }
-        // console.log(response)
     },
 
-    *setfileuploading(val, { put }) {
-    
-        yield put({
-          type: 'saveFileUploading',
-          payload: val.payload
-        });
-        
-    },
+    // *setfileuploading(val, { put }) {
+    //     yield put({
+    //       type: 'saveFileUploading',
+    //       payload: val.payload
+    //     });
+    // },
 
     // *uploadProfileData(payload, { call, put }) {
     //   const response = yield call(resumeText, payload.payload);
@@ -83,11 +90,19 @@ const Model = {
   },
   reducers: {
     saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload.data || {}, candidate_store: action.payload.data.candidate || {} };
+      return { ...state, currentUser: action.payload.data || {}, entity_part: action.payload.data.entity || {}, candidate_part: action.payload.data.candidate || {}, keywords_part: action.payload.data.keywords || {}  };
     },
 
-    saveCandidateStore(state, action) {
-      return { ...state, candidate_store: action.payload || {} };
+    saveEntityPart(state, action) {
+      return { ...state, entity_part: action.payload || {} };
+    },
+
+    saveCandidatePart(state, action) {
+      return { ...state, candidate_part: action.payload || {} };
+    },
+
+    saveKeywordsPart(state, action) {
+      return { ...state, keywords_part: action.payload || {} };
     },
 
     saveStructure(state, action) {
