@@ -18,7 +18,6 @@ const Model = {
     *fetchCurrent(payload, { call, put }) {
       const response = yield call(queryCurrent, payload.payload);
       
-
       if(response.status === 200){
 
         yield put({

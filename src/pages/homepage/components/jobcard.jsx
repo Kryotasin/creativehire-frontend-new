@@ -67,7 +67,7 @@ const JobCardData = (props) => {
                         <Col xs={2} sm={4} md={6} lg={6} xl={8}><img src={jobData.jobpost_data.jobpost_img} width={100} alt="Tes"/></Col>
                   </Row>
                   <Row gutter={[16, 16]}>
-                        <Col xs={2} sm={4} md={6} lg={6} xl={8}>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                               <Space direction='vertical' size={0}>                        
                                     <Title level={2}>{jobData.jobpost_data.jobpost_company}</Title>
                                     <Title level={4}>{printJobTitle(jobData.jobpost_data.jobpost_title)}</Title>
@@ -75,55 +75,53 @@ const JobCardData = (props) => {
                               </Space>
                         </Col>
                   </Row>
-                  <Row gutter={[16, 36]}>
-                        <Col xs={2} sm={2} md={6} lg={6} xl={8}>
-                             <Space size='middle'>
-                                    <Space size='middle'>
-                                          <Text strong>H1B</Text>
-                                                {
-                                                      jobData.jobpost_data.jobpost_sponsors_h1b ?
-                                                      <CheckOutlined />
-                                                      :
-                                                      <CloseCircleTwoTone twoToneColor="#ff4d4f"/>
-                                                }
-                                    </Space>
+                  <Row gutter={[16, 36]} align="top" >
+                        <Col xs={2} sm={2} md={4} lg={6} xl={8}>
+                              <div className={styles.conditions}>
+                                    <Text strong>H1B</Text>
+                                    {
+                                          jobData.jobpost_data.jobpost_sponsors_h1b ?
+                                          <CheckOutlined />
+                                          :
+                                          <CloseCircleTwoTone twoToneColor="#ff4d4f"/>
+                                    }
+                              </div>
 
-                                    <Space size='middle'>
+                              <div className={styles.conditions}>
                                     <Text strong>OPT</Text>
-                                          {
-                                                jobData.jobpost_data.jobpost_opt ?
-                                                <CheckOutlined />
-                                                :
-                                                <CloseCircleTwoTone twoToneColor="#ff4d4f"/>
-                                          }
-                                    </Space>
+                                    {
+                                          jobData.jobpost_data.jobpost_opt ?
+                                          <CheckOutlined />
+                                          :
+                                          <CloseCircleTwoTone twoToneColor="#ff4d4f"/>
+                                    }
+                              </div>
 
-                                    <Space size='middle'>
+                              <div className={styles.conditions}>
                                     <Text strong>STEM OPT</Text>
-                                          {
-                                                jobData.jobpost_data.jobpost_stem_opt ?
-                                                <CheckOutlined />
-                                                :
-                                                <CloseCircleTwoTone twoToneColor="#ff4d4f"/>
-                                          }
-                                    </Space>
+                                    {
+                                          jobData.jobpost_data.jobpost_stem_opt ?
+                                          <CheckOutlined />
+                                          :
+                                          <CloseCircleTwoTone twoToneColor="#ff4d4f"/>
+                                    }
+                              </div>
 
-                                    <Space size='middle'>
+                              <div className={styles.conditions}>
                                     <Text strong>Remote</Text>
-                                          {
-                                                jobData.jobpost_data.jobpost_remote ?
-                                                <CheckOutlined />
-                                                :
-                                                <CloseCircleTwoTone twoToneColor="#ff4d4f"/>
-                                          }
-                                    </Space>
-                             </Space>
+                                    {
+                                          jobData.jobpost_data.jobpost_remote ?
+                                          <CheckOutlined />
+                                          :
+                                          <CloseCircleTwoTone twoToneColor="#ff4d4f"/>
+                                    }
+                              </div>
                         </Col>
                   
-                        <Col xs={2} sm={2} md={2} lg={4} xl={4}>
+                        <Col push={8} xs={{ span: 6}} sm={{ span: 6}} md={{ span: 6}} lg={{ span: 6}} xl={{ span: 6}}>
                               <Space size='large'>
-                                    <a href={jobData.jobpost_data.jobpost_application_link}><Button type="primary">Apply</Button></a>
-                                    <Button>Save</Button>
+                                    <a href={jobData.jobpost_data.jobpost_application_link} target="_blank" rel="noopener noreferrer"><Button type="primary" size="large">Apply</Button></a>
+                                    <Button size="large">Save</Button>
                               </Space>
                         </Col>
                   </Row>

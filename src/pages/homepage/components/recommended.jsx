@@ -12,18 +12,16 @@ const { Text, Title, Paragraph } = Typography;
 
 const Recommended = props => {
 
-    const { reccommended_jobs, structure, keywords_part } = props;
+    const { reccommended_jobs, structure, keywords_part, saveUnsave, saveUnsaveTogglerForRecommendedJobs } = props;
     const [ data, setData ] = useState(undefined);
     const [ showModal, setShowModal ] = useState(false);
     const [ modalData, setModalData ] = useState(undefined);
-
     
     useEffect(() => {
         if(reccommended_jobs){
           setData(reccommended_jobs);
         }
       }, [reccommended_jobs]);
-    
     
       const getPostedTime = (input) => {
         const temp = moment.duration(moment(input).diff(moment()));
@@ -52,7 +50,15 @@ const Recommended = props => {
             {
               data ?
               <List
-              grid={{ gutter: 16, column: 3 }}
+                grid={{
+                  gutter: 16,
+                  xs: 1,
+                  sm: 2,
+                  md: 4,
+                  lg: 4,
+                  xl: 6,
+                  xxl: 3,
+                }}
               dataSource={data}
               pagination={{
                 onChange: page => {
@@ -117,14 +123,32 @@ const Recommended = props => {
                           </Space>
 
                           <Space size='large'>
-                            <a href={item.jobpost_data.jobpost_application_link}><Button type="primary">Apply</Button></a>
-                            <Button>Save</Button>
+                            <a href={item.jobpost_data.jobpost_application_link} target="_blank" rel="noopener noreferrer"><Button type="primary">Apply</Button></a>
+                            
+                            {
+                              item.jm_data.jm_saved_by_candidate ?
+                                <Button onClick={() => {
+                                  saveUnsave(item.jm_data.id)
+                                  .then(res => {
+                                    console.log(res);
+                                    saveUnsaveTogglerForRecommendedJobs();
+                                  })
+                                }}>Unsave</Button>
+                                :
+                                <Button onClick={() => {
+                                  saveUnsave(item.jm_data.id)
+                                  .then(res => {
+                                    console.log(res);
+                                    saveUnsaveTogglerForRecommendedJobs();
+                                  })
+                                }}>Save</Button>
+                            }
                           </Space>
                         </Space>
                       </Col>
                       
                       <Col span={4}>
-                        <Progress type="circle" percent={(item.match_percent*100).toFixed(0)} width={80} strokeColor={setProgressColor(item.match_percent*100)}/>
+                        <Progress type="circle" percent={(item.jm_data.jm_match_percent*100).toFixed(0)} width={80} strokeColor={setProgressColor(item.jm_data.jm_match_percent*100)}/>
                       </Col>
                     </Row>
                   </Card>

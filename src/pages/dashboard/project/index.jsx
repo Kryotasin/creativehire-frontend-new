@@ -33,18 +33,18 @@ class Analysis extends Component {
   async componentDidMount() {
     const { matchID } = this.props.match.params;
     axios
-      .get('project/'.concat(matchID).concat('/'))
-      .then((scanRes) => {
-        if (scanRes.status === 200) {
+      .get(REACT_APP_AXIOS_API_V1.concat('project/').concat(matchID).concat('/'))
+      .then((res) => {
+        if (res.status === 200) {
           this.setState({
-            project: scanRes.data,
+            project: res.data,
           });
 
-          axios.get('/metrics-structure/').then((msRes) => {
-            if (msRes.status === 200) {
-              this.setState({ structure: msRes.data });
-            }
-          });
+          // axios.get('/metrics-structure/').then((msRes) => {
+          //   if (msRes.status === 200) {
+          //     this.setState({ structure: msRes.data });
+          //   }
+          // });
         }
       })
       .catch((err) => {

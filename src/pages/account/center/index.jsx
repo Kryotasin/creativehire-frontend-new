@@ -43,17 +43,26 @@ class Center extends Component {
   // }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, currentUser } = this.props;
     let userID;
 
     if (localStorage.getItem('accessTokenDecoded')){
       userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
     }
+
+
+    if(Object.keys(currentUser).length === 0){
+      dispatch({
+        type: 'accountAndcenter/fetchCurrent',
+        payload: {userID: btoa(userID)}
+      });
+    }    
     
     dispatch({
       type: 'accountAndcenter/fetchProjects',
       payload: {userID}
     });
+    console.log(currentUser)
 
   }
 

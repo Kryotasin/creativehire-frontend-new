@@ -3,15 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 
 import { Spin } from 'antd';
-import Recommended from './components/recommended';
-import Saved from './components/saved';
-import Random from './components/random';
+// import Recommended from './components/recommended';
+// import Saved from './components/saved';
+import JobsList from './components/jobslist';
 
 import styles from './index.less';
+import Recommended from './components/recommended';
 
 const Homepage = (props) => {
 
   const { dispatch, structure, currentUser, keywords_part, reccommended_jobs, random_jobs } = props;
+
 
   useEffect(() => {
     if(currentUser){
@@ -34,27 +36,54 @@ const Homepage = (props) => {
           type: 'accountAndcenter/fetchStructure',
         });
       }
-
-      if(Object.keys(structure).length === 0){
-        dispatch({
-          type: 'accountAndcenter/fetchCurrent',
-          payload: {userID}
-        });
-      }
     }
   }, [currentUser]);
 
   useEffect(() => {
-  }, [structure, keywords_part, reccommended_jobs, random_jobs]);
+    const userID = btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
 
+    if(Object.keys(currentUser).length === 0){
+      dispatch({
+        type: 'accountAndcenter/fetchCurrent',
+        payload: {userID}
+      });
+    }
+  });
+
+  useEffect(() => {
+  }, [structure, keywords_part, reccommended_jobs, random_jobs]);
+  
+
+  const updateJobMatchItem = (jmID, joblistType, applyOrSave) => {
+    dispatch({
+      type: 'user/updateJobMatch',
+      payload: {
+        'jmID': jmID,
+        'joblistType': joblistType,
+        'applyOrSave': applyOrSave
+      }
+    })
+  }
+  
   return (
     <div className={styles.main}>
         {
           structure ?
             <>
-              <Recommended structure={structure} keywords_part={keywords_part} reccommended_jobs={reccommended_jobs} />
-              {/* <Saved structure={structure} keywords_part={keywords_part} /> */}
-              <Random structure={structure} keywords_part={keywords_part} random_jobs={random_jobs} />
+              <JobsList 
+                        title='All'
+                        structure={structure} 
+                        keywords_part={keywords_part} 
+                        job_list={random_jobs} 
+                        updateJobMatchItem={updateJobMatchItem}
+                />
+              <JobsList 
+                      title='Recommended'
+                      structure={structure} 
+                      keywords_part={keywords_part} 
+                      job_list={reccommended_jobs} 
+                      updateJobMatchItem={updateJobMatchItem}
+              />
             </>
           :
           <Spin />

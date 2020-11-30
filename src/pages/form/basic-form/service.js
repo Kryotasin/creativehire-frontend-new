@@ -1,7 +1,7 @@
 import axios from '../../../umiRequestConfig';
 
 export async function newJobpost(params, userID) {
-  return axios.post('jobpost/', {
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('jobpost/'), {
     org: params.org,
     link_jp: params.jobLink,
     title: params.jobTitle,

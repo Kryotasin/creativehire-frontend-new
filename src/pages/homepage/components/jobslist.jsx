@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { List, Typography, Card, Row, Col, Space, Progress, Button, Spin, Modal } from 'antd';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, CheckCircleTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 
 import JobCardData from './jobcard';
@@ -9,19 +9,19 @@ import styles from '../index.less';
 
 const { Text, Title, Paragraph } = Typography;
 
-const Random = props => {
+const JobsList = props => {
 
-    const { random_jobs, structure, keywords_part } = props;
+    const { title, job_list, structure, keywords_part, updateJobMatchItem } = props;
     const [ data, setData ] = useState(undefined);
     const [ showModal, setShowModal ] = useState(false);
     const [ modalData, setModalData ] = useState(undefined);
 
     
     useEffect(() => {
-        if(random_jobs){
-          setData(random_jobs);
+        if(job_list){
+          setData(job_list);
         }
-      }, [random_jobs]);
+      }, [job_list]);
     
     
       const getPostedTime = (input) => {
@@ -47,11 +47,19 @@ const Random = props => {
     
     return (
         <>
-          <Card title="All jobs" extra={<a href="#">See all</a>}>
+          <Card title={title.concat(' jobs')} extra={<a href="#">See all</a>}>
         {
           data ?
           <List
-           grid={{ gutter: 16, column: 3 }}
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 2,
+              md: 4,
+              lg: 4,
+              xl: 6,
+              xxl: 3,
+            }}
            dataSource={data}
            pagination={{
              onChange: page => {
@@ -116,8 +124,30 @@ const Random = props => {
                        </Space>
 
                        <Space size='large'>
-                         <a href={item.jobpost_data.jobpost_application_link}><Button type="primary">Apply</Button></a>
-                         <Button>Save</Button>
+                         <a href={item.jobpost_data.jobpost_application_link} target="_blank" rel="noopener noreferrer">
+                          {
+                            item.jm_data.jm_applied_by_candidate ?
+                            <>
+                              <Button type="primary" style={{ background: "white", color: "#52c41a", borderColor: "#52c41a" }} icon={<CheckCircleTwoTone twoToneColor="#52c41a" />}>Applied</Button>
+                              {/* <Button type="link" style={{textDecoration: 'underline'}}>undo</Button> */}
+                            </>
+                            :
+                            <Button type="primary" onClick={() =>{
+                                updateJobMatchItem(item.jm_data.id, title, 'apply');
+                            }}>Apply</Button>
+                          }
+                         </a>
+                         
+                         {
+                              item.jm_data.jm_saved_by_candidate ?
+                                <Button onClick={() => {
+                                    updateJobMatchItem(item.jm_data.id, title, 'save');
+                                }}>Unsave</Button>
+                                :
+                                <Button onClick={() => {
+                                    updateJobMatchItem(item.jm_data.id, title, 'save');
+                                }}>Save</Button>
+                            }
                        </Space>
                      </Space>
                    </Col>
@@ -154,5 +184,5 @@ const Random = props => {
     )
 }
 
-export default Random;
+export default JobsList;
   

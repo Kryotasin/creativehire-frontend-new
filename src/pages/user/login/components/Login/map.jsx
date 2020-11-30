@@ -15,7 +15,7 @@ export default {
           className={styles.prefixIcon}
         />
       ),
-      placeholder: 'admin',
+      placeholder: '',
     },
     rules: [
       {
@@ -30,7 +30,7 @@ export default {
       prefix: <LockTwoTone className={styles.prefixIcon} />,
       type: 'password',
       id: 'password',
-      placeholder: '888888',
+      placeholder: '',
     },
     rules: [
       {

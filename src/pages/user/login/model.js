@@ -76,12 +76,20 @@ const Model = {
 
         interval = setInterval(check, 1500, redirect);
       }
-
       if(response.status === 401){
         console.log("401")
       }
     }
     catch(err) {
+
+      if(!err.response){
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {'status': 521},
+          errors: 'Our server seems to be down. Please contact admin@creativehire.co if problem persists.'
+        }); // Server is down
+      }
+
       yield put({
         type: 'changeLoginStatus',
         payload: err.response,

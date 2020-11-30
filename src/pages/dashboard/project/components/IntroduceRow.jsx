@@ -1,7 +1,6 @@
 import { EditOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Col, Row, Tooltip, Space } from 'antd';
+import { Col, Row, Tooltip, Space, Card } from 'antd';
 import React from 'react';
-import { ChartCard } from './Charts';
 
 const topColResponsiveProps = {
   xs: 24,
@@ -16,6 +15,7 @@ const topColResponsiveProps = {
 
 const extractHostname = (url) => {
   let hostname;
+
   // find & remove protocol (http, ftp, etc.) and get hostname
 
   if (url.indexOf('//') > -1) {
@@ -34,9 +34,9 @@ const extractHostname = (url) => {
 };
 
 const IntroduceRow = ({ loading, project }) => (
-  <Row gutter={24} type="flex">
-    <Col {...topColResponsiveProps} xl={{ span: 7 }}>
-      <ChartCard
+  <Row gutter={[16, 32]} type="flex">
+    <Col xs={{ span: 24 }} lg={{ span: 6, offset: 2 }}>
+      <Card
         bordered={false}
         loading={loading}
         title="Cover Image"
@@ -48,14 +48,14 @@ const IntroduceRow = ({ loading, project }) => (
       >
         <Space size="middle" direction="vertical">
           <Space size="large" direction="horizontal">
-            <img src={project.img} style={{maxWidth: '100%', maxHeight: '100%', width: 'auto', marginTop: '1rem'}}/>
+            <img alt={project.project_title} src={project.project_img} style={{maxWidth: '100%', maxHeight: '40%', width: 'auto'}}/>
           </Space>
         </Space>
-      </ChartCard>
+      </Card>
     </Col>
 
-    <Col {...topColResponsiveProps} xl={{ span: 7, offset: 5 }}>
-      <ChartCard
+    <Col xs={{ span: 24 }} lg={{ span: 10, offset: 6 }}>
+      <Card
         bordered={false}
         title="Project Details"
         action={
@@ -68,23 +68,23 @@ const IntroduceRow = ({ loading, project }) => (
         <Space size="middle" direction="vertical">
           <Space size="large" direction="horizontal">
             <div>Project Title:</div>
-            <div>{project.title}</div>
+            <div>{project.project_title}</div>
           </Space>
           <Space size="large" direction="horizontal">
             <div>Project Link:</div>
             <div>
-                <a style={{ color: '#FF7A40' }} target="_blank" href={project.url}>
-                  {extractHostname(project.url)}
+                <a style={{ color: '#FF7A40' }} target="_blank" rel="noreferrer" href={project.project_url}>
+                  {extractHostname(project.project_url)}
                 </a>
 
             </div>
           </Space>
           <Space size='large' direction='horizontal'>
             <div>Project Summary:</div>
-            <div>{project.summary}</div>
+            <div>{project.project_summary}</div>
           </Space>
         </Space>
-      </ChartCard>
+      </Card>
     </Col>
   </Row>
 );

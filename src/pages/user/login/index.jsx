@@ -1,13 +1,13 @@
 import { Alert, Checkbox } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, connect } from 'umi';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 import styles from './style.less';
-import LoginFrom from './components/Login';
+import LoginForm from './components/Login';
 
 
-const { Tab, UserName, Password, Submit } = LoginFrom;
+const { Tab, UserName, Password, Submit } = LoginForm;
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -29,18 +29,26 @@ const Login = props => {
   const handleSubmit = values => {
     const { dispatch } = props;
 
+    
     dispatch({
       type: 'userAndlogin/login',
       payload: { ...values, type },
     });
   };
 
+  useEffect(() => {
+  }, [status, error]);
+
   return (
     <div className={styles.main}>
-      <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
+      <LoginForm activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
         <Tab key="account" tab="Login">
           {(status === 400 || status === 401) && !submitting && (
-            <LoginMessage content={error ? error : "Incorrect credentials"} />
+            <LoginMessage content={ error || "Incorrect credentials"} />
+          )}
+          
+          {(status === 521) && (
+            <LoginMessage content={error} />
           )}
 
           <UserName
@@ -88,7 +96,7 @@ const Login = props => {
             Register
           </Link>
         </div>
-      </LoginFrom>
+      </LoginForm>
     </div>
   );
 };
