@@ -5,7 +5,7 @@ import { connect, Link } from 'umi';
 // import AvatarList from '../AvatarList';
 import styles from './index.less';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const Projects = props => {
   const { projectList } = props;
@@ -31,34 +31,48 @@ const Projects = props => {
       dataSource={projectList}
       renderItem={item => (
         <List.Item>
-          <Link to={`/project/${item.pk}`}>
+          
             {/* <Card className={styles.card} hoverable cover={<img alt={item.fields.project_title} src={item.fields.project_img} />}>
               <Card.Meta title={item.fields.project_title} description={new Date(item.fields.project_post_date).toDateString()} />
             </Card> */}
             <Card>
               <Row gutter={[0, 16]}>
-                <Col span={12}>
-                  <img width={150} alt={item.fields.project_title} src={item.fields.project_img} />
+                <Col xs={{ span: 24, offset: 0 }} lg={{ span: 8, offset: 0 }}>
+                  <Link to={`/project/${item.pk}`}><img alt={item.fields.project_title} src={item.fields.project_img} /></Link>
                 </Col>
-                <Col span={12}>
+                <Col xs={{ span: 24, offset: 0 }} lg={{ span: 12, offset: 4 }}>
                   <Space size='large' direction='vertical'>
-                    <Space size='large' direction='horizontal'>
-                      <Text strong>Name: </Text>
-                      {item.fields.project_title}
+                    <Link to={`/project/${item.pk}`}>
+                      <Space size='small' direction='vertical'>
+                        <div className={styles.cardTitles}>Name: </div>
+                        <Text>{item.fields.project_title}</Text>
+                      </Space>
+                    </Link>
+                    <Space size='small' direction='vertical'>
+                      <div className={styles.cardTitles}>Link: </div>
+                      <a href={item.fields.project_url} target='_blank' rel='noopener noreferrer'><Text underline className={styles.link}>{item.fields.project_url}</Text></a>
                     </Space>
-                    <Space size='large' direction='horizontal'>
-                      <Text strong>Name: </Text>
-                      <Text type="secondary">{item.fields.project_title}</Text>
-                    </Space>
-                    <Space size='large' direction='horizontal'>
-                      <Title level={4}>Name: </Title>
-                      {item.fields.project_title}
+                    <Space size='small' direction='vertical'>
+                      <div className={styles.cardTitles}>Summary: </div>
+                      <Paragraph ellipsis={{ rows: 3, expandable: true}}>{item.fields.project_summary}</Paragraph>
                     </Space>
                   </Space>
                 </Col>
               </Row>
+              
+              {/* <Row gutter={[0, 0]}>
+                <Col flex="100px">
+                  <div className={styles.cardTitles}>Summary: </div>
+                </Col>
+                <Col flex="auto" />
+              </Row>
+
+              <Row gutter={[0, 16]}>
+                <Col span={24}>
+                  <Paragraph ellipsis={{ rows: 2, expandable: true}}>{item.fields.project_summary}</Paragraph>
+                </Col>
+              </Row> */}
             </Card>
-          </Link>
         </List.Item>
       )}
     />

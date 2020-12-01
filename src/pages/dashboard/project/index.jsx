@@ -1,91 +1,86 @@
-import React, { Component, Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
-import { Helmet } from 'umi';
+import { Helmet, connect } from 'umi';
+import axios from '../../../umiRequestConfig';
 
 import PageLoading from './components/PageLoading';
 
-import axios from '../../../umiRequestConfig';
+// import axios from '../../../umiRequestConfig';
 
 const IntroduceRow = React.lazy(() => import('./components/IntroduceRow'));
 const SkillList = React.lazy(() => import('./components/SkillList/index.jsx'));
 
-class Analysis extends Component {
-  reqRef = 0;
+const Analysis = props => {
+  // reqRef = 0;
 
-  timeoutId = 0;
+  // timeoutId = 0;
 
-  cat = null;
+  const { dispatch, structure } = props;
+  const [ loading, setLoading ] = useState(false);
+  const [ project, setProject ] = useState(undefined);
 
-  subcat = null;
 
-  label = null;
+  useEffect(() => {
+    if(Object.keys(structure).length === 0){
+      dispatch({
+        type: 'accountAndcenter/fetchStructure',
+      });
+    }
+  }, [structure]);
 
-  loading = false;
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      structure: null,
-      project: null,
-    };
-  }
-
-  async componentDidMount() {
-    const { matchID } = this.props.match.params;
-    axios
+  useEffect(() => {
+    if(project === undefined){
+      const { matchID } = props.match.params;
+      axios
       .get(REACT_APP_AXIOS_API_V1.concat('project/').concat(matchID).concat('/'))
       .then((res) => {
         if (res.status === 200) {
-          this.setState({
-            project: res.data,
-          });
-
-          // axios.get('/metrics-structure/').then((msRes) => {
-          //   if (msRes.status === 200) {
-          //     this.setState({ structure: msRes.data });
-          //   }
-          // });
+          setProject(res.data);
         }
       })
       .catch((err) => {
         if (err.response && err.response.status === 404) {
-          // this.props.history.push('/my-scans/')
+          // this.props.history.push('/my-scans/');
+          console.log(err)
         }
       });
-  }
+    }
+  }, [project]);
 
-  componentWillUnmount() {
-    cancelAnimationFrame(this.reqRef);
-    clearTimeout(this.timeoutId);
-  }
 
-  render() {
-    return (
-      <GridContent>
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>Scan - {this.props.match.params.matchID}</title>
-        </Helmet>
-        <React.Fragment>
-          <Suspense fallback={<PageLoading />}>
-            {this.state.project && (
-              <IntroduceRow project={this.state.project} loading={this.loading} />
-            )}
-          </Suspense>
+  // componentWillUnmount() {
+  //   cancelAnimationFrame(this.reqRef);
+  //   clearTimeout(this.timeoutId);
+  // }
 
-          <Suspense fallback={null}>
-            {this.state.structure && (
-              <SkillList
-                structure={this.state.structure}
-                project={this.state.project}
-                loading={this.loading}
-              />
-            )}
-          </Suspense>
-        </React.Fragment>
-      </GridContent>
-    );
-  }
+  return (
+    <GridContent>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{project ? project.project_title : 'Loading...'}</title>
+      </Helmet>
+      <React.Fragment>
+        <Suspense fallback={<PageLoading />}>
+          {project && (
+            <IntroduceRow project={project} loading={loading} />
+          )}
+        </Suspense>
+
+        <Suspense fallback={<PageLoading />}>
+          {structure && (
+            <SkillList
+              structure={structure}
+              project={project}
+              loading={loading}
+            />
+          )}
+        </Suspense>
+      </React.Fragment>
+    </GridContent>
+  );
+  
 }
 
-export default Analysis;
+export default connect(({ accountAndcenter }) => ({
+  structure: accountAndcenter.structure,
+}))(Analysis);

@@ -40,17 +40,13 @@ const IntroduceRow = ({ loading, project }) => (
         bordered={false}
         loading={loading}
         title="Cover Image"
-        action={
+        extra={
           <Tooltip title="Change the cover image">
             <EditOutlined />
           </Tooltip>
         }
       >
-        <Space size="middle" direction="vertical">
-          <Space size="large" direction="horizontal">
-            <img alt={project.project_title} src={project.project_img} style={{maxWidth: '100%', maxHeight: '40%', width: 'auto'}}/>
-          </Space>
-        </Space>
+            <img alt={project.project_title} src={project.project_img} style={{maxWidth: '100%', maxHeight: '100%', width: 'auto'}}/>
       </Card>
     </Col>
 
@@ -58,9 +54,9 @@ const IntroduceRow = ({ loading, project }) => (
       <Card
         bordered={false}
         title="Project Details"
-        action={
-          <Tooltip title="Details about the project you entered">
-            <InfoCircleOutlined />
+        extra={
+          <Tooltip title="Change project details">
+            <EditOutlined />
           </Tooltip>
         }
         loading={loading}

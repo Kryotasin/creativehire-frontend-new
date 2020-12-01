@@ -1,53 +1,78 @@
-import React, { useState } from 'react';
-import { Button, Divider, Card, Typography, Tabs, AutoComplete, message } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Divider, Card, Typography, Tabs, AutoComplete, message, Row, Col } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+// import { PieChart } from 'react-charts-d3';
 import axios from '../../../../../umiRequestConfig';
 import styles from './index.less';
-import { PieChart } from 'react-charts-d3';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 
-export default function SkillList(props) {
+const SkillList = props => {
   const { project, structure } = props;
 
-  const [skills, updateSkills] = useState(project.skills);
+  const [keywords, setKeywords] = useState(undefined);
   const [selected, setSelected] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const sortedSkills = skills.sort((a, b) => a.split(',')[0] - b.split(',')[0]);
-  const [catNum, ..._] = sortedSkills[0].split(',');
-  let cat = structure[0][catNum];
-  let subcat = structure[1][catNum];
-  let label = structure[3][catNum];
+  const [ sortedSkills, setSortedSkills ] = useState(undefined);
 
-  let counts = {};
-  let total = 0;
-  let prevIndex = -1;
-  let prevCat = '';
-  if (skills) {
-    for (let i = 0; i < skills.length; ++i) {
-      const [index, ..._] = skills[i].split(',');
-      if (index != prevIndex) {
-        if (structure[0][index] === prevCat) {
-          counts[prevCat]++;
-        } else {
-          prevCat = structure[0][index];
-          counts[prevCat] = 1;
+  let cat;
+  let subcat;
+  let label;
+  let catNum;
+
+  useEffect(() => {
+    if(project !== undefined && keywords === undefined) {
+      setKeywords(project.project_keywords);
+    }
+  }, [project]);
+
+
+  useEffect(() => {
+    if(keywords !== undefined){
+      setSortedSkills(keywords.sort((a, b) => a.split(',')[0] - b.split(',')[0]));
+    }
+  }, [keywords]);
+
+
+  useEffect(() => {
+    if(sortedSkills){
+      catNum = sortedSkills[0].split(',');
+      cat = structure[0][catNum];
+      subcat = structure[1][catNum];
+      label = structure[3][catNum];
+
+      const counts = {};
+      let total = 0;
+      let prevIndex = -1;
+      let prevCat = '';
+      if (keywords) {
+        for (let i = 0; i < keywords.length; ++i) {
+          const [index, ..._] = keywords[i].split(',');
+          if (index != prevIndex) {
+            if (structure[0][index] === prevCat) {
+              counts[prevCat]++;
+            } else {
+              prevCat = structure[0][index];
+              counts[prevCat] = 1;
+            }
+            total++;
+            prevIndex = index;
+          }
         }
-        total++;
-        prevIndex = index;
+      }
+      
+      const chartData = [];
+      for (let k in counts) {
+        chartData.push({ label: k, value: (counts[k] * 100) / total });
       }
     }
-  }
-  let chartData = [];
-  for (let k in counts) {
-    chartData.push({ label: k, value: (counts[k] * 100) / total });
-  }
+  }, [sortedSkills]);
 
   const onDeleteButtonClick = (cn) => {
     message.warn(`${structure[3][cn]} has been removed`);
-    updateSkills((prev) => {
+    setKeywords((prev) => {
       return prev.filter((item) => {
         const [prevcn, ..._] = item.split(',');
         return prevcn !== cn;
@@ -66,11 +91,11 @@ export default function SkillList(props) {
         author,
         url,
         summary,
-        skills,
+        keywords,
       })
       .then((response) => {
         setLoading(false);
-        message.success('Skills have been saved.');
+        message.success('Keywords have been saved.');
       })
       .catch((e) => {
         message.error('Something went wrong. Try again later.');
@@ -94,7 +119,7 @@ export default function SkillList(props) {
             onClick={() => {
               onDeleteButtonClick(catNum);
             }}
-          ></Button>
+          />
         </p>
         {sortedSkills.map((skill) => {
           const [cn, start, end] = skill.split(',');
@@ -145,24 +170,28 @@ export default function SkillList(props) {
     );
   };
 
+
+  const onSelect = (label, option) => {
+    const { item, category, subcategory, index } = option;
+    message.success(`${item} has been added!`);
+    setSelected(item);
+    setKeywords((prev) => [...prev, `${index},-1,-1`]);
+  };
+
   const renderItem = (item, cat) => (
     <div
       style={{
         display: 'flex',
         justifyContent: 'space-between',
       }}
+      key={item.concat(cat)}
     >
       {item}
-      <span style={{ fontSize: '0.8em' }}>{cat}</span>
+      <span 
+      key={item.concat(cat)} style={{ fontSize: '0.8em' }}>{cat}</span>
     </div>
   );
 
-  const onSelect = (label, option) => {
-    const { item, category, subcategory, index } = option;
-    message.success(`${item} has been added!`);
-    setSelected(item);
-    updateSkills((prev) => [...prev, `${index},-1,-1`]);
-  };
 
   const autoCompleteValues = structure[3]
     .filter((item) => item.length > 0)
@@ -180,53 +209,60 @@ export default function SkillList(props) {
     });
 
   return (
-    <Card>
-      <Tabs defaultActiveKey="skills">
-        <TabPane tab="Skills" key="skills">
-          <div className={styles.stepForm}>
-            <div className={styles.inputContainer}>
-              <AutoComplete
-                placeholder="Add a skill!"
-                options={autoCompleteValues}
-                filterOption={(inputValue, option) =>
-                  option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
-                }
-                style={{ width: 350 }}
-                notFoundContent="No Skills Found"
-                onSelect={onSelect}
-                onChange={(value) => {
-                  setSelected(value);
-                }}
-                value={selected}
-              />
-            </div>
-            <div className={styles.result}>
-              <ul>{structure !== null && sortedSkills ? <>{renderSkills()}</> : null}</ul>
-            </div>
+    <Row>
+      <Col xs={{ span: 24 }} lg={{ span: 22, offset: 2 }}>
+        <Card>
+          <Tabs defaultActiveKey="keywords">
+            <TabPane tab="Keywords" key="keywords">
+              <div className={styles.stepForm}>
+                <div className={styles.inputContainer}>
+                  <AutoComplete
+                    placeholder="Add a skill!"
+                    options={autoCompleteValues}
+                    filterOption={(inputValue, option) =>
+                      option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+                    }
+                    style={{ width: 350 }}
+                    notFoundContent="No Keywords Found"
+                    onSelect={onSelect}
+                    onChange={(value) => {
+                      setSelected(value);
+                    }}
+                    value={selected}
+                  />
+                </div>
+                <div className={styles.result}>
+                  <ul>{structure !== null && sortedSkills ? <>{renderSkills()}</> : null}</ul>
+                </div>
 
-            <Button
-              type="primary"
-              onClick={onSave}
-              loading={loading}
-              size="large"
-              style={{
-                marginLeft: 16,
-              }}
-            >
-              Save Changes
-            </Button>
+                <Button
+                  type="primary"
+                  onClick={onSave}
+                  loading={loading}
+                  size="large"
+                  style={{
+                    marginLeft: 16,
+                  }}
+                >
+                  Save Changes
+                </Button>
 
-            <Divider
-              style={{
-                margin: '40px 0 24px',
-              }}
-            />
-          </div>
-        </TabPane>
-        <TabPane tab="Charts" key="charts">
-          <PieChart data={chartData} />
-        </TabPane>
-      </Tabs>
-    </Card>
+                <Divider
+                  style={{
+                    margin: '40px 0 24px',
+                  }}
+                />
+              </div>
+            </TabPane>
+            <TabPane tab="Charts" key="charts">
+              {/* <PieChart data={chartData} /> */}
+            </TabPane>
+          </Tabs>
+        </Card>
+      </Col>
+    </Row>
   );
 }
+
+
+export default SkillList;
