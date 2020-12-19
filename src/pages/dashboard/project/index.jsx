@@ -10,18 +10,17 @@ import PageLoading from './components/PageLoading';
 const IntroduceRow = React.lazy(() => import('./components/IntroduceRow'));
 const SkillList = React.lazy(() => import('./components/SkillList/index.jsx'));
 
-const Analysis = props => {
+const Analysis = (props) => {
   // reqRef = 0;
 
   // timeoutId = 0;
 
   const { dispatch, structure } = props;
-  const [ loading, setLoading ] = useState(false);
-  const [ project, setProject ] = useState(undefined);
-
+  // const [ loading, setLoading ] = useState(false);
+  const [project, setProject] = useState(undefined);
 
   useEffect(() => {
-    if(Object.keys(structure).length === 0){
+    if (Object.keys(structure).length === 0) {
       dispatch({
         type: 'accountAndcenter/fetchStructure',
       });
@@ -29,24 +28,23 @@ const Analysis = props => {
   }, [structure]);
 
   useEffect(() => {
-    if(project === undefined){
+    if (project === undefined) {
       const { matchID } = props.match.params;
       axios
-      .get(REACT_APP_AXIOS_API_V1.concat('project/').concat(matchID).concat('/'))
-      .then((res) => {
-        if (res.status === 200) {
-          setProject(res.data);
-        }
-      })
-      .catch((err) => {
-        if (err.response && err.response.status === 404) {
-          // this.props.history.push('/my-scans/');
-          console.log(err)
-        }
-      });
+        .get(REACT_APP_AXIOS_API_V1.concat('project/').concat(matchID).concat('/'))
+        .then((res) => {
+          if (res.status === 200) {
+            setProject(res.data);
+          }
+        })
+        .catch((err) => {
+          if (err.response && err.response.status === 404) {
+            // this.props.history.push('/my-scans/');
+            console.log(err);
+          }
+        });
     }
   }, [project]);
-
 
   // componentWillUnmount() {
   //   cancelAnimationFrame(this.reqRef);
@@ -61,9 +59,7 @@ const Analysis = props => {
       </Helmet>
       <React.Fragment>
         <Suspense fallback={<PageLoading />}>
-          {project && (
-            <IntroduceRow project={project} loading={loading} />
-          )}
+          {project && <IntroduceRow project={project} />}
         </Suspense>
 
         <Suspense fallback={<PageLoading />}>
@@ -71,15 +67,14 @@ const Analysis = props => {
             <SkillList
               structure={structure}
               project={project}
-              loading={loading}
+              // loading={loading}
             />
           )}
         </Suspense>
       </React.Fragment>
     </GridContent>
   );
-  
-}
+};
 
 export default connect(({ accountAndcenter }) => ({
   structure: accountAndcenter.structure,

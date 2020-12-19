@@ -3,16 +3,15 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
+import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
 import { Link, useIntl, connect } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import jwt_decode from 'jwt-decode';
-import logo from '../assets/logo.svg';
-
+import logo from '../assets/new-logo.svg';
 
 const noMatch = (
   <Result
@@ -37,30 +36,30 @@ const menuDataRender = (menuList) =>
   });
 
 const defaultFooterDom = (
-  <DefaultFooter 
-  copyright="2020 CreativeHire"
-  links={[
-    {
-      key: 'terms',
-      title: 'Terms',
-      href: 'https://creativehire.co/misc/terms',
-      blankTarget: true,
-    },
-    {
-      key: 'privacy',
-      title: 'Privacy Policy',
-      href: 'https://creativehire.co/misc/privacy',
-      blankTarget: true,
-    },
-    {
-      key: 'contact',
-      title: 'Contact Us',
-      href: 'https://creativehire.co/misc/contact',
-      blankTarget: true,
-    },
-  ]}/>
+  <DefaultFooter
+    copyright="2020 CreativeHire"
+    links={[
+      {
+        key: 'terms',
+        title: 'Terms',
+        href: 'https://creativehire.co/misc/terms',
+        blankTarget: true,
+      },
+      {
+        key: 'privacy',
+        title: 'Privacy Policy',
+        href: 'https://creativehire.co/misc/privacy',
+        blankTarget: true,
+      },
+      {
+        key: 'contact',
+        title: 'Contact Us',
+        href: 'https://creativehire.co/misc/contact',
+        blankTarget: true,
+      },
+    ]}
+  />
 );
-
 
 const BasicLayout = (props) => {
   const {
@@ -76,26 +75,26 @@ const BasicLayout = (props) => {
    */
 
   useEffect(() => {
-    if(localStorage.getItem('refreshToken')){
+    if (localStorage.getItem('refreshToken')) {
       try {
-        if(jwt_decode(localStorage.getItem('refreshToken')).exp - new Date().getTime()/1000 < 0 && dispatch){
+        if (
+          jwt_decode(localStorage.getItem('refreshToken')).exp - new Date().getTime() / 1000 < 0 &&
+          dispatch
+        ) {
           dispatch({
             type: 'login/logout',
           });
         }
-      }
-      catch(err){
+      } catch (err) {
         dispatch({
           type: 'login/logout',
         });
       }
-    }
-    else{
+    } else {
       dispatch({
         type: 'login/logout',
       });
     }
-
 
     if (dispatch) {
       dispatch({
@@ -120,9 +119,6 @@ const BasicLayout = (props) => {
     authority: undefined,
   };
   const {} = useIntl();
-
-
-
 
   return (
     <>

@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, Form, Radio, Button, Input, Popover, Progress, Divider, message, Tooltip } from 'antd';
+import {
+  Alert,
+  Form,
+  Radio,
+  Button,
+  Input,
+  Popover,
+  Progress,
+  Divider,
+  message,
+  Tooltip,
+} from 'antd';
 import { connect, Link } from 'umi';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
@@ -44,9 +55,8 @@ const RegisterMessage = ({ content }) => (
   />
 );
 
-
-const Step1 = props => {
-  const{ dispatch, userAndregister = {}, submitting, errorMessages, status} = props;
+const Step1 = (props) => {
+  const { dispatch, userAndregister = {}, submitting, errorMessages, status } = props;
 
   const [visible, setVisible] = useState(false);
   const [popover, setPopover] = useState(false);
@@ -58,17 +68,14 @@ const Step1 = props => {
 
   const onValidateForm = async () => {
     const values = await validateFields();
-    
+
     dispatch({
       type: 'userAndregister/registerUserAndGetLinks',
       payload: values,
     });
-      
   };
 
-  useEffect(() => {
-    
-  }, [userAndregister])
+  useEffect(() => {}, [userAndregister]);
 
   useEffect(
     () => () => {
@@ -152,7 +159,6 @@ const Step1 = props => {
         colon={false}
         labelAlign="left"
       >
-
         <Form.Item
           label="Email"
           name="email"
@@ -173,34 +179,30 @@ const Step1 = props => {
 
         <Form.Item
           hasFeedback
-          label={
-            <span>
-            Portfolio URL&nbsp;
-            <Tooltip title="Enter your portfolio URL so we can fetch your projects">
-              <InfoCircleOutlined />
-            </Tooltip>
-          </span>
-          }
-          
+          label={<span>Portfolio URL</span>}
           name="portfolio"
           rules={[
             {
-              // required: true,
-              message: 'Please enter your portfolio url',
+              required: true,
+              message: 'Enter your portfolio URL so we can fetch your projects',
             },
             {
               type: 'url',
               message: 'Invalid url',
             },
           ]}
-          
-          tooltip={{ title: 'Tooltip with customize icon', icon: <InfoCircleOutlined /> }}
+          tooltip={{
+            title: 'We will fetch your projects and set up your profile',
+            icon: <QuestionCircleOutlined />,
+          }}
         >
           <Input size="large" placeholder="http://www.myportfolio.com/" />
         </Form.Item>
 
-        <Form.Item name="type" label="Are you a recruiter?"
-         hasFeedback
+        <Form.Item
+          name="type"
+          label="Are you a recruiter?"
+          hasFeedback
           rules={[
             {
               required: true,
@@ -241,40 +243,60 @@ const Step1 = props => {
           <Input size="large" placeholder="Norman" />
         </Form.Item>
 
-        { window.innerWidth > 855 ?
-        <Popover
-          getPopupContainer={(node) => {
-            if (node && node.parentNode) {
-              return node.parentNode;
-            }
+        {window.innerWidth > 855 ? (
+          <Popover
+            getPopupContainer={(node) => {
+              if (node && node.parentNode) {
+                return node.parentNode;
+              }
 
-            return node;
-          }}
-          content={
-            visible && (
-              <div
-                style={{
-                  padding: '4px 0',
-                }}
-              >
-                {passwordStatusMap[getPasswordStatus()]}
-                {renderPasswordProgress()}
+              return node;
+            }}
+            content={
+              visible && (
                 <div
                   style={{
-                    marginTop: 10,
+                    padding: '4px 0',
                   }}
                 >
-                  Enter at least 6 characters containing uppercase letters, numbers and symbols.
+                  {passwordStatusMap[getPasswordStatus()]}
+                  {renderPasswordProgress()}
+                  <div
+                    style={{
+                      marginTop: 10,
+                    }}
+                  >
+                    Enter at least 6 characters containing uppercase letters, numbers and symbols.
+                  </div>
                 </div>
-              </div>
-            )
-          }
-          overlayStyle={{
-            width: 240,
-          }}
-          placement="right"
-          visible={visible}
-        >
+              )
+            }
+            overlayStyle={{
+              width: 240,
+            }}
+            placement="right"
+            visible={visible}
+          >
+            <Form.Item
+              hasFeedback
+              label="Password"
+              name="password"
+              className={
+                form.getFieldValue('password') &&
+                form.getFieldValue('password').length > 0 &&
+                styles.password
+              }
+              rules={[
+                {
+                  required: true,
+                  validator: checkPassword,
+                },
+              ]}
+            >
+              <Input.Password size="large" placeholder="Password. 6 characters, case sensitive" />
+            </Form.Item>
+          </Popover>
+        ) : (
           <Form.Item
             hasFeedback
             label="Password"
@@ -293,29 +315,8 @@ const Step1 = props => {
           >
             <Input.Password size="large" placeholder="Password. 6 characters, case sensitive" />
           </Form.Item>
-        </Popover>
-        :
-        <Form.Item
-            hasFeedback
-            label="Password"
-            name="password"
-            className={
-              form.getFieldValue('password') &&
-              form.getFieldValue('password').length > 0 &&
-              styles.password
-            }
-            rules={[
-              {
-                required: true,
-                validator: checkPassword,
-              },
-            ]}
-          >
-            <Input.Password size="large" placeholder="Password. 6 characters, case sensitive" />
-          </Form.Item>
-        }
+        )}
 
-        
         <Form.Item
           hasFeedback
           label="Confirm Password"
@@ -333,25 +334,27 @@ const Step1 = props => {
           <Input.Password size="large" placeholder="" />
         </Form.Item>
 
-        {(status === 400 || status === 500 || status === 401) && !submitting  && (
-            <RegisterMessage content={errorMessages ? errorMessages : "Incorrect credentials"} />
+        {(status === 400 || status === 500 || status === 401) && !submitting && (
+          <RegisterMessage content={errorMessages ? errorMessages : 'Incorrect credentials'} />
         )}
 
-        <Form.Item label={            
+        <Form.Item
+          label={
             <Button
               size="large"
-              onClick={onValidateForm} 
+              onClick={onValidateForm}
               loading={props.loading}
               className={styles.submit}
               type="primary"
               htmlType="submit"
             >
               Register
-            </Button>}>
-
-            <Link className={styles.login} to="/user/login">
-              Already registered?
-            </Link>
+            </Button>
+          }
+        >
+          <Link className={styles.login} to="/user/login">
+            Already registered?
+          </Link>
         </Form.Item>
       </Form>
       <Divider
@@ -363,7 +366,8 @@ const Step1 = props => {
         <h3>Help</h3>
         <h4>What is this?</h4>
         <p>
-          Enter your details and create an account on Creativehire. We will try to fetch your project links for the next step.
+          Enter your details and create an account on Creativehire. We will try to fetch your
+          project links for the next step.
         </p>
       </div>
     </>
@@ -374,5 +378,5 @@ export default connect(({ userAndregister }) => ({
   link: userAndregister.link,
   loading: userAndregister.loading,
   errorMessages: userAndregister.errorMessages,
-  status: userAndregister.status
+  status: userAndregister.status,
 }))(Step1);

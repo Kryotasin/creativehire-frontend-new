@@ -17,7 +17,6 @@ const Model = {
         payload: response,
       }); // Login successfully
 
-
       if (response.status === 'ok') {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -42,11 +41,11 @@ const Model = {
       }
     },
 
-    logout() {
+    *logout() {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
 
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshTokenDecoded');
       localStorage.removeItem('accessTokenDecoded');
       localStorage.clear();

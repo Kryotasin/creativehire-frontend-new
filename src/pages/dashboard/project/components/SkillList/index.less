@@ -17,14 +17,19 @@
 
 .inputContainer {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .result {
-  max-width: 560px;
-  margin: 40px 60px 50px 60px;
-  padding: 24px 0 8px;
+  // max-width: 55%;
+  margin: 5% 10% 5% 20%;
+  // padding: 24px 0 8px;
+}
+
+ul {
+  width: 100%;
+  padding-inline-start: 0;
 }
 
 .desc {
@@ -48,7 +53,6 @@
     line-height: 22px;
   }
 }
-
 
 @media screen and (max-width: @screen-md) {
   .desc {
@@ -82,4 +86,19 @@
 
 .uppercase {
   font-size: 12px;
+}
+
+.subcat {
+  margin-bottom: 3%;
+  font-weight: 600;
+  font-size: @font-size-lg;
+}
+
+.keywordItem > p {
+  padding: 1.5% 3%;
+}
+
+.keywordItem > p:hover {
+  color: @white;
+  background-color: @primary-5;
 }

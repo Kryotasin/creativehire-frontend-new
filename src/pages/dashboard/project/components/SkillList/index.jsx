@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Divider, Card, Typography, Tabs, AutoComplete, message, Row, Col } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-// import { PieChart } from 'react-charts-d3';
+import { PieChart } from 'react-charts-d3';
 import axios from '../../../../../umiRequestConfig';
 import styles from './index.less';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 
-const SkillList = props => {
-  const { project, structure } = props;
+const SkillList = (props) => {
+  const { dispatch, project, structure } = props;
 
   const [keywords, setKeywords] = useState(undefined);
   const [selected, setSelected] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const [ sortedSkills, setSortedSkills ] = useState(undefined);
+  const [chartData, setChartData] = useState(undefined);
+  const [sortedSkills, setSortedSkills] = useState(undefined);
 
   let cat;
   let subcat;
@@ -23,21 +23,27 @@ const SkillList = props => {
   let catNum;
 
   useEffect(() => {
-    if(project !== undefined && keywords === undefined) {
+    if (Object.keys(structure).length === 0) {
+      dispatch({
+        type: 'accountAndcenter/fetchStructure',
+      });
+    }
+  }, [structure]);
+
+  useEffect(() => {
+    if (project !== undefined && keywords === undefined) {
       setKeywords(project.project_keywords);
     }
   }, [project]);
 
-
   useEffect(() => {
-    if(keywords !== undefined){
+    if (keywords !== undefined) {
       setSortedSkills(keywords.sort((a, b) => a.split(',')[0] - b.split(',')[0]));
     }
   }, [keywords]);
 
-
   useEffect(() => {
-    if(sortedSkills){
+    if (sortedSkills) {
       catNum = sortedSkills[0].split(',');
       cat = structure[0][catNum];
       subcat = structure[1][catNum];
@@ -62,11 +68,12 @@ const SkillList = props => {
           }
         }
       }
-      
-      const chartData = [];
+
+      const tempData = [];
       for (let k in counts) {
-        chartData.push({ label: k, value: (counts[k] * 100) / total });
+        tempData.push({ label: k, value: (counts[k] * 100) / total });
       }
+      setChartData(tempData);
     }
   }, [sortedSkills]);
 
@@ -81,23 +88,34 @@ const SkillList = props => {
   };
 
   const onSave = () => {
-    const { id, img, summary, title, author, url } = project;
+    const { id, project_img, summary, project_title, project_author, project_url } = project;
+
+    if (dispatch) {
+      dispatch({
+        type: 'formAndstepForm/submitNewProjectSkills',
+        payload: { ...values },
+      });
+      history.push(`/project/${project.id}`);
+    }
     setLoading(true);
+
     axios
-      .put(`project/${project.id}/`, {
-        id,
-        img,
-        title,
-        author,
-        url,
-        summary,
-        keywords,
+      .post(REACT_APP_AXIOS_API_V1.concat(`project-keywords/`), {
+        id: id,
+        // 'project_img': project_img,
+        // 'project_title': project_title,
+        // 'project_author': project_author,
+        // 'project_url': project_url,
+        // 'project_summary': summary,
+        project_keywords: keywords,
       })
       .then((response) => {
+        console.log(response);
         setLoading(false);
         message.success('Keywords have been saved.');
       })
       .catch((e) => {
+        console.log(e);
         message.error('Something went wrong. Try again later.');
         setLoading(false);
       });
@@ -105,10 +123,10 @@ const SkillList = props => {
 
   const renderSkills = () => {
     return (
-      <>
+      <div className={styles.keywordItem}>
         <Title level={4}>{cat}</Title>
-        <Text strong>{subcat}</Text>
-        <p>
+        <div className={styles.subcat}>{subcat}</div>
+        {/* <p>
           {label}
           <Button
             danger
@@ -120,7 +138,7 @@ const SkillList = props => {
               onDeleteButtonClick(catNum);
             }}
           />
-        </p>
+        </p> */}
         {sortedSkills.map((skill) => {
           const [cn, start, end] = skill.split(',');
           if (subcat === structure[1][cn]) {
@@ -148,7 +166,7 @@ const SkillList = props => {
             return (
               <React.Fragment key={cn}>
                 <Title level={4}>{cat === structure[0][cn] ? '' : (cat = structure[0][cn])}</Title>
-                <Text strong>{structure[1][cn]}</Text>
+                <div className={styles.subcat}>{structure[1][cn]}</div>
                 <p>
                   {structure[3][cn]}{' '}
                   <Button
@@ -166,10 +184,9 @@ const SkillList = props => {
             );
           }
         })}
-      </>
+      </div>
     );
   };
-
 
   const onSelect = (label, option) => {
     const { item, category, subcategory, index } = option;
@@ -187,11 +204,11 @@ const SkillList = props => {
       key={item.concat(cat)}
     >
       {item}
-      <span 
-      key={item.concat(cat)} style={{ fontSize: '0.8em' }}>{cat}</span>
+      <span key={item.concat(cat)} style={{ fontSize: '0.8em' }}>
+        {cat}
+      </span>
     </div>
   );
-
 
   const autoCompleteValues = structure[3]
     .filter((item) => item.length > 0)
@@ -199,12 +216,16 @@ const SkillList = props => {
       const index = structure[3].indexOf(item);
       const category = structure[0][index];
       const subcategory = structure[1][index];
+      const key = String(index).concat(category).concat(subcategory);
+
       return {
         value: renderItem(item, category),
+        label: renderItem(item, category),
         item,
         category,
         subcategory,
         index,
+        key: key,
       };
     });
 
@@ -232,20 +253,20 @@ const SkillList = props => {
                   />
                 </div>
                 <div className={styles.result}>
-                  <ul>{structure !== null && sortedSkills ? <>{renderSkills()}</> : null}</ul>
+                  {structure !== null && sortedSkills ? <>{renderSkills()}</> : null}
+                  <Button
+                    type="primary"
+                    onClick={onSave}
+                    loading={loading}
+                    size="middle"
+                    style={{
+                      marginLeft: 16,
+                      marginTop: 20,
+                    }}
+                  >
+                    Save Changes
+                  </Button>
                 </div>
-
-                <Button
-                  type="primary"
-                  onClick={onSave}
-                  loading={loading}
-                  size="large"
-                  style={{
-                    marginLeft: 16,
-                  }}
-                >
-                  Save Changes
-                </Button>
 
                 <Divider
                   style={{
@@ -255,14 +276,13 @@ const SkillList = props => {
               </div>
             </TabPane>
             <TabPane tab="Charts" key="charts">
-              {/* <PieChart data={chartData} /> */}
+              <PieChart data={chartData} />
             </TabPane>
           </Tabs>
         </Card>
       </Col>
     </Row>
   );
-}
-
+};
 
 export default SkillList;

@@ -6,183 +6,243 @@ import moment from 'moment';
 
 import JobCardData from './jobcard';
 import styles from '../index.less';
+import { Link } from 'umi';
 
 const { Text, Title, Paragraph } = Typography;
 
-const JobsList = props => {
+const JobsList = (props) => {
+  const {
+    dispatch,
+    title,
+    job_list,
+    structure,
+    keywords_part,
+    pageSize,
+    showExtra,
+    maxGridSize,
+  } = props;
+  const [data, setData] = useState(undefined);
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState(undefined);
 
-    const { title, job_list, structure, keywords_part, updateJobMatchItem } = props;
-    const [ data, setData ] = useState(undefined);
-    const [ showModal, setShowModal ] = useState(false);
-    const [ modalData, setModalData ] = useState(undefined);
+  useEffect(() => {
+    if (job_list) {
+      setData(job_list);
+    }
+  }, [job_list]);
 
-    
-    useEffect(() => {
-        if(job_list){
-          setData(job_list);
+  const updateJobMatchItem = (jmID, joblistType, applyOrSave) => {
+    dispatch({
+      type: 'user/updateJobMatch',
+      payload: {
+        jmID: jmID,
+        joblistType: joblistType,
+        applyOrSave: applyOrSave,
+      },
+    });
+  };
+
+  const getPostedTime = (input) => {
+    const temp = moment.duration(moment(input).diff(moment()));
+    return temp.asDays();
+  };
+
+  const setProgressColor = (matchPercent) => {
+    if (matchPercent > 50) {
+      return '#52c41a';
+    }
+    if (matchPercent < 20) {
+      return '#ff4d4f';
+    }
+    return '#1890ff';
+  };
+
+  return (
+    <>
+      <Card
+        title={title !== '' ? title.concat(' jobs') : ''}
+        extra={
+          showExtra ? (
+            <Link to={{ pathname: '/search-jobs', search: `?type=${title.toLowerCase()}` }}>
+              See all
+            </Link>
+          ) : (
+            ''
+          )
         }
-      }, [job_list]);
-    
-    
-      const getPostedTime = (input) => {
-        const temp = moment.duration(moment(input).diff(moment()));
-        return temp.asDays();
-      }
-    
-      const setProgressColor = matchPercent => {
-        if(matchPercent > 50){
-          return '#52c41a';
-        }
-        if(matchPercent < 20 ){
-          return '#ff4d4f';
-        }
-        return '#1890ff';
-      }
-    
-    
-      const printJobTitle = title => {
-        const parts = title.split(' ');
-        return parts[0].concat(' ').concat(parts[1]).concat(parts[2] ? ' ...' : '');
-      }
-    
-    return (
-        <>
-          <Card title={title.concat(' jobs')} extra={<a href="#">See all</a>}>
-        {
-          data ?
+      >
+        {data ? (
           <List
             grid={{
               gutter: 16,
               xs: 1,
               sm: 2,
-              md: 4,
-              lg: 4,
-              xl: 6,
-              xxl: 3,
+              md: 2,
+              lg: 2,
+              xl: 2,
+              xxl: maxGridSize || 3,
             }}
-           dataSource={data}
-           pagination={{
-             onChange: page => {
-               console.log(page);
-             },
-             pageSize: 3,
-           }}
-           renderItem={item => (
-             <List.Item>
-               <Card>
-                 <Row gutter={[0, 16]}>
-                   <Col span={4}>
-                      <div onClick={() => {
-                        setShowModal(true);
-                        setModalData(item);
-                      }}
-                      className={styles.jobTitle}
-                      >
-                        <img src={item.jobpost_data.jobpost_img} width={30} alt={item.jobpost_data.jobpost_img}/>
-                      </div>
-                   </Col>
-                   <Col span={14}>
-                     <Space direction='vertical' size={0}>                        
-                     <Paragraph ellipsis={{ rows: 1, expandable: false }}>
-                        <div onClick={(e) => {
+            dataSource={data}
+            pagination={{
+              onChange: (page) => {
+                console.log(page);
+              },
+              pageSize: pageSize || 3,
+            }}
+            renderItem={(item) => (
+              <List.Item>
+                <Card>
+                  <Row gutter={[0, 16]}>
+                    <Col span={4}>
+                      <div
+                        onClick={() => {
                           setShowModal(true);
                           setModalData(item);
                         }}
                         className={styles.jobTitle}
-                        >
-                            <Title level={4} className={styles.jobTitle}>{printJobTitle(item.jobpost_data.jobpost_title)}</Title>
-                        </div>
-                     </Paragraph>
-                       <Text strong>{item.jobpost_data.jobpost_company}</Text>
-                       <Text strong>{item.jobpost_data.jobpost_company}</Text>
-                     </Space>
-                   </Col>
-                   
-                   <Col span={6}>
-                     <Text type="secondary">{getPostedTime(item.jobpost_data.jobpost_post_date).toFixed(0)} {' days'}</Text>
-                   </Col>
-                 </Row>
-                 
-                 <Row gutter={[16, 16]}>
-                   <Col span={16}>
-                     <Space size='large' direction='vertical'>
-                       <Space size='large'>
-                         <Space size='small'>
-                           {
-                             item.jobpost_data.jobpost_remote ?
-                             <CheckOutlined />
-                             :
-                             <CloseOutlined />
-                           }                            
-                           <Text>Remote</Text>
-                         </Space>
+                      >
+                        <img
+                          src={item.jobpost_data.jobpost_img}
+                          width={30}
+                          alt={item.jobpost_data.jobpost_img}
+                        />
+                      </div>
+                    </Col>
+                    <Col span={14} className={styles.textHolder}>
+                      <Space direction="vertical" size={0}>
+                        <Paragraph ellipsis={{ rows: 1, expandable: false }}>
+                          <div
+                            onClick={(e) => {
+                              setShowModal(true);
+                              setModalData(item);
+                            }}
+                            className={styles.jobTitle}
+                          >
+                            <Title level={4} ellipsis className={styles.jobTitle}>
+                              {item.jobpost_data.jobpost_title}
+                            </Title>
+                          </div>
+                        </Paragraph>
+                        <Text strong>{item.jobpost_data.jobpost_company}</Text>
+                        <Text strong>{item.jobpost_data.jobpost_company}</Text>
+                      </Space>
+                    </Col>
 
-                         <Space size='small'>
-                           { item.jobpost_data.jobpost_type }
-                           <Text>Full-Time</Text>
-                         </Space>
-                       </Space>
+                    <Col span={6}>
+                      <Text type="secondary">
+                        {getPostedTime(item.jobpost_data.jobpost_post_date).toFixed(0)} {' days'}
+                      </Text>
+                    </Col>
+                  </Row>
 
-                       <Space size='large'>
-                         <a href={item.jobpost_data.jobpost_application_link} target="_blank" rel="noopener noreferrer">
-                          {
-                            item.jm_data.jm_applied_by_candidate ?
-                            <>
-                              <Button type="primary" style={{ background: "white", color: "#52c41a", borderColor: "#52c41a" }} icon={<CheckCircleTwoTone twoToneColor="#52c41a" />}>Applied</Button>
-                              {/* <Button type="link" style={{textDecoration: 'underline'}}>undo</Button> */}
-                            </>
-                            :
-                            <Button type="primary" onClick={() =>{
-                                updateJobMatchItem(item.jm_data.id, title, 'apply');
-                            }}>Apply</Button>
-                          }
-                         </a>
-                         
-                         {
-                              item.jm_data.jm_saved_by_candidate ?
-                                <Button onClick={() => {
-                                    updateJobMatchItem(item.jm_data.id, title, 'save');
-                                }}>Unsave</Button>
-                                :
-                                <Button onClick={() => {
-                                    updateJobMatchItem(item.jm_data.id, title, 'save');
-                                }}>Save</Button>
-                            }
-                       </Space>
-                     </Space>
-                   </Col>
-                   
-                   <Col span={4}>
-                     <Progress type="circle" percent={(item.jm_data.jm_match_percent*100).toFixed(0)} width={80} strokeColor={setProgressColor(item.jm_data.jm_match_percent*100)}/>
-                   </Col>
-                 </Row>
-               </Card>
-             </List.Item>
-           )}
-              />
-              :
-              <Spin />
-              }
-        </Card>
+                  <Row gutter={[16, 16]}>
+                    <Col span={16}>
+                      <Space size="large" direction="vertical">
+                        <Space size="large">
+                          <Space size="small">
+                            {item.jobpost_data.jobpost_remote ? (
+                              <CheckOutlined />
+                            ) : (
+                              <CloseOutlined />
+                            )}
+                            <Text>Remote</Text>
+                          </Space>
 
-        <Modal
-            title=""
-            // onOk={this.handleOk}
-            onCancel={() => {
-              setShowModal(false);
-              setModalData(undefined);
-            }}
-            visible={showModal}
-            width="80%"
-            footer={null}
-            style={{ top: 20 }}           
-            destroyOnClose="true"
-          >
-            <JobCardData jobData={modalData} printJobTitle={printJobTitle} structure={structure} keywords_part={keywords_part}/>
-          </Modal>
-        </>
-    )
-}
+                          <Space size="small">
+                            {item.jobpost_data.jobpost_type}
+                            <Text>Full-Time</Text>
+                          </Space>
+                        </Space>
+
+                        <Space size={item.jm_data.jm_applied_by_candidate ? 'small' : 'large'}>
+                          <a
+                            href={item.jobpost_data.jobpost_application_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {item.jm_data.jm_applied_by_candidate ? (
+                              <>
+                                <Button
+                                  type="primary"
+                                  style={{
+                                    background: 'white',
+                                    color: '#52c41a',
+                                    borderColor: '#52c41a',
+                                  }}
+                                  icon={<CheckCircleTwoTone twoToneColor="#52c41a" />}
+                                >
+                                  Applied
+                                </Button>
+                                {/* <Button type="link" style={{textDecoration: 'underline'}}>undo</Button> */}
+                              </>
+                            ) : (
+                              <Button
+                                type="primary"
+                                onClick={() => {
+                                  updateJobMatchItem(item.jm_data.id, title, 'apply');
+                                }}
+                              >
+                                Apply
+                              </Button>
+                            )}
+                          </a>
+
+                          {item.jm_data.jm_saved_by_candidate ? (
+                            <Button
+                              onClick={() => {
+                                updateJobMatchItem(item.jm_data.id, title, 'save');
+                              }}
+                            >
+                              Unsave
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={() => {
+                                updateJobMatchItem(item.jm_data.id, title, 'save');
+                              }}
+                            >
+                              Save
+                            </Button>
+                          )}
+                        </Space>
+                      </Space>
+                    </Col>
+
+                    <Col span={4}>
+                      <Progress
+                        type="circle"
+                        percent={(item.jm_data.jm_match_percent * 100).toFixed(0)}
+                        width={80}
+                        strokeColor={setProgressColor(item.jm_data.jm_match_percent * 100)}
+                      />
+                    </Col>
+                  </Row>
+                </Card>
+              </List.Item>
+            )}
+          />
+        ) : (
+          <Spin />
+        )}
+      </Card>
+
+      <Modal
+        title=""
+        // onOk={this.handleOk}
+        onCancel={() => {
+          setShowModal(false);
+          setModalData(undefined);
+        }}
+        visible={showModal}
+        width="80%"
+        footer={null}
+        style={{ top: 20 }}
+        destroyOnClose="true"
+      >
+        <JobCardData jobData={modalData} structure={structure} keywords_part={keywords_part} />
+      </Modal>
+    </>
+  );
+};
 
 export default JobsList;
-  

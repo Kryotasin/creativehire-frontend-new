@@ -3,6 +3,7 @@ import axios from '../../../umiRequestConfig';
 export async function basicProjectDetails(params) {
   return axios.post(REACT_APP_AXIOS_API_V1.concat('project/basicdetails/'), {
     url: params.projectLink,
+    img_only: 0,
   });
 }
 
@@ -17,5 +18,9 @@ export async function newProject(params) {
 }
 
 export async function submitProjectSkills(params) {
-  return axios.put(REACT_APP_AXIOS_API_V1.concat(`project-keywords/${params.id}/`), {'project_keywords': params.skills});
+  console.log(params);
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('project-keywords/'), {
+    id: params.id,
+    project_keywords: params.skills,
+  });
 }

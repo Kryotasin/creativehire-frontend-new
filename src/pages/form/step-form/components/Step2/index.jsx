@@ -1,13 +1,11 @@
-import React,  { useState }  from 'react';
-import { Spin, Form, Button, Tooltip, Divider, Statistic, Input, Typography } from 'antd';
+import React, { useState } from 'react';
+import { Spin, Form, Button, Tooltip, Divider, Statistic, Input, Typography, Space } from 'antd';
 import { ArrowRightOutlined, ArrowLeftOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 import { connect } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
-
-
 
 const formItemLayout = {
   labelCol: {
@@ -18,7 +16,7 @@ const formItemLayout = {
   },
 };
 
-const Step2 = props => {
+const Step2 = (props) => {
   const [form] = Form.useForm();
   const { data, dispatch, submitting } = props;
   const [img_counter, setImgCount] = useState(0);
@@ -38,14 +36,24 @@ const Step2 = props => {
     }
   };
 
-
   const { title, description, img_list } = data;
-
 
   const onValidateForm = async () => {
     const values = await validateFields();
 
-    const final_values = { ...values, 'projectImage': img_list[img_counter+1], ...props.link, 'projectAuthor': JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id};
+    // if(values.pastedProjectImage){
+    const imageLink = values.pastedProjectImage || img_list[img_counter + 1];
+    // }
+    // else{
+    //   console.log('nos')
+    // }
+
+    const final_values = {
+      ...values,
+      projectImage: imageLink,
+      ...props.link,
+      projectAuthor: JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+    };
 
     if (dispatch) {
       dispatch({
@@ -54,7 +62,6 @@ const Step2 = props => {
       });
     }
   };
-
 
   return (
     <>
@@ -66,10 +73,8 @@ const Step2 = props => {
         initialValues={{
           projectName: title,
           projectSummary: description,
-
         }}
       >
-
         <Divider
           style={{
             margin: '24px 0',
@@ -89,45 +94,78 @@ const Step2 = props => {
           <Input placeholder="Project name" />
         </Form.Item>
 
-
         <Form.Item
-            {...formItemLayout}
-            label="Project Summary"
-            name="projectSummary"
-            rules={[
-              {
-                required: true,
-                message: 'Please enter the project summary',
-              },
-            ]}
-          >
-            <TextArea
-              style={{
-                minHeight: 32,
-              }}
-              placeholder="Write a few lines about the project"
-              rows={4}
-            />
-          </Form.Item>
-
-        <Form.Item
-          label="Project Image"
-          name="projectImage"
+          {...formItemLayout}
+          label="Project Summary"
+          name="projectSummary"
+          rules={[
+            {
+              required: true,
+              message: 'Please enter the project summary',
+            },
+          ]}
         >
-          <img src={img_list[img_counter+1]} width="320" alt={title.concat(' image')}/>
-          <Button disabled={img_counter === 0} onClick={()=>{
-            setImgCount(img_counter - 1)
-          }}>
-          <ArrowLeftOutlined /> Previous image 
-          </Button>
-          <Button disabled={img_counter === img_list.length} onClick={()=>{
-            setImgCount(img_counter + 1)
-          }}>
-            Next image <ArrowRightOutlined />
-          </Button>
+          <TextArea
+            style={{
+              minHeight: 32,
+            }}
+            placeholder="Write a few lines about the project"
+            rows={4}
+            maxLength={500}
+            showCount={true}
+          />
+        </Form.Item>
 
+        <Form.Item label="Project Cover Image" name="projectImage">
+          {img_list === undefined || Object.keys(img_list).length === 0 ? (
+            <>
+              <Typography.Text mark>
+                No images found. Please paste a link below. We currently do not support uploading
+                images for projects
+              </Typography.Text>
+            </>
+          ) : (
+            <Space direction="vertical" size="middle">
+              <img src={img_list[img_counter + 1]} width="320" alt={title.concat(' image')} />
+              <Space direction="horizontal" size="small">
+                <Button
+                  disabled={img_counter === 0}
+                  onClick={() => {
+                    setImgCount(img_counter - 1);
+                  }}
+                >
+                  <ArrowLeftOutlined /> Previous image
+                </Button>
+                <Button
+                  disabled={img_counter === img_list.length}
+                  onClick={() => {
+                    setImgCount(img_counter + 1);
+                  }}
+                >
+                  Next image <ArrowRightOutlined />
+                </Button>
+              </Space>
+              <>Or</>
+            </Space>
+          )}
+        </Form.Item>
 
-        </Form.Item>  
+        <Form.Item
+          label="Paste Image URL"
+          name="pastedProjectImage"
+          rules={[
+            {
+              type: 'url',
+            },
+          ]}
+        >
+          <Space direction="horizontal" size="large">
+            <Input placeholder="Paste cover image url" />
+            <Tooltip title="We currently do not support uploading images for projects.">
+              <InfoCircleOutlined />
+            </Tooltip>
+          </Space>
+        </Form.Item>
 
         <Form.Item
           style={{
@@ -144,7 +182,6 @@ const Step2 = props => {
             },
           }}
         >
-
           <Button
             onClick={onPrev}
             style={{
@@ -156,7 +193,6 @@ const Step2 = props => {
           <Button type="primary" onClick={onValidateForm} loading={props.loading}>
             Next
           </Button>
-
         </Form.Item>
       </Form>
 
@@ -168,12 +204,13 @@ const Step2 = props => {
       <div className={styles.desc}>
         <h3>Help</h3>
         <h4>What is Project Image?</h4>
-          <p>
-            Project images are images we could retrieve from the link you provided. Pick any you like.
-          </p>
-          <p>
-            <Typography.Text strong>Note: </Typography.Text>The images are fetched directly from the original source.
-          </p>
+        <p>
+          Project images are images we could retrieve from the link you provided. Pick any you like.
+        </p>
+        <p>
+          <Typography.Text strong>Note: </Typography.Text>The images are fetched directly from the
+          original source.
+        </p>
       </div>
     </>
   );

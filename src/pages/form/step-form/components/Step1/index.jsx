@@ -23,7 +23,7 @@ const ErrorMessage = ({ content }) => (
   />
 );
 
-const Step1 = props => {
+const Step1 = (props) => {
   const { dispatch, link, loading } = props;
   const [form] = Form.useForm();
 
@@ -49,11 +49,6 @@ const Step1 = props => {
         initialValues={link}
         className={styles.stepForm}
       >
-
-        {(status === 400 || status === 401) && !submitting && (
-          <ErrorMessage content={error ? error : "Incorrect credentials"} />
-        )}
-
         <Form.Item
           label="Project Link"
           name="projectLink"
@@ -64,11 +59,11 @@ const Step1 = props => {
             },
             {
               required: true,
-              message: 'Please enter exact link to project link',
+              message: 'Please enter exact link to project ',
             },
           ]}
         >
-          <Input placeholder="Project link"/>
+          <Input placeholder="Project link" />
         </Form.Item>
 
         <Form.Item
@@ -97,7 +92,7 @@ const Step1 = props => {
         <h3>Help</h3>
         <h4>What is this?</h4>
         <p>
-          Enter your project link above. We will fetch all the information we can from the link. 
+          Enter your project link above. We will fetch all the information we can from the link.
         </p>
       </div>
     </>

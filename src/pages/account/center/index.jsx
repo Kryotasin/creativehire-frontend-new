@@ -1,30 +1,27 @@
-import { Card, Col, Divider, Row, Spin, Button, Space } from 'antd';
 import React, { Component } from 'react';
+import { Card, Col, Divider, Row, Spin, Button, Space } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import { connect } from 'umi';
 
 import { EditOutlined, EditTwoTone, LoadingOutlined } from '@ant-design/icons';
-import styles from './Center.less';
 
 import TagList from './components/sidebar/TagList';
 import BasicDetails from './components/sidebar/BasicDetails';
 import ProfileTabPane from './components/content/ProfileTabPane';
 import FileUploader from './components/sidebar/FileUploader';
 
-
-
 class Center extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     // Bind the this context to the handler function
     this.handler = this.handler.bind(this);
 
     // Set some state
     this.state = {
-        editMode: false,
+      editMode: false,
     };
-}
+  }
 
   // static getDerivedStateFromProps(
   //   props,
@@ -43,40 +40,43 @@ class Center extends Component {
   // }
 
   componentDidMount() {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch } = this.props;
     let userID;
 
-    if (localStorage.getItem('accessTokenDecoded')){
+    if (localStorage.getItem('accessTokenDecoded')) {
       userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
     }
 
+    // if(Object.keys(currentUser).length === 0){
+    dispatch({
+      type: 'accountAndcenter/fetchCurrent',
+      payload: { userID: btoa(userID) },
+    });
+    // }
 
-    if(Object.keys(currentUser).length === 0){
-      dispatch({
-        type: 'accountAndcenter/fetchCurrent',
-        payload: {userID: btoa(userID)}
-      });
-    }    
-    
     dispatch({
       type: 'accountAndcenter/fetchProjects',
-      payload: {userID}
+      payload: { userID },
     });
-    console.log(currentUser)
-
   }
 
   handler() {
     this.setState({
-        editMode: false
+      editMode: false,
     });
   }
 
-  render() { 
-    const { currentUser = {}, entity_part = {}, keywords_part = {}, currentUserLoading, structure = {}, projectList = {}, fileuploading } = this.props;
+  render() {
+    const {
+      currentUser = {},
+      entity_part = {},
+      keywords_part = {},
+      currentUserLoading,
+      structure = {},
+    } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
-    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-    
+    // const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
     return (
       <GridContent>
         <Row gutter={24}>
@@ -87,16 +87,27 @@ class Center extends Component {
                 marginBottom: 24,
               }}
               loading={dataLoading}
-              extra={<Button type="link" icon={this.state.editMode?<EditOutlined />:<EditTwoTone />} onClick={() => {
-                this.setState((prevState) => ({editMode: !prevState.editMode}))
-              }}/>}
+              extra={
+                <Button
+                  type="link"
+                  icon={this.state.editMode ? <EditOutlined /> : <EditTwoTone />}
+                  onClick={() => {
+                    this.setState((prevState) => ({ editMode: !prevState.editMode }));
+                  }}
+                />
+              }
               title="Basic Details"
             >
               {!dataLoading && (
                 <div>
-                  <BasicDetails entity={entity_part} editMode={this.state.editMode} action={this.handler}/>
+                  <BasicDetails
+                    entity={entity_part}
+                    editMode={this.state.editMode}
+                    action={this.handler}
+                    currentUser={currentUser}
+                  />
                   <Divider />
-                  
+
                   <Space size="large" direction="vertical">
                     <Space size="large">
                       <FileUploader />
@@ -106,26 +117,26 @@ class Center extends Component {
                       ''
                       } */}
                     </Space>
-                    {
-                      currentUser && structure ? 
-                      <TagList keywords_part_input={keywords_part || []} structure={structure || []} />
-                      :
+                    {currentUser && structure ? (
+                      <TagList
+                        keywords_part_input={keywords_part || []}
+                        structure={structure || []}
+                      />
+                    ) : (
                       <Spin />
-                    }
+                    )}
                   </Space>
 
                   <Divider
                     style={{
                       marginTop: 16,
                     }}
-                    
                   />
-
                 </div>
               )}
             </Card>
           </Col>
-              {/* <div className={styles.team}>
+          {/* <div className={styles.team}>
                 <div className={styles.teamTitle}>Team</div>
                 <Row gutter={36}>
                   {currentUser.notice &&
@@ -140,10 +151,7 @@ class Center extends Component {
                 </Row>
               </div> */}
           <Col lg={17} md={24}>
-          {
-            currentUser && structure ? 
-            <ProfileTabPane /> : <Spin />
-          }
+            {currentUser && structure ? <ProfileTabPane /> : <Spin />}
           </Col>
         </Row>
       </GridContent>
@@ -159,5 +167,5 @@ export default connect(({ loading, accountAndcenter }) => ({
   structure: accountAndcenter.structure,
   projectList: accountAndcenter.projectList,
   currentUserLoading: loading.effects['accountAndcenter/fetchCurrent'],
-  fileuploading: accountAndcenter.fileuploading
+  fileuploading: accountAndcenter.fileuploading,
 }))(Center);
