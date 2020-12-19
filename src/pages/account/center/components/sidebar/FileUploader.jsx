@@ -21,7 +21,7 @@ const FileUploader = props => {
     name: 'file',
     method: 'post',
     data: {"type": "resume"},
-    action: 'http://localhost:8080/uploadFile',
+    action: 'https://pdfserver.creativehire.co/uploadFile',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
     },

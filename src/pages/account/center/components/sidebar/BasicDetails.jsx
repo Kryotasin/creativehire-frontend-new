@@ -127,7 +127,7 @@ function BasicDetails(props) {
       Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
     },
     data: typeOfImage('upload'),
-    action: 'http://localhost:3001/api/v1/file-handler/',
+    action: 'https://api.creativehire.co/api/v1/file-handler/',
     onRemove(file) {
       axios.post('file-handler/', {
         file: file.name,
