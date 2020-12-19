@@ -50,7 +50,7 @@ export async function queryTitleTypes(params) {
 }
 
 export async function queryEmploymentTypes(params) {
-  return axios.get(REACT_APP_AXIOS_API_V1.concat('entities/fetch-employment-types/'));
+  return axios.get(REACT_APP_AXIOS_API_V1.concat('fetch-jobpost-types/'));
 }
 
 export async function queryDegreeTypes(params) {
