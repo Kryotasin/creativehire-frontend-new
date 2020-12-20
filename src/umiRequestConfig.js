@@ -15,7 +15,7 @@ let failedQueue = [];
 
 const processQueue = (error, token = null) => {
     failedQueue.forEach(prom => {
-        console.log("here", prom)
+        // console.log("here", prom)
     //   if (error) {
     //     prom.reject(error);
     //   } else {
@@ -28,17 +28,17 @@ const processQueue = (error, token = null) => {
 
 // Where you would set stuff like your 'Authorization' header, etc ...
 if(localStorage.getItem('accessToken') !== null && localStorage.getItem('accessToken') !== undefined && localStorage.getItem('accessToken') !== 'undefined'){
-    console.log(jwt_decode(localStorage.getItem('accessToken')).exp - new Date().getTime()/1000)
+    // console.log(jwt_decode(localStorage.getItem('accessToken')).exp - new Date().getTime()/1000)
 }
 
 
 // Also add/ configure interceptors && all the other cool stuff
 instance.interceptors.request.use(request => {
     // Edit request config
-    console.log(request);
+    // console.log(request);
 
     if(localStorage.getItem('accessToken') !== null && localStorage.getItem('accessToken') !== undefined && localStorage.getItem('accessToken') !== 'undefined'){
-        console.log(jwt_decode(localStorage.getItem('accessToken')).exp - new Date().getTime()/1000)
+        // console.log(jwt_decode(localStorage.getItem('accessToken')).exp - new Date().getTime()/1000)
         const token = localStorage.getItem('accessToken');
         instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
@@ -87,12 +87,12 @@ instance.interceptors.response.use(response => {
                 })
                 .then((res) => res.json())
                 .then((res) => {
-                    console.log(res.access)
+                    // console.log(res.access)
                     localStorage.setItem('accessToken', res.access);
                     localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(res.access)));
                 })
                 .then(() => {
-                    console.log("one")
+                    // console.log("one")
                     const token = localStorage.getItem('accessToken');
                     originalRequest.headers['Authorization'] = `Bearer ${token}`;
                     instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -106,7 +106,7 @@ instance.interceptors.response.use(response => {
             }
             else{
                 failedQueue.push(originalRequest)
-                console.log(failedQueue)
+                // console.log(failedQueue)
             }
         }
         return Promise.reject(error)

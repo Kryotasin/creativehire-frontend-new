@@ -149,7 +149,7 @@ const Step2 = (props) => {
                   setFailed(fail);
                 });
             });
-        }, 4000 * k);
+        }, 6000 * k);
       });
     } else {
       message.success('Done', 5000);
