@@ -107,7 +107,7 @@ const Education = (props) => {
       )}
 
       <Modal
-        title="Add Work Experience"
+        title="Add Education"
         visible={visible}
         okText="Add"
         onCancel={handleCancel}

@@ -208,7 +208,7 @@ function BasicDetails(props) {
       navigator.geolocation.getCurrentPosition(
         (e) => {
           fetch(
-            'http://www.mapquestapi.com/geocoding/v1/reverse?key='
+            'https://www.mapquestapi.com/geocoding/v1/reverse?key='
               .concat(REACT_APP_GEOCODE_REVERSE)
               .concat('&location=')
               .concat(e.coords.latitude.toString())
