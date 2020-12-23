@@ -51,15 +51,22 @@ const WorkCard = (props) => {
     Modal.destroyAll();
   };
 
-  const descriptionBuilder = (start, end, company, type) => {
+  const descriptionBuilder = (start, end, company, type, current) => {
     const s = moment(start);
-    const e = moment(end);
+    let e;
+
+    if(current){
+      e = moment();
+    }
+    else{
+      e = moment(end);
+    }
 
     return (
       <div>
         <div className={styles.test}>
-          {s.locale('en').format('MMMM YYYY')} - {e.locale('en').format('MMMM YYYY')} (
-          {moment.duration(e.diff(s)).asMonths().toFixed(1)} months)
+          {s.locale('en').format('MMMM YYYY')} - {current ? 'Present' : e.locale('en').format('MMMM YYYY')} 
+          ({moment.duration(e.diff(s)).asMonths().toFixed(1)} months)
         </div>
         {company.concat(' - ').concat(employmentTypes[type])}
       </div>
@@ -125,6 +132,7 @@ const WorkCard = (props) => {
                     item.startend[1],
                     item.company,
                     item.type,
+                    item.current || false
                   )}
                 />
                 {/* <div>{moment(item.startend[0]).format('DD-MM-YYYY').concat(" to ").concat(moment(item.startend[1]).format('DD-MM-YYYY'))}</div> */}

@@ -14,20 +14,17 @@ const EmailVerification = (props) => {
   }, []);
 
   useEffect(() => {
-
+    if(emailVerificationStatus === 'False' && emailVerificationStatus !== undefined){
+      notification.error({
+        message: 'Email not verified',
+        description:
+          'Please check your mail for an email from us. It contains a link and a code you can use to confirm your registered email.',
+        duration: 6,
+      })
+    }
   }, [emailVerificationStatus]);
-
   return (
     <>
-      {emailVerificationStatus === 'False' && emailVerificationStatus !== undefined
-        ? 
-        notification['error']({
-          message: 'Email not verified',
-          description:
-            'Please check your mail for an email from us. It contains a link and a code you can use to confirm your registered email.',
-          duration: 12,
-        })
-        : ''}
     </>
         
   );

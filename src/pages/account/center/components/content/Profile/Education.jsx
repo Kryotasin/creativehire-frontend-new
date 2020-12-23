@@ -1,19 +1,19 @@
 import {
-  List,
   Divider,
   Button,
   Modal,
   Form,
-  DatePicker,
   Input,
   Select,
   Spin,
   Typography,
+  Space,
+  InputNumber,
+  Checkbox
 } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { connect, Link } from 'umi';
+import { connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import locale from 'antd/es/date-picker/locale/en_US';
 import moment from 'moment';
 import styles from './index.less';
 import axios from '../../../../../../umiRequestConfig';
@@ -21,12 +21,12 @@ import EducationCard from './components/EducationCard';
 
 const { Text } = Typography;
 
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { TextArea } = Input;
 
+
 const Education = (props) => {
-  const { dispatch, projectList, candidate_part, degreeTypes } = props;
+  const { dispatch, projectList, candidate_part, degreeTypes, months, currentYear, defaultDate } = props;
 
   const [initLoading, setInitLoading] = useState(false);
   const [educationList, setEducationList] = useState(undefined);
@@ -37,6 +37,14 @@ const Education = (props) => {
   const [form] = Form.useForm();
 
   const [edu_id, setEduID] = useState(-1);
+
+  const [ startMonth, setStartMonth ] = useState(undefined);
+  const [ startYear, setStartYear ] = useState(undefined);
+
+  const [ endMonth, setEndMonth ] = useState(undefined);
+  const [ endYear, setEndYear ] = useState(undefined);
+
+  const[ currentEducation, setCurrentEducation ] = useState(undefined);
 
   useEffect(() => {
     if (Object.keys(candidate_part).length !== 0 && educationList === undefined) {
@@ -72,10 +80,6 @@ const Education = (props) => {
 
   const handleCancel = () => {
     setVisible(false);
-  };
-
-  const rangeConfig = {
-    rules: [{ type: 'array', required: true, message: 'Please select time!' }],
   };
 
   return (
@@ -116,6 +120,21 @@ const Education = (props) => {
           form
             .validateFields()
             .then((values) => {
+
+              const startDate = moment().set({'year': startYear, 'month': startMonth, 'date': defaultDate});
+              let endDate = undefined;
+
+              if(currentEducation) {
+                endDate = moment();
+                values.current = currentEducation;
+              }
+              else{
+                endDate = moment().set({'year': endYear, 'month': endMonth, 'date': defaultDate});
+              }
+              
+
+              values.startend = [startDate, endDate];
+
               const out = {
                 type: 'education',
                 data: values,
@@ -222,11 +241,59 @@ const Education = (props) => {
           </Form.Item>
 
           <Form.Item
-            name="startend"
-            label="Start & End Date (Approx. dates are ok)"
-            {...rangeConfig}
+            name="start"
+            label="Start month and year"
+            rules={[
+              {
+                required: true,
+                message: 'Please choose month and year!',
+              },
+            ]}
           >
-            <RangePicker locale={locale} />
+            <Space direction='horizontal' size='middle'>
+              <Select onChange={(e) => setStartMonth(e)} style={{width:'90px'}}>
+                {months.map((v, k) => (
+                  <Option key={k}>{v}</Option>
+                ))}
+              </Select>
+              
+              <InputNumber onChange={(e) => setStartYear(e)} min={currentYear - 50} max={currentYear} type='number' style={{width:'70px'}} ></InputNumber >
+            </Space>
+          </Form.Item>
+
+          <Form.Item
+            name="end"
+            label="End Month and Year "
+            rules={[
+              {
+                message: 'Please choose end month and year!',
+              },
+              () => ({
+                validator(rule, value) {
+                  if(endMonth === undefined && endYear === undefined && currentEducation === undefined){
+                    return Promise.reject('Please choose end date or check the box')
+                  }
+                  else{
+                    return Promise.resolve();
+                  }
+                }
+              }),
+            ]}
+          >
+            <Space direction='vertical' size='middle'>
+              <Space direction='horizontal' size='middle'>
+                <Select onChange={(e) => setEndMonth(e)} style={{width:'90px'}} disabled={currentEducation}>
+                  {months.map((v, k) => (
+                    <Option key={k}>{v}</Option>
+                  ))}
+                </Select>
+                
+                <InputNumber onChange={(e) => setEndYear(e)} min={currentYear - 50} max={currentYear} disabled={currentEducation} type='number' style={{width:'70px'}}></InputNumber >
+              </Space>
+            
+            
+              <Checkbox onChange={(e) => setCurrentEducation(e.target.checked)}>I'm a current student</Checkbox>
+            </Space>
           </Form.Item>
 
           <Form.Item
