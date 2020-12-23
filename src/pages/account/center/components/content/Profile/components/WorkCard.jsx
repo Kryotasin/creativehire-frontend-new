@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, Typography, Button, Modal, Form, DatePicker, Input, Select, Spin } from 'antd';
+import { List, Typography, Button, Modal, Form, DatePicker, Input, Select, Spin, Space, InputNumber, Checkbox } from 'antd';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/en_US';
 import axios from '../../../../../../../umiRequestConfig';
@@ -12,7 +12,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const WorkCard = (props) => {
-  const { workList, titleTypes, employmentTypes, projectList, saveCandidate, setWorkList } = props;
+  const { workList, titleTypes, employmentTypes, projectList, saveCandidate, setWorkList, months, currentYear, defaultDate } = props;
   const [titlesList, setTitleList] = useState(undefined);
   const [typesList, setTypesList] = useState(undefined);
 
@@ -26,6 +26,15 @@ const WorkCard = (props) => {
   const [workMod, setWorkMod] = useState(undefined);
   const [work_id, setWorkID] = useState(-1);
   const [form] = Form.useForm();
+
+
+  const [ startMonth, setStartMonth ] = useState(undefined);
+  const [ startYear, setStartYear ] = useState(undefined);
+
+  const [ endMonth, setEndMonth ] = useState(undefined);
+  const [ endYear, setEndYear ] = useState(undefined);
+
+  const [ currentWork, setCurrentWork ] = useState(undefined);
 
   const rangeConfig = {
     rules: [{ type: 'array', required: true, message: 'Please select date!' }],
@@ -74,7 +83,18 @@ const WorkCard = (props) => {
   };
 
   const setModalData = (data, key) => {
-    data.startend = [moment(data.startend[0]), moment(data.startend[1])];
+    const startDate = moment(data.start);
+
+    setStartMonth(startDate.month());
+    setStartYear(startDate.year());
+
+
+    if(!data.current){
+      const endDate = moment(data.end);
+
+      setEndMonth(endDate.month());
+      setEndYear(endDate.year());
+    }
 
     const children = [];
     Object.keys(employmentTypes).forEach((k) => {
@@ -124,12 +144,12 @@ const WorkCard = (props) => {
                     <Text type="danger">Delete</Text>
                   </Button>,
                 ]}
-              >
+              >{console.log(item)}
                 <List.Item.Meta
                   title={titleTypes[item.title]}
                   description={descriptionBuilder(
-                    item.startend[0],
-                    item.startend[1],
+                    item.start,
+                    item.end,
                     item.company,
                     item.type,
                     item.current || false
@@ -151,10 +171,24 @@ const WorkCard = (props) => {
               form
                 .validateFields()
                 .then((values) => {
+
                   setConfirmLoading(true);
-                  values.yoe = moment
-                    .duration(values.startend[1].diff(values.startend[0]))
-                    .asHours();
+
+                  const startDate = moment().set({'year': startYear, 'month': startMonth, 'date': defaultDate});
+              let endDate = undefined;
+
+              if(currentWork) {
+                endDate = moment();
+                values.current = currentWork;
+              }
+              else{
+                endDate = moment().set({'year': endYear, 'month': endMonth, 'date': defaultDate});
+              }
+              
+
+              values.startend = [startDate, endDate];
+
+              values.yoe = moment.duration(values.startend[1].diff(values.startend[0])).asHours();
 
                   const out = {
                     type: 'work_exp',
@@ -252,12 +286,60 @@ const WorkCard = (props) => {
               </Form.Item>
 
               <Form.Item
-                name="startend"
-                label="Start & End Date (Approx. dates are ok)"
-                {...rangeConfig}
-              >
-                <RangePicker locale={locale} />
-              </Form.Item>
+            name="start"
+            label="Start month and year"
+            rules={[
+              {
+                required: true,
+                message: 'Please choose month and year!',
+              },
+            ]}
+          >
+            <Space direction='horizontal' size='middle'>
+              <Select defaultValue={months[startMonth]} onChange={(e) => setStartMonth(e)} style={{width:'90px'}}>
+                {months.map((v, k) => (
+                  <Option key={k}>{v}</Option>
+                ))}
+              </Select>
+              
+              <InputNumber defaultValue={startYear} onChange={(e) => setStartYear(e)} min={currentYear - 50} max={currentYear} type='number' style={{width:'70px'}} ></InputNumber >
+            </Space>
+          </Form.Item>
+
+          <Form.Item
+            name="end"
+            label="End Month and Year "
+            rules={[
+              {
+                message: 'Please choose end month and year!',
+              },
+              () => ({
+                validator(rule, value) {
+                  if(endMonth === undefined && endYear === undefined && currentWork === undefined){
+                    return Promise.reject('Please choose end date or check the box')
+                  }
+                  else{
+                    return Promise.resolve();
+                  }
+                }
+              }),
+            ]}
+          >
+            <Space direction='vertical' size='middle'>
+              <Space direction='horizontal' size='middle'>
+                <Select defaultValue={months[endMonth]} onChange={(e) => setEndMonth(e)} style={{width:'90px'}} disabled={currentWork}>
+                  {months.map((v, k) => (
+                    <Option key={k}>{v}</Option>
+                  ))}
+                </Select>
+                
+                <InputNumber defaultValue={endYear} onChange={(e) => setEndYear(e)} min={currentYear - 50} max={currentYear} disabled={currentWork} type='number' style={{width:'70px'}}></InputNumber >
+              </Space>
+            
+            
+              <Checkbox defaultChecked={currentWork} onChange={(e) => setCurrentWork(e.target.checked)}>I currently work here</Checkbox>
+            </Space>
+          </Form.Item>
 
               <Form.Item
                 name="summary"

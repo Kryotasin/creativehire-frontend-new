@@ -94,6 +94,9 @@ const Education = (props) => {
             educationList={educationList}
             projectList={projectList}
             setEducationList={setEducationList}
+            months={months}
+            currentYear={currentYear}
+            defaultDate={defaultDate}
           />
 
           <Button
@@ -204,6 +207,20 @@ const Education = (props) => {
                 <Option key={k}>{v}</Option>
               ))}
             </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="major"
+            label="Major"
+            placeholder="Human-Computer Interaction"
+            rules={[
+              {
+                required: true,
+                message: 'Please enter your major!',
+              },
+            ]}
+          >
+            <Input />
           </Form.Item>
 
           <Form.Item name="projects" label="Link Projects">

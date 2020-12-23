@@ -127,6 +127,10 @@ const WorkExperience = (props) => {
                 payload: e,
               });
             }}
+            
+            months={months}
+            currentYear={currentYear}
+            defaultDate={defaultDate}
           />
           <Button
             type="link"

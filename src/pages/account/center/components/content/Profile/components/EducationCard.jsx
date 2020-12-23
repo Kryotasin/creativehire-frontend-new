@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, Typography, Button, Modal, Form, DatePicker, Input, Select } from 'antd';
+import { List, Typography, Button, Modal, Form, DatePicker, Input, Select, Space, Checkbox, InputNumber } from 'antd';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/en_US';
 import axios from '../../../../../../../umiRequestConfig';
@@ -12,7 +12,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const EducationCard = (props) => {
-  const { educationList, projectList, setEducationList, degreeTypes } = props;
+  const { educationList, projectList, setEducationList, degreeTypes, months, currentYear, defaultDate } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -24,6 +24,14 @@ const EducationCard = (props) => {
   const [educationMod, setEducationMod] = useState(undefined);
   const [edu_id, setEduID] = useState(-1);
   const [form] = Form.useForm();
+
+  const [ startMonth, setStartMonth ] = useState(undefined);
+  const [ startYear, setStartYear ] = useState(undefined);
+
+  const [ endMonth, setEndMonth ] = useState(undefined);
+  const [ endYear, setEndYear ] = useState(undefined);
+
+  const[ currentEducation, setCurrentEducation ] = useState(undefined);
 
   const rangeConfig = {
     rules: [{ type: 'array', required: true, message: 'Please select date!' }],
@@ -43,7 +51,7 @@ const EducationCard = (props) => {
     Modal.destroyAll();
   };
 
-  const descriptionBuilder = (start, end, company, type, current) => {
+  const descriptionBuilder = (start, end, type, current, major) => {
     const s = moment(start);
     let e;
     if(current){
@@ -59,13 +67,28 @@ const EducationCard = (props) => {
           {s.locale('en').format('MMMM YYYY')} - {current ? 'Present' : e.locale('en').format('MMMM YYYY')} (
           {moment.duration(e.diff(s)).asMonths().toFixed(1)} months)
         </div>
-        {company.concat(' - ').concat(degreeTypes[type])}
+        {major.concat(' - ').concat(degreeTypes[type])}
       </div>
     );
   };
 
+
+
   const setModalData = (data, key) => {
-    data.startend = [moment(data.startend[0]), moment(data.startend[1])];
+    const startDate = moment(data.start);
+
+    setStartMonth(startDate.month());
+    setStartYear(startDate.year());
+
+
+    if(!data.current){
+      const endDate = moment(data.end);
+
+      setEndMonth(endDate.month());
+      setEndYear(endDate.year());
+    }
+
+    setCurrentEducation(data.current);
 
     const children = [];
     Object.keys(degreeTypes).forEach((k) => {
@@ -106,13 +129,13 @@ const EducationCard = (props) => {
             ]}
           >
             <List.Item.Meta
-              title={degreeTypes[item.degree]}
+              title={item.school}
               description={descriptionBuilder(
-                item.startend[0],
-                item.startend[1],
-                item.school,
+                item.start,
+                item.end,
                 item.degree,
-                item.current || false
+                item.current || false,
+                item.major
               )}
             />
             {/* <div>{moment(item.startend[0]).format('DD-MM-YYYY').concat(" to ").concat(moment(item.startend[1]).format('DD-MM-YYYY'))}</div> */}
@@ -132,6 +155,20 @@ const EducationCard = (props) => {
           form
             .validateFields()
             .then((values) => {
+              const startDate = moment().set({'year': startYear, 'month': startMonth, 'date': defaultDate});
+              let endDate = undefined;
+
+              if(currentEducation) {
+                endDate = moment();
+                values.current = currentEducation;
+              }
+              else{
+                endDate = moment().set({'year': endYear, 'month': endMonth, 'date': defaultDate});
+              }
+              
+
+              values.startend = [startDate, endDate];
+
               const out = {
                 type: 'education',
                 data: values,
@@ -166,7 +203,7 @@ const EducationCard = (props) => {
         }}
       >
         {
-          // title, type, company, location, start, end
+          // title, type, school, location, start, end
         }
         <Form form={form} layout="vertical" name="new_work_exp" initialValues={educationMod}>
           <Form.Item
@@ -200,6 +237,20 @@ const EducationCard = (props) => {
             </Select>
           </Form.Item>
 
+          <Form.Item
+            name="major"
+            label="Major"
+            placeholder="Human-Computer Interaction"
+            rules={[
+              {
+                required: true,
+                message: 'Please enter your major!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
           <Form.Item name="projects" label="Link Projects">
             <Select mode="multiple">{projectChoices}</Select>
           </Form.Item>
@@ -218,11 +269,59 @@ const EducationCard = (props) => {
           </Form.Item>
 
           <Form.Item
-            name="startend"
-            label="Start & End Date (Approx. dates are ok)"
-            {...rangeConfig}
+            name="start"
+            label="Start month and year"
+            rules={[
+              {
+                required: true,
+                message: 'Please choose month and year!',
+              },
+            ]}
           >
-            <RangePicker locale={locale} />
+            <Space direction='horizontal' size='middle'>
+              <Select defaultValue={months[startMonth]} onChange={(e) => setStartMonth(e)} style={{width:'90px'}}>
+                {months.map((v, k) => (
+                  <Option key={k}>{v}</Option>
+                ))}
+              </Select>
+              
+              <InputNumber defaultValue={startYear} onChange={(e) => setStartYear(e)} min={currentYear - 50} max={currentYear} type='number' style={{width:'70px'}} ></InputNumber >
+            </Space>
+          </Form.Item>
+
+          <Form.Item
+            name="end"
+            label="End Month and Year "
+            rules={[
+              {
+                message: 'Please choose end month and year!',
+              },
+              () => ({
+                validator(rule, value) {
+                  if(endMonth === undefined && endYear === undefined && currentEducation === undefined){
+                    return Promise.reject('Please choose end date or check the box')
+                  }
+                  else{
+                    return Promise.resolve();
+                  }
+                }
+              }),
+            ]}
+          >
+            <Space direction='vertical' size='middle'>
+              <Space direction='horizontal' size='middle'>
+                <Select defaultValue={currentEducation ? '' : months[endMonth]} onChange={(e) => setEndMonth(e)} style={{width:'90px'}} disabled={currentEducation}>
+                  {months.map((v, k) => (
+                    <Option key={k}>{v}</Option>
+                  ))}
+                </Select>
+                
+                <InputNumber defaultValue={currentEducation ? '' : endYear} onChange={(e) => setEndYear(e)} min={currentYear - 50} max={currentYear} disabled={currentEducation} type='number' style={{width:'70px'}}></InputNumber >
+              </Space>
+            
+            
+              <Checkbox defaultChecked={currentEducation} onChange={(e) => setCurrentEducation(e.target.checked)}>I'm a current student</Checkbox>
+            </Space>
           </Form.Item>
 
           <Form.Item
@@ -231,7 +330,7 @@ const EducationCard = (props) => {
             // rules={[
             //     {
             //     required: true,
-            //     message: 'Please input the company name!',
+            //     message: 'Please input the school name!',
             //     },
             // ]}
           >
