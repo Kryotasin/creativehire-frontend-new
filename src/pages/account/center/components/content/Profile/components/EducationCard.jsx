@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, Typography, Button, Modal, Form, DatePicker, Input, Select, Space, Checkbox, InputNumber } from 'antd';
+import { List, Typography, Button, Modal, Form, DatePicker, Input, Select, Space, Checkbox, InputNumber, Popconfirm, message } from 'antd';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/en_US';
 import axios from '../../../../../../../umiRequestConfig';
@@ -60,7 +60,6 @@ const EducationCard = (props) => {
     else{
       e = moment(end);
     }
-
     
     const timeDiff = moment.duration(e.diff(s));
 
@@ -82,7 +81,46 @@ const EducationCard = (props) => {
     );
   };
 
+  const deleteEducationHandler = (educationItemKey) => {
 
+    const out ={
+      type: 'deletion',
+      deletion_type: 'education',
+      key: educationItemKey
+    };
+    
+    axios
+      .post(
+        REACT_APP_AXIOS_API_V1.concat(
+          `entities/candidate-complete-details/${btoa(
+            JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+          )}`,
+        ),
+        out,
+      )
+      .then((res) => {
+        console.log(res.data)
+        const updatedCandidatePart = Object.assign({}, res.data);
+        const x = saveCandidate(updatedCandidatePart);
+
+        x.then((e) => {
+
+          const temp = [];
+
+          Object.entries(e.payload.candidate_part.candidate_education_history).forEach((entry) => {
+            temp.push(entry[1]);
+          });
+          
+          setEducationList(temp);
+          message.success('Succesfully deleted')
+        });
+
+      });
+  }
+
+  function cancel(e) {
+    console.log('clicked no');
+  }
 
   const setModalData = (data, key) => {
     const startDate = moment(data.start);
@@ -133,9 +171,18 @@ const EducationCard = (props) => {
               >
                 Edit
               </Button>,
-              <Button>
-                <Text type="danger">Delete</Text>
-              </Button>,
+              <Popconfirm
+                title="Are you sure to delete this Education?"
+                onConfirm={() => deleteEducationHandler(k)}
+                onCancel={cancel}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button>
+                  <Text type="danger">Delete</Text>
+                </Button>
+            </Popconfirm>
+              ,
             ]}
           >
             <List.Item.Meta
@@ -186,7 +233,7 @@ const EducationCard = (props) => {
               };
 
               axios
-                .put(
+                .post(
                   REACT_APP_AXIOS_API_V1.concat(
                     `entities/candidate-complete-details/${btoa(
                       JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
@@ -209,6 +256,8 @@ const EducationCard = (props) => {
                     setEducationList(temp);
                     form.resetFields();
                     setVisible(false);
+                    message.success('Succesfully added');
+                    setConfirmLoading(true);
                   });
 
                 });

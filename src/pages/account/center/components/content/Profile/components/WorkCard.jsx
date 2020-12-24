@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, Typography, Button, Modal, Form, DatePicker, Input, Select, Spin, Space, InputNumber, Checkbox } from 'antd';
+import { List, Typography, Button, Modal, Form, DatePicker, Input, Select, Spin, Space, InputNumber, Checkbox, Popconfirm, message } from 'antd';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/en_US';
 import axios from '../../../../../../../umiRequestConfig';
@@ -83,13 +83,59 @@ const WorkCard = (props) => {
     return (
       <div style={{color: '#505050'}}>
         <div className={styles.dates}>
-          {s.locale('en').format('MMMM YYYY')} - {current ? 'Present ' : e.locale('en').format('MMMM YYYY')} 
+          {s.locale('en').format('MMM YYYY')} - {current ? 'Now ' : e.locale('en').format('MMMM YYYY')} 
           {'('.concat(String((theDiffObject.years))).concat('y ').concat(String(theDiffObject.months)).concat('m').concat(')')}
         </div>
         {company.concat(' - ').concat(employmentTypes[type])}
       </div>
     );
   };
+
+
+  const deleteWorkExpHandler = (workExpItemKey) => {
+
+    const out ={
+      type: 'deletion',
+      deletion_type: 'work_exp',
+      key: workExpItemKey
+    };
+    
+    axios
+      .post(
+        REACT_APP_AXIOS_API_V1.concat(
+          `entities/candidate-complete-details/${btoa(
+            JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+          )}`,
+        ),
+        out,
+      )
+      .then((res) => {
+        console.log(res.data)
+        const updatedCandidatePart = Object.assign({}, res.data);
+        const x = saveCandidate(updatedCandidatePart);
+
+        x.then((e) => {
+
+          const temp = [];
+          let newYoe = 0;
+
+          Object.entries(e.payload.candidate_part.candidate_work_exp).forEach((entry) => {
+            temp.push(entry[1]);
+            newYoe += entry[1].yoe;
+          });
+
+          setYoe(newYoe.toFixed());
+          setWorkList(temp);
+          message.success('Succesfully deleted');
+        });
+
+      });
+  }
+
+  function cancel(e) {
+    console.log('clicked no');
+  }
+
 
   const setModalData = (data, key) => {
     const startDate = moment(data.start);
@@ -151,9 +197,17 @@ const WorkCard = (props) => {
                   >
                     Edit
                   </Button>,
-                  <Button>
-                    <Text type="danger">Delete</Text>
-                  </Button>,
+                  <Popconfirm
+                    title="Are you sure to delete this Work Experience?"
+                    onConfirm={() => deleteWorkExpHandler(k)}
+                    onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button>
+                      <Text type="danger">Delete</Text>
+                    </Button>
+                  </Popconfirm>,
                 ]}
               >
                 <List.Item.Meta
@@ -208,7 +262,7 @@ const WorkCard = (props) => {
                   };
 
                   axios
-                    .put(
+                    .post(
                       REACT_APP_AXIOS_API_V1.concat(
                         `entities/candidate-complete-details/${btoa(
                           JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
@@ -233,6 +287,8 @@ const WorkCard = (props) => {
                         setWorkList(temp);
                         form.resetFields();
                         setVisible(false);
+                        message.success('Succesfully added');
+                        setConfirmLoading(false);
                       });
 
                     });

@@ -111,7 +111,7 @@ const WorkExperience = (props) => {
         <Spin />
       ) : (
         <>
-          <Text strong>Total Years of Experience (YoE):</Text> <Text mark>{Number(yoe/12).toFixed(1)} years</Text>
+          <Text strong>Total Years of Experience (YoE):</Text> <Text mark>{Math.floor(Number(yoe/12))} y {Math.floor((Number(yoe%12)))} m </Text>
           <WorkCard
             setWorkList={(e) => {
               const temp = [];
@@ -182,7 +182,7 @@ const WorkExperience = (props) => {
               };
               
               axios
-                .put(
+                .post(
                   REACT_APP_AXIOS_API_V1.concat(
                     `entities/candidate-complete-details/${btoa(
                       JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,

@@ -78,10 +78,12 @@ const Education = (props) => {
     }
   }, [candidate_part, educationList, degreeTypes]);
 
+  // Handles the closing of modal
   const handleCancel = () => {
     setVisible(false);
   };
 
+  // Handles the dynamic updating of the candidate object to store - no interaction with api
   async function saveCandidate (e) {
     return dispatch({
       type: 'accountAndcenter/saveNewState',
@@ -157,7 +159,7 @@ const Education = (props) => {
               };
 
               axios
-                .put(
+                .post(
                   REACT_APP_AXIOS_API_V1.concat(
                     `entities/candidate-complete-details/${btoa(
                       JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
@@ -181,7 +183,7 @@ const Education = (props) => {
                     form.resetFields();
                     setVisible(false);
                   });
-                  
+
                 });
             })
             .catch((info) => {
