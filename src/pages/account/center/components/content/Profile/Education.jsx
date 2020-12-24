@@ -26,7 +26,7 @@ const { TextArea } = Input;
 
 
 const Education = (props) => {
-  const { dispatch, projectList, candidate_part, degreeTypes, months, currentYear, defaultDate } = props;
+  const { dispatch, projectList, candidate_part, degreeTypes, months, currentYear, defaultDate, saving } = props;
 
   const [initLoading, setInitLoading] = useState(false);
   const [educationList, setEducationList] = useState(undefined);
@@ -82,6 +82,13 @@ const Education = (props) => {
     setVisible(false);
   };
 
+  async function saveCandidate (e) {
+    return dispatch({
+      type: 'accountAndcenter/saveNewState',
+      payload: { candidate_part: e },
+    });
+  }
+
   return (
     <div className="parts">
       <Divider />
@@ -97,6 +104,11 @@ const Education = (props) => {
             months={months}
             currentYear={currentYear}
             defaultDate={defaultDate}
+            
+            saveCandidate={saveCandidate}
+            
+            dispatch={dispatch}
+            saving={saving}
           />
 
           <Button
@@ -154,16 +166,22 @@ const Education = (props) => {
                   out,
                 )
                 .then((res) => {
-                  console.log(res);
-                  const temp = [];
+                  const updatedCandidatePart = Object.assign({}, res.data);
+                  const x = saveCandidate(updatedCandidatePart);
 
-                  Object.entries(res.data.candidate_education_history).forEach((e) => {
-                    temp.push(e[1]);
+                  x.then((e) => {
+
+                    const temp = [];
+
+                    Object.entries(e.payload.candidate_part.candidate_education_history).forEach((entry) => {
+                      temp.push(entry[1]);
+                    });
+                    
+                    setEducationList(temp);
+                    form.resetFields();
+                    setVisible(false);
                   });
-
-                  setEducationList(temp);
-                  form.resetFields();
-                  setVisible(false);
+                  
                 });
             })
             .catch((info) => {
@@ -339,4 +357,5 @@ export default connect(({ accountAndcenter }) => ({
   candidate_part: accountAndcenter.candidate_part,
   projectList: accountAndcenter.projectList,
   degreeTypes: accountAndcenter.degreeTypes,
+  saving: accountAndcenter.saving,
 }))(Education);

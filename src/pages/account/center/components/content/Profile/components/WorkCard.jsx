@@ -12,7 +12,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const WorkCard = (props) => {
-  const { workList, titleTypes, employmentTypes, projectList, saveCandidate, setWorkList, months, currentYear, defaultDate } = props;
+  const { workList, titleTypes, employmentTypes, projectList, saveCandidate, setWorkList, months, currentYear, defaultDate, setYoe } = props;
   const [titlesList, setTitleList] = useState(undefined);
   const [typesList, setTypesList] = useState(undefined);
 
@@ -71,11 +71,20 @@ const WorkCard = (props) => {
       e = moment(end);
     }
 
+    const timeDiff = moment.duration(e.diff(s));
+
+    const theDiffObject = {
+        years: moment.duration(timeDiff).years(),
+        months: moment.duration(timeDiff).months(),
+        // weeks: moment.duration(timeDiff).weeks(),
+        // days: moment.duration(timeDiff).days()
+    }
+
     return (
-      <div>
-        <div className={styles.test}>
-          {s.locale('en').format('MMMM YYYY')} - {current ? 'Present' : e.locale('en').format('MMMM YYYY')} 
-          ({moment.duration(e.diff(s)).asMonths().toFixed(1)} months)
+      <div style={{color: '#505050'}}>
+        <div className={styles.dates}>
+          {s.locale('en').format('MMMM YYYY')} - {current ? 'Present ' : e.locale('en').format('MMMM YYYY')} 
+          {'('.concat(String((theDiffObject.years))).concat('y ').concat(String(theDiffObject.months)).concat('m').concat(')')}
         </div>
         {company.concat(' - ').concat(employmentTypes[type])}
       </div>
@@ -95,6 +104,8 @@ const WorkCard = (props) => {
       setEndMonth(endDate.month());
       setEndYear(endDate.year());
     }
+
+    setCurrentWork(data.current);
 
     const children = [];
     Object.keys(employmentTypes).forEach((k) => {
@@ -131,7 +142,7 @@ const WorkCard = (props) => {
             dataSource={workList}
             renderItem={(item, k) => (
               <List.Item
-                key={item.company.concat('__').concat(item.title)}
+                key={item.company.concat('__').concat(item.title).concat('__').concat(item.type)}
                 actions={[
                   <Button
                     onClick={() => {
@@ -144,7 +155,7 @@ const WorkCard = (props) => {
                     <Text type="danger">Delete</Text>
                   </Button>,
                 ]}
-              >{console.log(item)}
+              >
                 <List.Item.Meta
                   title={titleTypes[item.title]}
                   description={descriptionBuilder(
@@ -188,7 +199,7 @@ const WorkCard = (props) => {
 
               values.startend = [startDate, endDate];
 
-              values.yoe = moment.duration(values.startend[1].diff(values.startend[0])).asHours();
+              values.yoe = moment.duration(values.startend[1].diff(values.startend[0])).asMonths();
 
                   const out = {
                     type: 'work_exp',
@@ -206,14 +217,24 @@ const WorkCard = (props) => {
                       out,
                     )
                     .then((res) => {
-                      const x = saveCandidate(res.data);
+                      const updatedCandidatePart = Object.assign({}, res.data);
+                      const x = saveCandidate(updatedCandidatePart);
 
                       x.then((e) => {
-                        setWorkList(e.payload.candidate_work_exp);
-                        setConfirmLoading(false);
+                        const temp = [];
+                        let newYoe = 0;
+    
+                        Object.entries(e.payload.candidate_part.candidate_work_exp).forEach((entry) => {
+                          temp.push(entry[1]);
+                          newYoe += entry[1].yoe;
+                        });
+    
+                        setYoe(newYoe.toFixed());
+                        setWorkList(temp);
                         form.resetFields();
                         setVisible(false);
                       });
+
                     });
                 })
                 .catch((info) => {

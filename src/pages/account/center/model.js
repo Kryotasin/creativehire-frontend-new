@@ -13,6 +13,7 @@ import {
   queryEmailVerificationStatus,
   queryWorkAuthUpdate,
   queryRemoteUpdate,
+  queryWorkExpEducationUpdate,
 } from './service';
 import { message } from 'antd';
 
@@ -249,6 +250,44 @@ const Model = {
           }
 
           break;
+
+        // case 'work_exp':
+        //   const workExpResponse = yield call(queryWorkExpEducationUpdate, payload.payload);
+
+        //   if (workExpResponse.status === 200) {
+        //     yield put({
+        //       type: 'saveSaving',
+        //       payload: true,
+        //     }); // set saving to true to enable spin
+
+        //     console.log(workExpResponse.data)
+
+        //     const updatedCandidatePart = Object.assign({}, workExpResponse.data);
+
+        //     yield put({
+        //       type: 'saveNewState',
+        //       payload: { candidate_part: updatedCandidatePart },
+        //     });
+
+        //     yield put({
+        //       type: 'saveSaving',
+        //       payload: false,
+        //     }); // set saving to false to disable spin
+
+        //     yield put({
+        //       type: 'setWorkExpSaved',
+        //       payload: 'done'
+        //     });
+
+        //     yield put({
+        //       type: 'setWorkExpSaved',
+        //       payload: undefined
+        //     });
+
+        //     message.success('Updated Work Experience');
+        //   }
+
+        //   break;
       }
     },
 
@@ -357,6 +396,7 @@ const Model = {
     resetState(state, action) {
       return { undefined };
     },
+
   },
 };
 export default Model;

@@ -20,6 +20,7 @@ import moment from 'moment';
 import styles from './index.less';
 import axios from '../../../../../../umiRequestConfig';
 import WorkCard from './components/WorkCard';
+import { entries } from 'lodash';
 
 const { Text } = Typography;
 
@@ -27,7 +28,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const WorkExperience = (props) => {
-  const { dispatch, projectList, candidate_part, employmentTypes, titleTypes, months, currentYear, defaultDate } = props;
+  const { dispatch, projectList, candidate_part, employmentTypes, titleTypes, months, currentYear, defaultDate, saving } = props;
 
   const [initLoading, setInitLoading] = useState(true);
   const [workList, setWorkList] = useState(undefined);
@@ -57,9 +58,9 @@ const WorkExperience = (props) => {
           temp.push(e[1]);
         });
       }
-
+      
       setWorkList(temp);
-      setYoe((candidate_part.candidate_yoe * 0.000114155).toFixed(2));
+      setYoe((candidate_part.candidate_yoe).toFixed(2));
     }
   }, [candidate_part]);
 
@@ -94,9 +95,12 @@ const WorkExperience = (props) => {
     setVisible(false);
   };
 
-  const rangeConfig = {
-    rules: [{ type: 'array', required: true, message: 'Please select time!' }],
-  };
+  async function saveCandidate (e) {
+    return dispatch({
+      type: 'accountAndcenter/saveNewState',
+      payload: { candidate_part: e },
+    });
+  }
 
   return (
     <div className="parts">
@@ -107,7 +111,7 @@ const WorkExperience = (props) => {
         <Spin />
       ) : (
         <>
-          <Text strong>Total Years of Experience (YoE):</Text> <Text mark>{yoe} years</Text>
+          <Text strong>Total Years of Experience (YoE):</Text> <Text mark>{Number(yoe/12).toFixed(1)} years</Text>
           <WorkCard
             setWorkList={(e) => {
               const temp = [];
@@ -121,16 +125,14 @@ const WorkExperience = (props) => {
             employmentTypes={employmentTypes}
             projectList={projectList}
             candidate_part={candidate_part}
-            saveCandidate={async (e) => {
-              return dispatch({
-                type: 'accountAndcenter/saveCandidatePart',
-                payload: e,
-              });
-            }}
+            saveCandidate={saveCandidate}
             
             months={months}
             currentYear={currentYear}
             defaultDate={defaultDate}
+            dispatch={dispatch}
+            saving={saving}
+            setYoe={setYoe}
           />
           <Button
             type="link"
@@ -171,7 +173,7 @@ const WorkExperience = (props) => {
 
               values.startend = [startDate, endDate];
 
-              values.yoe = moment.duration(values.startend[1].diff(values.startend[0])).asHours();
+              values.yoe = moment.duration(values.startend[1].diff(values.startend[0])).asMonths();
 
               const out = {
                 type: 'work_exp',
@@ -189,19 +191,25 @@ const WorkExperience = (props) => {
                   out,
                 )
                 .then((res) => {
-                  console.log(res);
-                  const temp = [];
-                  let newYoe = 0;
 
-                  Object.entries(res.data.candidate_work_exp).forEach((e) => {
-                    temp.push(e[1]);
-                    newYoe += e[1].yoe;
+                  const updatedCandidatePart = Object.assign({}, res.data);
+                  const x = saveCandidate(updatedCandidatePart);
+
+                  x.then((e) => {
+
+                    const temp = [];
+                    let newYoe = 0;
+
+                    Object.entries(e.payload.candidate_part.candidate_work_exp).forEach((entry) => {
+                      temp.push(entry[1]);
+                      newYoe += entry[1].yoe;
+                    });
+                    
+                    setYoe(newYoe.toFixed(2));
+                    setWorkList(temp);
+                    form.resetFields();
+                    setVisible(false);
                   });
-
-                  setYoe((newYoe * 0.000114155).toFixed(2));
-                  setWorkList(temp);
-                  form.resetFields();
-                  setVisible(false);
                 });
             })
             .catch((info) => {
@@ -365,9 +373,9 @@ const WorkExperience = (props) => {
 };
 
 export default connect(({ accountAndcenter }) => ({
-  currentUser: accountAndcenter.currentUser,
   candidate_part: accountAndcenter.candidate_part,
   projectList: accountAndcenter.projectList,
   titleTypes: accountAndcenter.titleTypes,
   employmentTypes: accountAndcenter.employmentTypes,
+  saving: accountAndcenter.saving,
 }))(WorkExperience);

@@ -1,4 +1,4 @@
-import { Tag, AutoComplete, message, Typography, Spin } from 'antd';
+import { Tag, AutoComplete, message, Typography, Spin, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import axios from '../../../../../umiRequestConfig';
@@ -239,6 +239,16 @@ const TagList = ({ keywords_part_input, structure }) => {
             }}
             value={selected}
         /> */}
+        <Space direction='vertical' size='small'>
+          <Space direction='horizontal' size='small'>
+            <div className={styles.rectangleResume}></div>
+            <Typography.Text>Skills from resume</Typography.Text>
+          </Space>
+          <Space direction='horizontal' size='small'>
+            <div className={styles.rectangleProjects}></div>
+            <Typography.Text>Skills from projects</Typography.Text>
+          </Space>
+        </Space>
         {        
           tags !== {} ? 
           generateKeys()

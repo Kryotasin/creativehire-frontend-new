@@ -12,7 +12,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const EducationCard = (props) => {
-  const { educationList, projectList, setEducationList, degreeTypes, months, currentYear, defaultDate } = props;
+  const { educationList, projectList, setEducationList, degreeTypes, months, currentYear, defaultDate, saveCandidate, saving } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -61,11 +61,21 @@ const EducationCard = (props) => {
       e = moment(end);
     }
 
+    
+    const timeDiff = moment.duration(e.diff(s));
+
+    const theDiffObject = {
+        years: moment.duration(timeDiff).years(),
+        months: moment.duration(timeDiff).months(),
+        // weeks: moment.duration(timeDiff).weeks(),
+        // days: moment.duration(timeDiff).days()
+    }
+
     return (
-      <div>
-        <div className={styles.test}>
-          {s.locale('en').format('MMMM YYYY')} - {current ? 'Present' : e.locale('en').format('MMMM YYYY')} (
-          {moment.duration(e.diff(s)).asMonths().toFixed(1)} months)
+      <div style={{color: '#505050'}}>
+        <div className={styles.dates}>
+          {s.locale('en').format('MMMM YYYY')} - {current ? 'Present ' : e.locale('en').format('MMMM YYYY')} 
+          {'('.concat(String((theDiffObject.years))).concat('y ').concat(String(theDiffObject.months)).concat('m').concat(')')}
         </div>
         {major.concat(' - ').concat(degreeTypes[type])}
       </div>
@@ -185,16 +195,22 @@ const EducationCard = (props) => {
                   out,
                 )
                 .then((res) => {
-                  console.log(res);
-                  const temp = [];
+                  const updatedCandidatePart = Object.assign({}, res.data);
+                  const x = saveCandidate(updatedCandidatePart);
 
-                  Object.entries(res.data.candidate_education_history).forEach((e) => {
-                    temp.push(e[1]);
+                  x.then((e) => {
+
+                    const temp = [];
+
+                    Object.entries(e.payload.candidate_part.candidate_education_history).forEach((entry) => {
+                      temp.push(entry[1]);
+                    });
+                    
+                    setEducationList(temp);
+                    form.resetFields();
+                    setVisible(false);
                   });
 
-                  setEducationList(temp);
-                  form.resetFields();
-                  setVisible(false);
                 });
             })
             .catch((info) => {
