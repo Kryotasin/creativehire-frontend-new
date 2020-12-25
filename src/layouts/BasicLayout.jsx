@@ -11,7 +11,7 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import jwt_decode from 'jwt-decode';
-import logo from '../assets/new-logo.svg';
+import logo from '../assets/new-blue-logo.svg';
 
 const noMatch = (
   <Result
@@ -127,7 +127,7 @@ const BasicLayout = (props) => {
         menuHeaderRender={(logoDom, titleDom) => (
           <Link to="/home">
             {logoDom}
-            {titleDom}
+            {/* {titleDom} */}
           </Link>
         )}
         onCollapse={handleMenuCollapse}

@@ -3,7 +3,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Link, useIntl, connect } from 'umi';
 import React from 'react';
 // import SelectLang from '@/components/SelectLang';
-import logo from '../assets/logo.png';
+import logo from '../assets/new-blue-logo.svg';
 import styles from './UserLayout.less';
 
 const UserLayout = (props) => {
@@ -42,7 +42,7 @@ const UserLayout = (props) => {
             <div className={styles.header}>
               <Link to="/user/login">
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Creativehire</span>
+                {/* <span className={styles.title}>Creativehire</span> */}
               </Link>
             </div>
             <div className={styles.desc}>Disrupting the UX hiring process</div>

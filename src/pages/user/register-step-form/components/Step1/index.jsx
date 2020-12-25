@@ -34,9 +34,9 @@ const formItemLayout = {
 };
 
 const passwordStatusMap = {
-  ok: <div className={styles.success}>Stregth: Poor</div>,
+  ok: <div className={styles.success}>Stregth: Strong</div>,
   pass: <div className={styles.warning}>Stregth: Medium</div>,
-  poor: <div className={styles.error}>Stregth: Strong</div>,
+  poor: <div className={styles.error}>Stregth: Poor</div>,
 };
 const passwordProgressMap = {
   ok: 'success',
