@@ -15,7 +15,8 @@ const FileUploader = props => {
   useEffect(() => {
     // console.log(currentUser)
     // console.log()
-  })
+  });
+  
   // http://localhost:3001/api/v1/entities/candidate-complete-details/${btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id)}
   const config = {
     name: 'file',
@@ -32,7 +33,6 @@ const FileUploader = props => {
 
 
       if (info.file.status === 'done') {
-
         dispatch({
           type: 'accountAndcenter/uploadResumeKeywords',
           payload: {

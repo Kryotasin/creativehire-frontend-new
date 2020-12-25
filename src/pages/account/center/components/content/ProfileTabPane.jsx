@@ -84,12 +84,14 @@ const ProfileTabPane = ({ projectList }) => {
 
     if (tabKey === 'portfolio') {
       return (
-        <Space size="large" direction="vertical">
+        // <Space size="large" direction="vertical">
+        <>
           <Link to="/portfolio/new">
             <PlusOutlined /> Add New{' '}
           </Link>
           <Projects />
-        </Space>
+        {/* </Space> */}
+        </>
       );
     }
 

@@ -10,7 +10,7 @@ import PageLoading from './components/PageLoading';
 const IntroduceRow = React.lazy(() => import('./components/IntroduceRow'));
 const SkillList = React.lazy(() => import('./components/SkillList/index.jsx'));
 
-const Analysis = (props) => {
+const ProjectMain = (props) => {
   // reqRef = 0;
 
   // timeoutId = 0;
@@ -78,4 +78,4 @@ const Analysis = (props) => {
 
 export default connect(({ accountAndcenter }) => ({
   structure: accountAndcenter.structure,
-}))(Analysis);
+}))(ProjectMain);

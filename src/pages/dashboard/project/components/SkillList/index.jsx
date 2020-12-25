@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Divider, Card, Typography, Tabs, AutoComplete, message, Row, Col } from 'antd';
+import { Button, Divider, Card, Typography, Tabs, AutoComplete, message, Row, Col, Popconfirm } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { PieChart } from 'react-charts-d3';
 import axios from '../../../../../umiRequestConfig';
 import styles from './index.less';
+import { history } from 'umi';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -210,6 +211,24 @@ const SkillList = (props) => {
     </div>
   );
 
+
+  function confirm(e) {
+
+    axios.delete(REACT_APP_AXIOS_API_V1.concat('project/'.concat(project.id)))
+    .then((res) => { 
+      
+      if(res.status === 204){    
+        message.success('Successfully deleted project')
+        history.push(`/account/center`);
+      }    
+    });
+  }
+  
+  function cancel(e) {
+    console.log(e);
+  }
+
+
   const autoCompleteValues = structure[3]
     .filter((item) => item.length > 0)
     .map((item) => {
@@ -266,6 +285,27 @@ const SkillList = (props) => {
                   >
                     Save Changes
                   </Button>
+
+                  <Popconfirm
+                    title="Are you sure to delete this project?"
+                    onConfirm={confirm}
+                    onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button
+                      type="danger"
+                      size="middle"
+                      style={{
+                        marginLeft: 16,
+                        marginTop: 20,
+                      }}
+                    >
+                      Delete Project
+                    </Button>
+                  </Popconfirm>
+
+                  
                 </div>
 
                 <Divider
@@ -275,9 +315,9 @@ const SkillList = (props) => {
                 />
               </div>
             </TabPane>
-            <TabPane tab="Charts" key="charts">
+            {/* <TabPane tab="Charts" key="charts">
               <PieChart data={chartData} />
-            </TabPane>
+            </TabPane> */}
           </Tabs>
         </Card>
       </Col>

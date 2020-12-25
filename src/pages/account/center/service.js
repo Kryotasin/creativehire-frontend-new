@@ -17,7 +17,7 @@ export async function queryProjects(params) {
 }
 
 export async function resumeText(params) {
-  return axios.put(
+  return axios.post(
     REACT_APP_AXIOS_API_V1.concat(
       `entities/candidate-complete-details/${btoa(
         JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,

@@ -18,7 +18,6 @@ export async function newProject(params) {
 }
 
 export async function submitProjectSkills(params) {
-  console.log(params);
   return axios.post(REACT_APP_AXIOS_API_V1.concat('project-keywords/'), {
     id: params.id,
     project_keywords: params.skills,
