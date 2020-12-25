@@ -1,6 +1,7 @@
 import jwt_decode from 'jwt-decode';
 
 import { registerUserAndGetLinksService, urlFetcher } from './service';
+import { message } from 'antd';
 
 const Model = {
   namespace: 'userAndregister',
@@ -21,10 +22,16 @@ const Model = {
       });
 
       try {
-        localStorage.clear();
+        localStorage.clear();        
+        const registeringMessage = message.loading('Registration in progress..', 0);
         const response = yield call(registerUserAndGetLinksService, payload);
 
+        console.log(response)
+
         if (response.status === 201) {
+          setTimeout(registeringMessage, 500);
+          const fetchProjectsMessage = message.loading('Registered! Fetching your projects...', 0);
+
           localStorage.setItem('refreshToken', response.data.refresh);
           localStorage.setItem('accessToken', response.data.access);
           localStorage.setItem(
@@ -43,7 +50,7 @@ const Model = {
           });
 
           if (payload.portfolio) {
-            console.log(payload.portfolio);
+            console.log(payload)
             yield put({
               type: 'savePortfolioLink',
               payload: payload.portfolio,
@@ -60,7 +67,13 @@ const Model = {
               type: 'saveCurrentStep',
               payload: 'urls',
             });
+            
+            setTimeout(fetchProjectsMessage, 500);
+            message.success('Done! Select your projects.', 0);
+
           } else {
+            message.warning('No project link...', 3500);
+
             yield put({
               type: 'savePortfolioLink',
               payload: payload.portfolio,

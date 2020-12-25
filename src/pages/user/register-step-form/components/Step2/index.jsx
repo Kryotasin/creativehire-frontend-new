@@ -149,7 +149,7 @@ const Step2 = (props) => {
                   setFailed(fail);
                 });
             });
-        }, 6000 * k);
+        }, 500 * k);
       });
     } else {
       message.success('Done', 5000);
@@ -199,16 +199,16 @@ const Step2 = (props) => {
         </Form.Item>
 
         <Form.Item
-          label={
-            <Button
-              onClick={onPrev}
-              style={{
-                marginLeft: 8,
-              }}
-            >
-              Previous
-            </Button>
-          }
+          // label={
+          //   <Button
+          //     onClick={onPrev}
+          //     style={{
+          //       marginLeft: 8,
+          //     }}
+          //   >
+          //     Previous
+          //   </Button>
+          // }
         >
           <Button type="primary" onClick={onValidateForm} loading={processing}>
             Next
