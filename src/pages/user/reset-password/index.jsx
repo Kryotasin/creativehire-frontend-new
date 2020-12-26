@@ -57,7 +57,7 @@ class ResetPassword extends React.Component {
             else if(res.status !== 200){
                 this.setState({
                     message: 'Failed to send an email!',
-                    description: 'Please check the email again. If problem persists contact admin@creativehire.co.',
+                    description: 'Please check the email address again. If problem persists contact admin@creativehire.co.',
                     type: 'error'         
                 });
             }

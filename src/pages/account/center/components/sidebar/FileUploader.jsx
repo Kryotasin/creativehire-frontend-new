@@ -56,10 +56,10 @@ const FileUploader = props => {
         message.error('Upload only PDF documents < 1MB', 5);
       }
 
-      const isLt1M = file.size / 1024 / 1024 < 1;
+      const isLt1M = file.size / 1024 / 1024 < 10;
 
       if(!isLt1M){
-        message.error('File should be smaller than 1 MB.', 5);
+        message.error('File should be smaller than 10 MB.', 5);
       }
 
       return isPDF && isLt1M;
