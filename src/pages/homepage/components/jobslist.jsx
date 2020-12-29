@@ -44,7 +44,21 @@ const JobsList = (props) => {
 
   const getPostedTime = (input) => {
     const temp = moment.duration(moment(input).diff(moment()));
-    return temp.asDays();
+    const splits = {
+      // years: moment.duration(temp).years(),
+      months: moment.duration(temp).months(),
+      // weeks: moment.duration(temp).weeks(),
+      days: moment.duration(temp).days()
+    }
+    
+    if(Math.abs(splits.months) > 0){
+      return String(Math.abs(splits.months)).concat(' months ago');
+    }
+    
+    else{
+      return String(Math.abs(splits.days)).concat(' days ago');
+    }
+    
   };
 
   const setProgressColor = (matchPercent) => {
@@ -130,7 +144,7 @@ const JobsList = (props) => {
 
                     <Col span={6}>
                       <Text type="secondary">
-                        {getPostedTime(item.jobpost_data.jobpost_post_date).toFixed(0)} {' days'}
+                        {getPostedTime(item.jobpost_data.jobpost_post_date)}
                       </Text>
                     </Col>
                   </Row>
