@@ -39,7 +39,7 @@ const Search = (props) => {
 
   const [queryResults, setQueryResults] = useState([]);
 
-  const matchPercentSortItem = ['Sorting by descending order', 'Sorting by ascending order', 'Sort by Match Percent'];
+  const matchPercentSortItem = ['Sorting by ascending order', 'Sorting by descending order', 'Sort by Match Percent'];
 
   useEffect(() => {
     if (Object.keys(employmentTypes).length === 0) {
@@ -121,20 +121,20 @@ const Search = (props) => {
       saved: savedQuery,
       applied: appliedQuery,
       match_percent_sort_query: matchPercentSortQuery,
-    };
+    }
 
     axios.post(REACT_APP_AXIOS_API_V1.concat('job-search/'), data).then((res) => {
-      console.log(res.data);
       setQueryResults(res.data);
     });
+
     setTimeout(hide, 1500);
-    setDisabled(false);
+    setTimeout(() => setDisabled(false), 1500);
   };
 
   const menu = (
     <Menu onClick={(e) => setMatchPercentSortQuery(Number(e.key))}>
-      <Menu.Item key="0">Descending</Menu.Item>
-      <Menu.Item key="1">Ascending</Menu.Item>
+      <Menu.Item key="0">Ascending</Menu.Item>
+      <Menu.Item key="1">Descending</Menu.Item>
       <Menu.Item key="2">None</Menu.Item>
     </Menu>
   );
