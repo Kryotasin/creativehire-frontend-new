@@ -118,6 +118,8 @@ function BasicDetails(props) {
     reloadProfilePicture();
   }, []);
 
+  // https://api.creativehire.co/api/v1/
+
   const entityPictureUploadProps = {
     name: 'file',
     acceptedFiles: '.png',
@@ -127,7 +129,7 @@ function BasicDetails(props) {
       Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
     },
     data: typeOfImage('upload'),
-    action: 'http://localhost:3001/api/v1/file-handler/',
+    action: `${REACT_APP_AXIOS_BASEURL}/${REACT_APP_AXIOS_API_V1}file-handler/`,
     onRemove(file) {
       axios.post('file-handler/', {
         file: file.name,
