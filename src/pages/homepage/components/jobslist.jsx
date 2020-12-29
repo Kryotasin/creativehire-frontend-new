@@ -253,7 +253,7 @@ const JobsList = (props) => {
         style={{ top: 20 }}
         destroyOnClose="true"
       >
-        <JobCardData jobData={modalData} structure={structure} keywords_part={keywords_part} />
+        <JobCardData jobData={modalData} structure={structure} keywords_part={keywords_part} updateJobMatchItem={updateJobMatchItem} title={title} />
       </Modal>
     </>
   );

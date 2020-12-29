@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Space, Typography, Tag, Button } from 'antd';
+
 import {
   CheckOutlined,
   CloseCircleTwoTone,
   CheckCircleOutlined,
   CloseCircleOutlined,
+  CheckCircleTwoTone
 } from '@ant-design/icons';
 import styles from '../index.less';
 
 const { Paragraph, Title, Text } = Typography;
 
 const JobCardData = (props) => {
-  const { jobData, structure, keywords_part } = props;
+  const { jobData, structure, keywords_part, updateJobMatchItem, title } = props;
 
   const [jobKeys, setJobKeys] = useState(undefined);
+  
+  const [ applied, setApplied ] = useState(undefined);
+  const [ saved, setSaved ] = useState(undefined);
 
   const uniqueItems = (arr) => {
     return arr.filter((value, index, self) => {
@@ -29,6 +34,15 @@ const JobCardData = (props) => {
       });
       setJobKeys(uniqueItems(temp));
     }
+
+    if(applied === undefined) {
+      setApplied(jobData.jm_data.jm_applied_by_candidate);
+    }
+
+    if(saved === undefined) {
+      setSaved(jobData.jm_data.jm_saved_by_candidate);
+    }
+
   }, [jobData]);
 
   const printProjectTags = () => {
@@ -139,18 +153,60 @@ const JobCardData = (props) => {
               md={{ span: 6 }}
               lg={{ span: 6 }}
               xl={{ span: 6 }}
-            >
+            >{console.log(jobData.jm_data.jm_saved_by_candidate)}
               <Space size="large">
                 <a
                   href={jobData.jobpost_data.jobpost_application_link}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Button type="primary" size="large">
-                    Apply
-                  </Button>
+                  {applied ? (
+                    <>
+                      <Button
+                        type="primary"
+                        style={{
+                          background: 'white',
+                          color: '#52c41a',
+                          borderColor: '#52c41a',
+                        }}
+                        icon={<CheckCircleTwoTone twoToneColor="#52c41a" />}
+                      >
+                        Applied
+                      </Button>
+                      {/* <Button type="link" style={{textDecoration: 'underline'}}>undo</Button> */}
+                    </>
+                  ) : (
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        setApplied(true);
+                        updateJobMatchItem(jobData.jm_data.id, title, 'apply');
+                      }}
+                    >
+                      Apply
+                    </Button>
+                  )}
                 </a>
-                <Button size="large">Save</Button>
+
+                {saved ? (
+                  <Button
+                    onClick={() => {
+                      setSaved(false);
+                      updateJobMatchItem(jobData.jm_data.id, title, 'save');
+                    }}
+                  >
+                    Unsave
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      setSaved(true);
+                      updateJobMatchItem(jobData.jm_data.id, title, 'save');
+                    }}
+                  >
+                    Save
+                  </Button>
+                )}
               </Space>
             </Col>
           </Row>
