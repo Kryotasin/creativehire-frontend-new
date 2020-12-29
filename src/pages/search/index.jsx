@@ -39,6 +39,8 @@ const Search = (props) => {
 
   const [queryResults, setQueryResults] = useState([]);
 
+  const matchPercentSortItem = ['Sorting by descending order', 'Sorting by ascending order', 'Sort by Match Percent'];
+
   useEffect(() => {
     if (Object.keys(employmentTypes).length === 0) {
       dispatch({
@@ -217,7 +219,7 @@ const Search = (props) => {
           <Space direction="horizontal" size="middle">
             <Dropdown overlay={menu} placement="bottomRight" arrow trigger={['click']}>
               <Button>
-                Sort by Match Percent <DownOutlined />
+                {matchPercentSortItem[matchPercentSortQuery]} <DownOutlined />
               </Button>
             </Dropdown>
           </Space>
