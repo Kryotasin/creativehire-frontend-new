@@ -127,7 +127,7 @@ function BasicDetails(props) {
       Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
     },
     data: typeOfImage('upload'),
-    action: 'https://api.creativehire.co/api/v1/file-handler/',
+    action: 'http://localhost:3001/api/v1/file-handler/',
     onRemove(file) {
       axios.post('file-handler/', {
         file: file.name,
@@ -144,6 +144,21 @@ function BasicDetails(props) {
       } else if (status === 'error') {
         message.error(`${info.file.name} file upload failed.`.concat(info));
       }
+    },
+    beforeUpload(file) {
+      const isImage = file.type === 'image/png' || file.type === 'image/jpeg';
+      
+      if(!isImage){
+        message.error('Upload only png or jpeg files < 5 MB', 5);
+      }
+
+      const isLt5M = file.size / 1024 / 1024 < 5;
+
+      if(!isLt5M){
+        message.error('File should be smaller than 5 MB.', 5);
+      }
+
+      return isImage && isLt5M;
     },
   };
 
