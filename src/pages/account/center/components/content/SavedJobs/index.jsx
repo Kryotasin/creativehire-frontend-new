@@ -6,28 +6,33 @@ import { connect } from 'umi';
 import JobsList from '../../../../../homepage/components/jobslist';
 
 const SavedJobs = (props) => {
-  const { dispatch, savedJobs, structure, keywords_part } = props;
-  // Object.keys(savedJobs).length === 0 &&
+  const { dispatch, saved_jobs, structure, keywords_part } = props;
+  // Object.keys(saved_jobs).length === 0 &&
+
   useEffect(() => {
-    // if(savedJobs===undefined){
+    // if(saved_jobs===undefined){
     const userID = btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
     dispatch({
-      type: 'accountAndcenter/fetchSavedJobs',
+      type: 'user/fetchSavedJobs',
       payload: { userID },
     });
     // }
   }, []);
 
+  useEffect(() => {
+  }, [saved_jobs]);
+
   return (
     <>
-      {!(savedJobs === undefined) ? (
+      {!(saved_jobs === undefined) ? (
         <JobsList
-          title=""
+          title="Saved"
           structure={structure}
           keywords_part={keywords_part}
-          job_list={savedJobs}
+          job_list={saved_jobs}
           maxGridSize={2}
-          pageSize={6}
+          pageSize={6}          
+          dispatch={dispatch}
           // updateJobMatchItem={updateJobMatchItem}
         />
       ) : (
@@ -37,8 +42,8 @@ const SavedJobs = (props) => {
   );
 };
 
-export default connect(({ accountAndcenter }) => ({
-  savedJobs: accountAndcenter.savedJobs,
+export default connect(({ accountAndcenter, user }) => ({
+  saved_jobs: user.saved_jobs,
   structure: accountAndcenter.structure,
   keywords_part: accountAndcenter.keywords_part,
 }))(SavedJobs);

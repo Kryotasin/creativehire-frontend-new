@@ -3,6 +3,7 @@ import {
   queryRecommendedJobs,
   queryRandomJobs,
   queryJobsUpdateAppliedOrSavedState,
+  querySavedJobs,
 } from '@/services/user';
 
 const UserModel = {
@@ -75,6 +76,17 @@ const UserModel = {
       });
     },
 
+    *fetchSavedJobs(payload, { call, put }) {
+      const response = yield call(querySavedJobs, payload.payload);
+
+      if (response.status === 200) {
+        yield put({
+          type: 'saveSavedJobs',
+          payload: response.data,
+        });
+      }
+    },
+
     *updateJobMatch(payload, { call, select, put }) {
       const response = yield call(queryJobsUpdateAppliedOrSavedState, payload.payload);
 
@@ -112,6 +124,26 @@ const UserModel = {
             payload: { reccommended_jobs: updatedRecommendedJobs },
           });
         }
+
+        if (payload.payload.joblistType === 'Saved') {
+          const updateSavedJobs = yield select((state) => {
+            const updateObjIndex = state.user.saved_jobs.findIndex(
+              (item) => item.jm_data.id === payload.payload.jmID,
+            );
+            const temp = Object.assign({}, state.user.saved_jobs);
+            temp[updateObjIndex] = response.data;
+            const tempAsArray = Object.keys(temp).map((key) => temp[key]);
+            tempAsArray.splice(updateObjIndex, 1);
+            return tempAsArray;
+          });
+
+          yield put({
+            type: 'saveNewState',
+            payload: { saved_jobs: updateSavedJobs },
+          });
+        }
+
+
       }
     },
   },

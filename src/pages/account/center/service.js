@@ -31,13 +31,6 @@ export async function savedJobs(params) {
   return axios.post(REACT_APP_AXIOS_API_V1.concat(''));
 }
 
-export async function querySavedJobs(params) {
-  return axios.post(REACT_APP_AXIOS_API_V1.concat('saved-job-provider/'), {
-    user_id: params.userID,
-    size: 'all',
-  });
-}
-
 export async function queryAppliedJobs(params) {
   return axios.post(REACT_APP_AXIOS_API_V1.concat('applied-job-provider/'), {
     user_id: params.userID,

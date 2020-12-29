@@ -46,6 +46,14 @@ export async function queryJobsUpdateAppliedOrSavedState(params) {
   }
 }
 
+export async function querySavedJobs(params) {
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('saved-job-provider/'), {
+    user_id: params.userID,
+    size: 'all',
+  });
+}
+
+
 //                     UNUSED
 
 export async function query() {
