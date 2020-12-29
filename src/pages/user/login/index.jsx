@@ -30,7 +30,7 @@ const Login = props => {
     const { dispatch } = props;
 
     
-    dispatch({
+  dispatch({
       type: 'userAndlogin/login',
       payload: { ...values, type },
     });
@@ -38,6 +38,12 @@ const Login = props => {
 
   useEffect(() => {
   }, [status, error]);
+
+  useEffect(() => {
+    if(localStorage.getItem('accessToken') !== undefined){
+      localStorage.clear();
+    }
+  }, []);
 
   return (
     <div className={styles.main}>
