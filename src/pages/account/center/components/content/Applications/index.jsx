@@ -6,29 +6,33 @@ import { connect } from 'umi';
 import JobsList from '../../../../../homepage/components/jobslist';
 
 const Applications = (props) => {
-  const { dispatch, appliedJobs, structure, keywords_part } = props;
+  const { dispatch, applied_jobs, structure, keywords_part } = props;
   // Object.keys(appliedJobs).length === 0
 
   useEffect(() => {
-    // if(appliedJobs===undefined){
+    // if(applied_jobs===undefined){
     const userID = btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
     dispatch({
-      type: 'accountAndcenter/fetchAppliedJobs',
+      type: 'user/fetchAppliedJobs',
       payload: { userID },
     });
     // }
   }, []);
 
+  useEffect(() => {
+  }, [applied_jobs]);
+
   return (
     <>
-      {!(appliedJobs === undefined) ? (
+      {!(applied_jobs === undefined) ? (
         <JobsList
-          title=""
+          title="Applied"
           structure={structure}
           keywords_part={keywords_part}
-          job_list={appliedJobs}
+          job_list={applied_jobs}
           maxGridSize={2}
-          pageSize={6}
+          pageSize={6}          
+          dispatch={dispatch}
           // updateJobMatchItem={updateJobMatchItem}
         />
       ) : (
@@ -38,8 +42,8 @@ const Applications = (props) => {
   );
 };
 
-export default connect(({ accountAndcenter }) => ({
-  appliedJobs: accountAndcenter.appliedJobs,
+export default connect(({ accountAndcenter, user }) => ({
+  applied_jobs: user.applied_jobs,
   structure: accountAndcenter.structure,
   keywords_part: accountAndcenter.keywords_part,
 }))(Applications);

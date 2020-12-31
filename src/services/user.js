@@ -3,7 +3,8 @@ import axios from '../umiRequestConfig';
 
 export async function queryCurrent(params) {
   return axios.get(
-    REACT_APP_AXIOS_API_V1.concat('entities/').concat('detail-view/').concat(params),
+    REACT_APP_AXIOS_API_V1.concat('entities/').concat('detail-view/').concat(params)
+    ,
     {
       headers: {
         Authorization: 'Bearer '.concat(localStorage.getItem('accessToken')),
@@ -53,6 +54,13 @@ export async function querySavedJobs(params) {
   });
 }
 
+
+export async function queryAppliedJobs(params) {
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('applied-job-provider/'), {
+    user_id: params.userID,
+    size: 'all',
+  });
+}
 
 //                     UNUSED
 

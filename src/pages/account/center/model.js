@@ -3,7 +3,6 @@ import {
   queryStructure,
   queryProjects,
   resumeText,
-  queryAppliedJobs,
   queryTitleTypes,
   queryEmploymentTypes,
   queryDegreeTypes,
@@ -26,8 +25,6 @@ const Model = {
     keywords_part: {},
 
     projectList: [],
-
-    appliedJobs: undefined,
 
     structure: {},
     fileuploading: false,
@@ -94,25 +91,6 @@ const Model = {
       if (response.status === 200) {
         yield put({
           type: 'saveKeywordsPart',
-          payload: response.data,
-        });
-      }
-    },
-
-    *fetchAppliedJobs(payload, { call, put }) {
-      const response = yield call(queryAppliedJobs, payload.payload);
-
-      if (response.status === 200) {
-        // if(response.data==='No jobs found'){
-        //   yield put({
-        //     type: 'saveTitleTypes',
-        //     payload: []
-        //   })
-        //   console.log(res)
-        // }
-        console.log(response.data);
-        yield put({
-          type: 'saveAppliedJobs',
           payload: response.data,
         });
       }
@@ -339,10 +317,6 @@ const Model = {
     // saveSavedJobs(state, action) {
     //   return { ...state, savedJobs: action.payload || {} };
     // },
-
-    saveAppliedJobs(state, action) {
-      return { ...state, appliedJobs: action.payload || {} };
-    },
 
     saveTitleTypes(state, action) {
       return { ...state, titleTypes: action.payload || {} };

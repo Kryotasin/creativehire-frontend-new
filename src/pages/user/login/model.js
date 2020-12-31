@@ -6,10 +6,13 @@ import { getPageQuery, setAuthority } from './utils/utils';
 
 let interval;
 
-function check(redirect){
-  if(localStorage.getItem('accessTokenDecoded') !== undefined || localStorage.getItem('accessTokenDecoded') !== null){
+function check(redirect, verif){
+  if(localStorage.getItem('accessTokenDecoded') !== undefined || localStorage.getItem('accessTokenDecoded') !== null && localStorage.getItem('accessTokenDecoded') === verif){
     clearInterval(interval);
     history.replace(redirect || '/home');
+  }
+  else{
+    console.log('waiting...')
   }
 }
 
@@ -31,70 +34,71 @@ const Model = {
         errors: ''
         }); // Login successfully
 
-      if (response.status === 200) {
+        if (response.status === 200) {
 
-        // yield put({
-        //   type: 'changeSubmiting',
-        //   submitting: true,
-        // }); // Change submitting to True
+          // yield put({
+          //   type: 'changeSubmiting',
+          //   submitting: true,
+          // }); // Change submitting to True
 
-        message.success('Login succesful!');        
+          message.success('Login succesful!');        
 
-        // Set in localStorage
-        localStorage.clear();
+          // Set in localStorage
+          
+          localStorage.clear();
 
-        localStorage.setItem("refreshToken", response.data.refresh);
-        localStorage.setItem("accessToken", response.data.access);
-        localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
-        localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
+          localStorage.setItem("refreshToken", response.data.refresh);
+          localStorage.setItem("accessToken", response.data.access);
+          localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
+          localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
 
-        
+          
 
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params;
+          const urlParams = new URL(window.location.href);
+          const params = getPageQuery();
+          let { redirect } = params;
 
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
+          if (redirect) {
+            const redirectUrlParams = new URL(redirect);
 
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
+            if (redirectUrlParams.origin === urlParams.origin) {
+              redirect = redirect.substr(urlParams.origin.length);
 
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
+              if (redirect.match(/^\/.*#/)) {
+                redirect = redirect.substr(redirect.indexOf('#') + 1);
+              }
+            } else {
+              window.location.href = redirect;
+              return;
             }
-          } else {
-            window.location.href = redirect;
-            return;
           }
-        }
         
         // yield put({
         //   type: 'changeSubmiting',
         //   submitting: false,
         // }); // Change submitting to False
 
-        interval = setInterval(check, 1500, redirect);
+          interval = setInterval(check, 2000, redirect, JSON.stringify(jwt_decode(response.data.access)));
+        }
+        if(response.status === 401){
+          console.log("401")
+        }
       }
-      if(response.status === 401){
-        console.log("401")
-      }
-    }
-    catch(err) {
+      catch(err) {
 
-      if(!err.response){
+        if(!err.response){
+          yield put({
+            type: 'changeLoginStatus',
+            payload: {'status': 521},
+            errors: 'Our server seems to be down. Please contact admin@creativehire.co if problem persists.'
+          }); // Server is down
+        }
+
         yield put({
           type: 'changeLoginStatus',
-          payload: {'status': 521},
-          errors: 'Our server seems to be down. Please contact admin@creativehire.co if problem persists.'
-        }); // Server is down
-      }
-
-      yield put({
-        type: 'changeLoginStatus',
-        payload: err.response,
-        errors: err.response.data.detail
-      }); // Login failed
+          payload: err.response,
+          errors: err.response.data.detail
+        }); // Login failed
     }
     },
 

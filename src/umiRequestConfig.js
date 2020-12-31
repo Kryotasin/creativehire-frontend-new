@@ -96,7 +96,7 @@ instance.interceptors.response.use(response => {
                     const token = localStorage.getItem('accessToken');
                     originalRequest.headers['Authorization'] = `Bearer ${token}`;
                     instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    processQueue(null, token)
+                    processQueue(null, token);
 
                     return axios(originalRequest);
                 })

@@ -4,6 +4,7 @@ import {
   queryRandomJobs,
   queryJobsUpdateAppliedOrSavedState,
   querySavedJobs,
+  queryAppliedJobs,
 } from '@/services/user';
 
 const UserModel = {
@@ -13,12 +14,13 @@ const UserModel = {
     reccommended_jobs: undefined,
     saved_jobs: undefined,
     random_jobs: undefined,
+    applied_jobs: undefined
   },
   effects: {
     *fetchCurrent(_, { call, put, delay }) {
       let maxTries = 5;
       const delayDuration = 1000;
-
+      
       while (true) {
         try {
           const response = yield call(
@@ -87,6 +89,25 @@ const UserModel = {
       }
     },
 
+    *fetchAppliedJobs(payload, { call, put }) {
+      const response = yield call(queryAppliedJobs, payload.payload);
+
+      if (response.status === 200) {
+        // if(response.data==='No jobs found'){
+        //   yield put({
+        //     type: 'saveTitleTypes',
+        //     payload: []
+        //   })
+        //   console.log(res)
+        // }
+        console.log(response.data);
+        yield put({
+          type: 'saveAppliedJobs',
+          payload: response.data,
+        });
+      }
+    },
+
     *updateJobMatch(payload, { call, select, put }) {
       const response = yield call(queryJobsUpdateAppliedOrSavedState, payload.payload);
 
@@ -143,6 +164,24 @@ const UserModel = {
           });
         }
 
+        if (payload.payload.joblistType === 'Applied') {
+          const updateAppliedJobs = yield select((state) => {
+            const updateObjIndex = state.user.applied_jobs.findIndex(
+              (item) => item.jm_data.id === payload.payload.jmID,
+            );
+            const temp = Object.assign({}, state.user.applied_jobs);
+            temp[updateObjIndex] = response.data;
+            const tempAsArray = Object.keys(temp).map((key) => temp[key]);
+            // tempAsArray.splice(updateObjIndex, 1);
+            return tempAsArray;
+          });
+
+          yield put({
+            type: 'saveNewState',
+            payload: { applied_jobs: updateAppliedJobs },
+          });
+        }
+
 
       }
     },
@@ -166,6 +205,10 @@ const UserModel = {
 
     saveNewState(state, action) {
       return { ...Object.assign(state, action.payload) };
+    },
+    
+    saveAppliedJobs(state, action) {
+      return { ...state, applied_jobs: action.payload || {} };
     },
 
     changeNotifyCount(
