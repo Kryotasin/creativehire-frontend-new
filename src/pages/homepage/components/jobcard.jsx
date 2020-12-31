@@ -137,12 +137,13 @@ const JobCardData = (props) => {
               </div>
 
               <div className={styles.conditions}>
-                <Text strong>Remote</Text>
                 {jobData.jobpost_data.jobpost_remote ? (
-                  <CheckOutlined />
-                ) : (
-                  <CloseCircleTwoTone twoToneColor="#ff4d4f" />
-                )}
+                  <>
+                    <CheckOutlined />
+                    <Text strong>Remote</Text>
+                  </>
+                ) :
+                ''}
               </div>
             </Col>
 
@@ -194,6 +195,7 @@ const JobCardData = (props) => {
                       setSaved(false);
                       updateJobMatchItem(jobData.jm_data.id, title, 'save');
                     }}
+                    style={{backgroundColor: 'white', color: '#091b7b', borderColor: '#091b7b' }}
                   >
                     Unsave
                   </Button>
@@ -203,6 +205,7 @@ const JobCardData = (props) => {
                       setSaved(true);
                       updateJobMatchItem(jobData.jm_data.id, title, 'save');
                     }}
+                    style={{backgroundColor: '#091b7b', color: 'white' }}
                   >
                     Save
                   </Button>

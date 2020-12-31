@@ -106,7 +106,7 @@ const JobsList = (props) => {
             renderItem={(item) => (
               <List.Item>
                 <Card>
-                  <Row gutter={[0, 16]}>
+                  <Row gutter={[0, 32]}>
                     <Col span={4}>
                       <div
                         onClick={() => {
@@ -149,17 +149,17 @@ const JobsList = (props) => {
                     </Col>
                   </Row>
 
-                  <Row gutter={[16, 16]}>
+                  <Row gutter={[16, 32]}>
                     <Col span={16}>
                       <Space size="large" direction="vertical">
                         <Space size="large">
                           <Space size="small">
                             {item.jobpost_data.jobpost_remote ? (
-                              <CheckOutlined />
-                            ) : (
-                              <CloseOutlined />
-                            )}
-                            <Text>Remote</Text>
+                              <>
+                                <CheckOutlined />
+                                <Text>Remote</Text>
+                              </>
+                            ) : ''}
                           </Space>
 
                           <Space size="small">
@@ -206,6 +206,7 @@ const JobsList = (props) => {
                               onClick={() => {
                                 updateJobMatchItem(item.jm_data.id, title, 'save');
                               }}
+                              style={{backgroundColor: 'white', color: '#091b7b', borderColor: '#091b7b' }}
                             >
                               Unsave
                             </Button>
@@ -214,6 +215,7 @@ const JobsList = (props) => {
                               onClick={() => {
                                 updateJobMatchItem(item.jm_data.id, title, 'save');
                               }}
+                              style={{backgroundColor: '#091b7b', color: 'white' }}
                             >
                               Save
                             </Button>

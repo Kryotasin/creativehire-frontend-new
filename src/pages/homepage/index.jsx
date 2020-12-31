@@ -64,6 +64,16 @@ const Homepage = (props) => {
     <div className={styles.main}>
       {structure ? (
         <>
+        <JobsList
+            title="Recommended"
+            structure={structure}
+            keywords_part={keywords_part}
+            job_list={reccommended_jobs}
+            showExtra={true}
+            dispatch={dispatch}
+            pageSize={6}
+            // updateJobMatchItem={updateJobMatchItem}
+          />
           <JobsList
             title="All"
             structure={structure}
@@ -71,17 +81,10 @@ const Homepage = (props) => {
             job_list={random_jobs}
             showExtra={true}
             dispatch={dispatch}
+            pageSize={6}
             // updateJobMatchItem={updateJobMatchItem}
           />
-          <JobsList
-            title="Recommended"
-            structure={structure}
-            keywords_part={keywords_part}
-            job_list={reccommended_jobs}
-            showExtra={true}
-            dispatch={dispatch}
-            // updateJobMatchItem={updateJobMatchItem}
-          />
+          
         </>
       ) : (
         <Spin />
