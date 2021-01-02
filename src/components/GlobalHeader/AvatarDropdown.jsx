@@ -1,26 +1,25 @@
 import { LogoutOutlined, UserOutlined, SettingOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { history, connect } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import axios from '../../umiRequestConfig';
 
-class AvatarDropdown extends React.Component {
+const AvatarDropdown = (props) => {
+  
+  const { dispatch, currentUser, menu } = props;
+  const [ avatarSrc, setAvatarSrc ] = useState(undefined);
 
-  constructor(props){
-    super(props);
-    this.state = {
-      avatarSrc : undefined
-    };
-  }
+  useEffect(() => {
+    console.log(Object.keys(currentUser).length === 0)
+  }, [currentUser]);
 
-  onMenuClick = event => {
+  const onMenuClick = (event) => {
     const { key } = event;
 
     if (key === 'logout') {
-      const { dispatch } = this.props;
-
+      
       if (dispatch) {
         dispatch({
           type: 'login/logout',
@@ -33,17 +32,8 @@ class AvatarDropdown extends React.Component {
     history.push(`/account/${key}`);
   };
 
-  render() {
-    const {
-      currentUser = {
-        avatar: '',
-        first_name: '',
-        last_name: '',
-      },
-      menu,
-    } = this.props;
     const menuHeaderDropdown = (
-      <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
+      <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         {menu && (
           <Menu.Item key="center">
             <UserOutlined />
@@ -81,28 +71,54 @@ class AvatarDropdown extends React.Component {
     // })
     // }
 
-    return currentUser  ? (
-      <HeaderDropdown overlay={menuHeaderDropdown}>
-        <span className={`${styles.action} ${styles.account}`}>
-          {/* <Avatar size="small" className={styles.avatar} src={} alt="avatar" /> */}
-          <span className={styles.name}>{currentUser.first_name && currentUser.last_name ? currentUser.first_name.concat(' ').concat(currentUser.last_name) : ''}</span>
-        </span>
-      </HeaderDropdown>
-    ) : (
-      <span className={`${styles.action} ${styles.account}`}>
-        <Spin
-          size="small"
-          style={{
-            marginLeft: 8,
-            marginRight: 8,
-          }}
-        />
-      </span>
+    return (
+      <>
+        {
+          Object.keys(currentUser).length !== 0 ? 
+              <HeaderDropdown overlay={menuHeaderDropdown}>
+               <span className={`${styles.action} ${styles.account}`}>
+                 {/* <Avatar size="small" className={styles.avatar} src={} alt="avatar" /> */}
+                 <span className={styles.name}>{currentUser.entity ? currentUser.entity.first_name.concat(' ').concat(currentUser.entity.last_name) : ''}</span>
+               </span>
+              </HeaderDropdown>
+          : 
+          <span className={`${styles.action} ${styles.account}`}>
+            <Spin
+              size="small"
+              style={{
+                marginLeft: 8,
+                marginRight: 8,
+              }}
+            />
+          </span>
+        }
+      </>
     );
-  }
+    
+    // this.state.userObj  ? (
+    //   <HeaderDropdown overlay={menuHeaderDropdown}>
+    //     <span className={`${styles.action} ${styles.account}`}>
+    //       {/* <Avatar size="small" className={styles.avatar} src={} alt="avatar" /> */}{console.log(this.state.userObj)}
+    //       <span className={styles.name}>{this.state.userObj.entity ? this.state.userObj.entity.first_name.concat(' ').concat(this.state.userObj.entity.last_name) : ''}</span>
+    //     </span>
+    //   </HeaderDropdown>
+    // ) : (
+    //   <span className={`${styles.action} ${styles.account}`}>
+    //     <Spin
+    //       size="small"
+    //       style={{
+    //         marginLeft: 8,
+    //         marginRight: 8,
+    //       }}
+    //     />
+    //   </span>
+    // );
+  
+
 }
 
-export default connect(({ user }) => ({
-  currentUser: user.currentUser,
+export default connect(({ user, accountAndcenter }) => ({
+  // currentUser: user.currentUser,
+  currentUser: accountAndcenter.currentUser,
 }))(AvatarDropdown);
 

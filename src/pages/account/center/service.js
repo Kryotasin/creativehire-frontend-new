@@ -3,11 +3,21 @@ import axios from '../../../umiRequestConfig';
 export async function queryCurrent(params) {
   return axios.get(
     REACT_APP_AXIOS_API_V1.concat('entities/candidate-complete-details/').concat(params.userID),
+    {
+      headers: {
+        Authorization: 'Bearer '.concat(localStorage.getItem('accessToken')),
+      },
+    },
   );
 }
 
 export async function queryStructure() {
-  return axios.get(REACT_APP_AXIOS_API_V1.concat('metrics-structure/'));
+  return axios.get(REACT_APP_AXIOS_API_V1.concat('metrics-structure/'),
+  {
+    headers: {
+      Authorization: 'Bearer '.concat(localStorage.getItem('accessToken')),
+    },
+  },);
 }
 
 export async function queryProjects(params) {

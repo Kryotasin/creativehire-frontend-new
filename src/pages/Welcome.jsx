@@ -60,6 +60,7 @@ const Welcome = () => {
   // </PageHeaderWrapper>
 
 
-export default connect(({ user }) => ({
-  currentUser: user.currentUser,
+export default connect(({ user, accountAndcenter }) => ({
+  // currentUser: user.currentUser,
+  currentUser: accountAndcenter.currentUser,
 }))(Welcome);

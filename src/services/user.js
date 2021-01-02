@@ -30,7 +30,12 @@ export async function queryRecommendedJobs(user_id) {
 export async function queryRandomJobs(user_id) {
   return axios.post(REACT_APP_AXIOS_API_V1.concat('random-job-provider/'), {
     user_id,
-  });
+  },
+  {
+    headers: {
+      Authorization: 'Bearer '.concat(localStorage.getItem('accessToken')),
+    },
+  },);
 }
 
 export async function queryJobsUpdateAppliedOrSavedState(params) {

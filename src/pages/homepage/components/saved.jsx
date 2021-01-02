@@ -171,7 +171,8 @@ const Saved = (props) => {
   );
 };
 
-export default connect(({ user }) => ({
-  currentUser: user.currentUser,
+export default connect(({ user, accountAndcenter }) => ({
+  // currentUser: user.currentUser,
+  currentUser: accountAndcenter.currentUser,
   saved_jobs: user.saved_jobs,
 }))(Saved);

@@ -22,6 +22,7 @@ const Homepage = (props) => {
   } = props;
 
   useEffect(() => {
+    
     if (currentUser) {
       // if(random_jobs === null || random_jobs === undefined){
       dispatch({
@@ -45,17 +46,16 @@ const Homepage = (props) => {
 
   useEffect(() => {
     const userID = btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
-
-    if (
-      Object.keys(currentUser).length === 0 ||
-      Object.keys(candidate_part).length === 0 ||
-      Object.keys(keywords_part).length === 0
-    ) {
+    // if (
+    //   Object.keys(currentUser).length === 0 ||
+    //   Object.keys(candidate_part).length === 0 ||
+    //   Object.keys(keywords_part).length === 0
+    // ) {
       dispatch({
         type: 'accountAndcenter/fetchCurrent',
         payload: { userID },
       });
-    }
+    // }
   }, []);
 
   useEffect(() => {}, [structure, keywords_part, reccommended_jobs, random_jobs]);
@@ -97,7 +97,8 @@ const Homepage = (props) => {
 // </PageHeaderWrapper>
 
 export default connect(({ user, accountAndcenter }) => ({
-  currentUser: user.currentUser,
+  // currentUser: user.currentUser,
+  currentUser: accountAndcenter.currentUser,
   structure: accountAndcenter.structure,
   keywords_part: accountAndcenter.keywords_part,
   candidate_part: accountAndcenter.candidate_part,

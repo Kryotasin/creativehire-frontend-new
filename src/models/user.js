@@ -17,32 +17,32 @@ const UserModel = {
     applied_jobs: undefined
   },
   effects: {
-    *fetchCurrent(_, { call, put, delay }) {
-      let maxTries = 5;
-      const delayDuration = 1000;
+    // *fetchCurrent(_, { call, put, delay }) {
+    //   let maxTries = 5;
+    //   const delayDuration = 1000;
       
-      while (true) {
-        try {
-          const response = yield call(
-            queryCurrent,
-            JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
-          );
+    //   while (true) {
+    //     try {
+    //       const response = yield call(
+    //         queryCurrent,
+    //         JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+    //       );
 
-          yield put({
-            type: 'saveCurrentUser',
-            payload: response.data,
-          });
-          break;
-        } catch (err) {
-          console.log(err, maxTries);
-          maxTries -= 1;
-          delay(delayDuration);
-          if (maxTries === 0) {
-            throw err;
-          }
-        }
-      }
-    },
+    //       yield put({
+    //         type: 'saveCurrentUser',
+    //         payload: response.data,
+    //       });
+    //       break;
+    //     } catch (err) {
+    //       console.log(err, maxTries);
+    //       maxTries -= 1;
+    //       delay(delayDuration);
+    //       if (maxTries === 0) {
+    //         throw err;
+    //       }
+    //     }
+    //   }
+    // },
 
     *fetchRecommendedJobs(_, { call, put }) {
       const response = yield call(
