@@ -12,7 +12,6 @@ const AvatarDropdown = (props) => {
   const [ avatarSrc, setAvatarSrc ] = useState(undefined);
 
   useEffect(() => {
-    console.log(Object.keys(currentUser).length === 0)
   }, [currentUser]);
 
   const onMenuClick = (event) => {
