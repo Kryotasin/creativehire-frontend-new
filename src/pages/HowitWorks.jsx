@@ -28,13 +28,13 @@ export default () => (
             marginBottom: 12,
           }}>
             <ol style={decription}>
-              <li>Paste a job description from any job portal.</li>
+              <li>Sign up on Creativehire and create your profile by uploading your resume and your projects.</li>
 
-              <li>Upload a link to a portfolio project.</li>
+              <li>Check your keywords and optimize them on your projects as required.</li>
 
-              <li>Enter the Project Name, Company Name, and Position Advertised.</li>
+              <li>Start matching with jobs instantly!</li>
 
-              <li>Scan and check the compatibility score between your portfolio project and the job description's requirements.</li>
+              <li>For more jobs, use our <Link to='/search-jobs'>Job Search Tool</Link> and find much more!</li>
             </ol>
         </Typography.Text>
 
