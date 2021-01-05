@@ -285,6 +285,16 @@ const Education = (props) => {
                 required: true,
                 message: 'Please choose month and year!',
               },
+              () => ({
+                validator(rule, value) {
+                  if((startMonth === undefined || startMonth === null) || (startYear === undefined || startYear === null || startYear === "")){
+                    return Promise.reject('')
+                  }
+                  else{
+                    return Promise.resolve();
+                  }
+                }
+              }),
             ]}
           >
             <Space direction='horizontal' size='middle'>

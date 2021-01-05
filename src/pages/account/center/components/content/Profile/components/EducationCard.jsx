@@ -51,7 +51,9 @@ const EducationCard = (props) => {
     Modal.destroyAll();
   };
 
-  const descriptionBuilder = (start, end, type, current, major) => {
+  const descriptionBuilder = (startend, type, current, major) => {
+    const [ start, end ] = startend;
+
     const s = moment(start);
     let e;
     if(current){
@@ -123,14 +125,15 @@ const EducationCard = (props) => {
   }
 
   const setModalData = (data, key) => {
-    const startDate = moment(data.start);
+    const [ start, end ] = data.startend;
+    const startDate = moment(start);
 
     setStartMonth(startDate.month());
     setStartYear(startDate.year());
 
 
     if(!data.current){
-      const endDate = moment(data.end);
+      const endDate = moment(end);
 
       setEndMonth(endDate.month());
       setEndYear(endDate.year());
@@ -188,8 +191,7 @@ const EducationCard = (props) => {
             <List.Item.Meta
               title={item.school}
               description={descriptionBuilder(
-                item.start,
-                item.end,
+                item.startend,
                 item.degree,
                 item.current || false,
                 item.major
@@ -341,6 +343,16 @@ const EducationCard = (props) => {
                 required: true,
                 message: 'Please choose month and year!',
               },
+              () => ({
+                validator(rule, value) {
+                  if((startMonth === undefined || startMonth === null) || (startYear === undefined || startYear === null || startYear === "")){
+                    return Promise.reject('')
+                  }
+                  else{
+                    return Promise.resolve();
+                  }
+                }
+              }),
             ]}
           >
             <Space direction='horizontal' size='middle'>

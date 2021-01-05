@@ -60,10 +60,12 @@ const WorkCard = (props) => {
     Modal.destroyAll();
   };
 
-  const descriptionBuilder = (start, end, company, type, current) => {
+  const descriptionBuilder = (startend, company, type, current) => {
+    
+    const [ start, end ] = startend;
     const s = moment(start);
     let e;
-
+    
     if(current){
       e = moment();
     }
@@ -110,7 +112,6 @@ const WorkCard = (props) => {
         out,
       )
       .then((res) => {
-        console.log(res.data)
         const updatedCandidatePart = Object.assign({}, res.data);
         const x = saveCandidate(updatedCandidatePart);
 
@@ -138,14 +139,17 @@ const WorkCard = (props) => {
 
 
   const setModalData = (data, key) => {
-    const startDate = moment(data.start);
+
+    const [ start, end ] = data.startend;
+
+    const startDate = moment(start);
 
     setStartMonth(startDate.month());
     setStartYear(startDate.year());
 
 
     if(!data.current){
-      const endDate = moment(data.end);
+      const endDate = moment(end);
 
       setEndMonth(endDate.month());
       setEndYear(endDate.year());
@@ -213,8 +217,7 @@ const WorkCard = (props) => {
                 <List.Item.Meta
                   title={titleTypes[item.title]}
                   description={descriptionBuilder(
-                    item.start,
-                    item.end,
+                    item.startend,
                     item.company,
                     item.type,
                     item.current || false
@@ -240,20 +243,22 @@ const WorkCard = (props) => {
                   setConfirmLoading(true);
 
                   const startDate = moment().set({'year': startYear, 'month': startMonth, 'date': defaultDate});
-              let endDate = undefined;
+                  let endDate = undefined;
 
-              if(currentWork) {
-                endDate = moment();
-                values.current = currentWork;
-              }
-              else{
-                endDate = moment().set({'year': endYear, 'month': endMonth, 'date': defaultDate});
-              }
-              
+                  if(currentWork) {
+                    endDate = moment();
+                    values.current = currentWork;
+                  }
+                  else{
+                    endDate = moment().set({'year': endYear, 'month': endMonth, 'date': defaultDate});
+                  }                  
 
-              values.startend = [startDate, endDate];
+                  values.startend = [startDate, endDate];
 
-              values.yoe = moment.duration(values.startend[1].diff(values.startend[0])).asMonths();
+                  values.yoe = moment.duration(values.startend[1].diff(values.startend[0])).asMonths();
+
+                  delete values.start;
+                  delete values.end;
 
                   const out = {
                     type: 'work_exp',
@@ -370,6 +375,16 @@ const WorkCard = (props) => {
                 required: true,
                 message: 'Please choose month and year!',
               },
+              () => ({
+                validator(rule, value) {
+                  if((startMonth === undefined || startMonth === null) || (startYear === undefined || startYear === null || startYear === "")){
+                    return Promise.reject('')
+                  }
+                  else{
+                    return Promise.resolve();
+                  }
+                }
+              }),
             ]}
           >
             <Space direction='horizontal' size='middle'>

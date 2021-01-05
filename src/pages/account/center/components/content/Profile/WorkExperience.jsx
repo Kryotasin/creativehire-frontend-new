@@ -155,9 +155,7 @@ const WorkExperience = (props) => {
         onOk={() => {
           form
             .validateFields()
-            .then((values) => {
-
-              
+            .then((values) => {             
 
               const startDate = moment().set({'year': startYear, 'month': startMonth, 'date': defaultDate});
               let endDate = undefined;
@@ -174,6 +172,10 @@ const WorkExperience = (props) => {
               values.startend = [startDate, endDate];
 
               values.yoe = moment.duration(values.startend[1].diff(values.startend[0])).asMonths();
+              
+              delete values.start;
+              delete values.end;
+              
 
               const out = {
                 type: 'work_exp',
@@ -310,6 +312,16 @@ const WorkExperience = (props) => {
                 required: true,
                 message: 'Please choose month and year!',
               },
+              () => ({
+                validator(rule, value) {
+                  if((startMonth === undefined || startMonth === null) || (startYear === undefined || startYear === null || startYear === "")){
+                    return Promise.reject('')
+                  }
+                  else{
+                    return Promise.resolve();
+                  }
+                }
+              }),
             ]}
           >
             <Space direction='horizontal' size='middle'>
