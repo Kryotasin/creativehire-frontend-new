@@ -104,7 +104,7 @@ class Center extends Component {
               title="Basic Details"
             >
               {!dataLoading && (
-                <div>{console.log(entity_part)}
+                <div>
                   <BasicDetails
                     entity={entity_part}
                     editMode={this.state.editMode}

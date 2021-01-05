@@ -101,7 +101,6 @@ const UserModel = {
         //   })
         //   console.log(res)
         // }
-        console.log(response.data);
         yield put({
           type: 'saveAppliedJobs',
           payload: response.data,
@@ -232,7 +231,6 @@ const UserModel = {
     },
 
     saveSearchAllJobs(state, action) {
-      console.log(action.payload)
       return { ...state, search_all: action.payload || {} };
     },
 

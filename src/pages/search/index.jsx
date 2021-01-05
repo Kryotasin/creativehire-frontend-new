@@ -122,11 +122,9 @@ const Search = (props) => {
       applied: appliedQuery,
       match_percent_sort_query: matchPercentSortQuery,
     }
-    console.log(data.saved)
 
     axios.post(REACT_APP_AXIOS_API_V1.concat('job-search/'), data).then((res) => {
       // setQueryResults(res.data);
-      console.log(res.data)
       dispatch({
         type: 'user/saveSearchAllJobs',
         payload: res.data
