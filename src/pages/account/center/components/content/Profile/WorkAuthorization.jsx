@@ -34,7 +34,7 @@ const Remote = (props) => {
     }
   }, [workAuthTypes]);
 
-  useEffect(() => {}, [authorizationIndex]);
+  useEffect(() => {}, [authorizationIndex, options]);
 
   const onChange = (value) => {
     const data = {

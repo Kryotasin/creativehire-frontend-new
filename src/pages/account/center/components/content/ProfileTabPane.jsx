@@ -131,6 +131,7 @@ const ProfileTabPane = ({ projectList }) => {
       tabList={operationTabList}
       activeTabKey={tabKey}
       onTabChange={onTabChange}
+      hoverable={true}
     >
       {renderChildrenByTabKey(tabKey)}
     </Card>
