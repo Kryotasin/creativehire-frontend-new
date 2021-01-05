@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Tooltip, message, Typography, DatePicker, Space, Upload } from 'antd';
+import { Form, Input, Button, Tooltip, message, Typography, DatePicker, Space, Upload, Select } from 'antd';
 import {
   EnvironmentOutlined,
   EnvironmentTwoTone,
@@ -18,6 +18,7 @@ import temp from '../../../../../assets/anony.png';
 // const dateFormat = 'YYYY/MM/DD';
 
 const { Text } = Typography;
+const { Option } = Select;
 
 const layout = {
   labelCol: { span: 8 },
@@ -45,11 +46,14 @@ const extractHostname = (url) => {
 };
 
 function BasicDetails(props) {
-  const { entity, editMode, action } = props;
+  const { entity, editMode, action, titleTypes } = props;
+
+  
   const [first_name, setFirstName] = useState(entity.first_name);
   const [last_name, setLastName] = useState(entity.last_name);
   const [user_location, setLocation] = useState(entity.user_location);
   const [user_summary, setSummary] = useState(entity.user_summary);
+  const [user_title, setTitle] = useState(entity.user_title);
 
   const [portfolio_link, setPortfolio] = useState(undefined);
   const [behance_link, setBehance] = useState(undefined);
@@ -108,8 +112,19 @@ function BasicDetails(props) {
       cu.linkedin_link = entity.user_external_links.linkedin_link;
       cu.dribble_link = entity.user_external_links.dribble_link;
 
+      if(entity.user_title){
+        cu.user_title = titleTypes[entity.user_title];
+      }
+
       setCP(cu);
-    } else {
+    } 
+    else {
+      const cu = entity;
+      
+      if(entity.user_title){
+        cu.user_title = titleTypes[entity.user_title];
+      }
+
       setCP(entity);
     }
   }, []);
@@ -178,6 +193,8 @@ function BasicDetails(props) {
       dribble_link: values.dribble_link,
     };
 
+    const user_title_id = titleTypes.findIndex(title => title === values.user_title);
+    
     // if(values.user_dob){
     //     values.user_dob = values.user_dob._d.toString().replace('(Pacific Daylight Time)', '');
     // }
@@ -194,8 +211,10 @@ function BasicDetails(props) {
           last_name: values.last_name,
           user_location: values.user_location,
           user_summary: values.user_summary,
+          user_title: values.user_title,
           // 'user_dob': values.user_dob
           user_external_links: user_external_links,
+          user_title: user_title_id
         },
       )
       .then((res) => {
@@ -203,6 +222,7 @@ function BasicDetails(props) {
         setLastName(res.data.last_name);
         setLocation(res.data.user_location);
         setSummary(res.data.user_summary);
+        setTitle(res.data.user_title);
         setPortfolio(res.data.user_external_links.portfolio_link);
         setBehance(res.data.user_external_links.behance_link);
         setLinkedin(res.data.user_external_links.linkedin_link);
@@ -325,6 +345,26 @@ function BasicDetails(props) {
               <Input.TextArea maxLength={200} showCount={true} />
             </Form.Item>
 
+            <Form.Item
+              name={['user_title']}
+              label="Title"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select one!',
+                },
+              ]}>
+               <Select
+                  // style={{ width: 200 }}
+                  // onChange={onChange}
+                  // disabled={saving}
+                >
+                  {Object.keys(titleTypes).map((d, k) => (
+                    <Option key={k}>{titleTypes[d]}</Option>
+                  ))}
+                </Select>
+            </Form.Item>
+
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
               <Button type="primary" htmlType="submit">
                 Update
@@ -419,6 +459,8 @@ function BasicDetails(props) {
         </div>
 
         <div className={styles.supplement}>{editMode ? '' : user_summary}</div>
+        
+        <div className={styles.supplement}>{editMode ? '' : titleTypes[user_title]}</div>
       </div>
     </>
   );

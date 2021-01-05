@@ -58,6 +58,10 @@ class Center extends Component {
       type: 'accountAndcenter/fetchProjects',
       payload: { userID },
     });
+
+      dispatch({
+        type: 'accountAndcenter/fetchTitleTypes',
+      });
   }
 
   handler() {
@@ -73,6 +77,7 @@ class Center extends Component {
       keywords_part = {},
       currentUserLoading,
       structure = {},
+      titleTypes
     } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
     // const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -99,12 +104,13 @@ class Center extends Component {
               title="Basic Details"
             >
               {!dataLoading && (
-                <div>
+                <div>{console.log(entity_part)}
                   <BasicDetails
                     entity={entity_part}
                     editMode={this.state.editMode}
                     action={this.handler}
                     currentUser={currentUser}
+                    titleTypes={titleTypes}
                   />
                   <Divider />
 
@@ -168,4 +174,5 @@ export default connect(({ loading, accountAndcenter }) => ({
   projectList: accountAndcenter.projectList,
   currentUserLoading: loading.effects['accountAndcenter/fetchCurrent'],
   fileuploading: accountAndcenter.fileuploading,
+  titleTypes: accountAndcenter.titleTypes,
 }))(Center);
