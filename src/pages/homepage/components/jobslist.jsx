@@ -20,6 +20,7 @@ const JobsList = (props) => {
     pageSize,
     showExtra,
     maxGridSize,
+    runSearchQuery,
   } = props;
   const [data, setData] = useState(undefined);
   const [showModal, setShowModal] = useState(false);
@@ -54,11 +55,9 @@ const JobsList = (props) => {
     if(Math.abs(splits.months) > 0){
       return String(Math.abs(splits.months)).concat(' months ago');
     }
-    
     else{
       return String(Math.abs(splits.days)).concat(' days ago');
     }
-    
   };
 
   const setProgressColor = (matchPercent) => {
@@ -247,6 +246,10 @@ const JobsList = (props) => {
         // onOk={this.handleOk}
         onCancel={() => {
           setShowModal(false);
+          
+          if(runSearchQuery){
+            runSearchQuery();
+          }
           setModalData(undefined);
         }}
         visible={showModal}

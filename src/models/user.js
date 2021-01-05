@@ -14,7 +14,8 @@ const UserModel = {
     reccommended_jobs: undefined,
     saved_jobs: undefined,
     random_jobs: undefined,
-    applied_jobs: undefined
+    applied_jobs: undefined,
+    search_all: undefined
   },
   effects: {
     // *fetchCurrent(_, { call, put, delay }) {
@@ -182,6 +183,25 @@ const UserModel = {
           });
         }
 
+        if (payload.payload.joblistType === 'Search all') {
+
+          const updateSearchAllJobs = yield select((state) => {
+            const updateObjIndex = state.user.search_all.findIndex(
+              (item) => item.jm_data.id === payload.payload.jmID,
+            );
+            const temp = Object.assign({}, state.user.search_all);
+            temp[updateObjIndex] = response.data;
+            const tempAsArray = Object.keys(temp).map((key) => temp[key]);
+            tempAsArray.splice(updateObjIndex, 1);
+            return tempAsArray;
+          });
+
+          yield put({
+            type: 'saveNewState',
+            payload: { search_all: updateSearchAllJobs },
+          });
+        }
+
 
       }
     },
@@ -209,6 +229,11 @@ const UserModel = {
     
     saveAppliedJobs(state, action) {
       return { ...state, applied_jobs: action.payload || {} };
+    },
+
+    saveSearchAllJobs(state, action) {
+      console.log(action.payload)
+      return { ...state, search_all: action.payload || {} };
     },
 
     changeNotifyCount(

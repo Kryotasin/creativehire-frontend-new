@@ -25,7 +25,7 @@ const { Panel } = Collapse;
 const { Title } = Typography;
 
 const Search = (props) => {
-  const { dispatch, structure, keywords_part, employmentTypes, titleTypes, companies } = props;
+  const { dispatch, structure, keywords_part, employmentTypes, titleTypes, companies, search_all } = props;
 
   const [remoteQuery, setRemoteQuery] = useState(false);
   const [employmentTypesQuery, setEmploymentTypesQuery] = useState([]);
@@ -37,7 +37,7 @@ const Search = (props) => {
 
   const [disabled, setDisabled] = useState(false);
 
-  const [queryResults, setQueryResults] = useState([]);
+  // const [queryResults, setQueryResults] = useState([]);
 
   const matchPercentSortItem = ['Sorting by ascending order', 'Sorting by descending order', 'Sort by Match Percent'];
 
@@ -122,10 +122,17 @@ const Search = (props) => {
       applied: appliedQuery,
       match_percent_sort_query: matchPercentSortQuery,
     }
+    console.log(data.saved)
 
     axios.post(REACT_APP_AXIOS_API_V1.concat('job-search/'), data).then((res) => {
-      setQueryResults(res.data);
+      // setQueryResults(res.data);
+      console.log(res.data)
+      dispatch({
+        type: 'user/saveSearchAllJobs',
+        payload: res.data
+      })
     });
+    
 
     setTimeout(hide, 1500);
     setTimeout(() => setDisabled(false), 1500);
@@ -229,11 +236,12 @@ const Search = (props) => {
               title="Search all"
               structure={structure}
               keywords_part={keywords_part}
-              job_list={queryResults}
+              job_list={search_all}
               showExtra={false}
               maxGridSize={2}
               pageSize={10}
               dispatch={dispatch}
+              runSearchQuery={runSearchQuery}
               // updateJobMatchItem={updateJobMatchItem}
             />
           </div>
@@ -243,10 +251,11 @@ const Search = (props) => {
   );
 };
 
-export default connect(({ accountAndcenter }) => ({
+export default connect(({ user, accountAndcenter }) => ({
   structure: accountAndcenter.structure,
   keywords_part: accountAndcenter.keywords_part,
   employmentTypes: accountAndcenter.employmentTypes,
   titleTypes: accountAndcenter.titleTypes,
   companies: accountAndcenter.companies,
+  search_all: user.search_all
 }))(Search);
