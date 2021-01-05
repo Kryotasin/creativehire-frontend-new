@@ -94,7 +94,6 @@ const IntroduceRow = (props) => {
           : final_values.projectImage,
       })
       .then((res) => {
-        console.log(res);
 
         if (res.status === 200) {
           setProjectData(res.data);
