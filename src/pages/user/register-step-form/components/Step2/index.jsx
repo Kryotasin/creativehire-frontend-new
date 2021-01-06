@@ -1,6 +1,6 @@
 import { connect } from 'umi';
 import React, { useState, useEffect } from 'react';
-import { Spin, Form, Button, Tooltip, Divider, Checkbox, Input, Typography, message } from 'antd';
+import { Spin, Form, Button, Tooltip, Divider, Checkbox, Input, Typography, message, Progress } from 'antd';
 import { ArrowRightOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
 import axios from '../../../../../umiRequestConfig';
@@ -32,13 +32,15 @@ const Step2 = (props) => {
   const [completed, setCompleted] = useState(0);
   const [failed, setFailed] = useState(0);
 
+  // const [ progressArray, setProgressArray ] = useState([]);
+
   useEffect(() => {
     if (project_links_list.length === 0) {
       dispatch({
         type: 'userAndregister/setCompletion',
         payload: {
           type: 'warning',
-          message: `We couldn't fetch any projects. You can add projects later from your account command center. If you face any issues, contact us at admin@creativehire.co`,
+          message: `We couldn't fetch any projects. You can add projects later from your account center. If you face any issues, contact us at admin@creativehire.co`,
         },
       });
 
@@ -50,43 +52,34 @@ const Step2 = (props) => {
   });
 
   useEffect(() => {
-    if (failed > 0) {
-      message.warn('Oops...', 5000);
-
-      dispatch({
-        type: 'userAndregister/setCompletion',
-        payload: {
-          type: 'warning',
-          message: `Failed to process ${failed}/${total} projects. You can add them later from your account command center. If problem persists, contact us at admin@creativehire.co`,
-        },
-      });
-
-      dispatch({
-        type: 'userAndregister/saveCurrentStep',
-        payload: 'confirmation',
-      });
-
-      setProcessing(false);
-    }
-
     if (completed + failed === total && total > 0) {
-      message.success('Done', 5000);
-
-      dispatch({
-        type: 'userAndregister/setCompletion',
-        payload: {
-          type: 'success',
-          message: `All ${total} projects uploaded successfully! You can add more later from your account command center. If you face any issues, contact us at admin@creativehire.co`,
-        },
-      });
-
+      if (failed > 0) {
+        dispatch({
+          type: 'userAndregister/setCompletion',
+          payload: {
+            type: 'warning',
+            message: `Failed to process ${failed}/${total} projects. You can add them later from your account center. If problem persists, contact us at admin@creativehire.co`,
+          },
+        });
+      }else{
+        dispatch({
+          type: 'userAndregister/setCompletion',
+          payload: {
+            type: 'success',
+            message: `All ${total} projects uploaded successfully! You can add more later from your account center. If you face any issues, contact us at admin@creativehire.co`,
+          },
+        });
+      }
       dispatch({
         type: 'userAndregister/saveCurrentStep',
         payload: 'confirmation',
       });
 
-      setProcessing(false);
+      setTimeout(() => {setProcessing(false);}, 2500);
+  
     }
+      
+    
   }, [completed, failed]);
 
   if (!project_links_list) {
@@ -104,7 +97,67 @@ const Step2 = (props) => {
     }
   };
 
-  const onValidateForm = async () => {
+  // Function to post the project to database
+  const postProjectToDB = async(projectLink, basicDetails) => {
+
+    if(basicDetails.title === undefined || basicDetails.title === null || basicDetails.title === ''){
+      basicDetails.title = 'Untitled Project'
+    }
+
+    if(basicDetails.description === undefined || basicDetails.description === null || basicDetails.description === ''){
+      basicDetails.description = 'This is an amazing project by me!'
+    }
+    console.log(projectLink, basicDetails);
+
+    return axios
+      .post(REACT_APP_AXIOS_API_V1.concat('project/'), {
+        project_url: projectLink,
+        project_title: basicDetails.title,
+        project_summary: basicDetails.description,
+        project_author: JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+        project_img: Object.keys(basicDetails.img_list).length !== 0 ? basicDetails.img_list[0] : 'https://picsum.photos/400',
+      })
+      .then((res) => {
+        
+        if (res.status === 201) {
+          // progressArrayTemp.push(true);
+          setCompleted((prevstate) => prevstate + 1);
+        } else {
+          // progressArrayTemp.push(false);
+          setFailed((prevstate) => prevstate + 1);
+        }
+        // setProgressArray(progressArrayTemp)
+      })
+      .catch((err) => {
+        console.log(err);        
+        setFailed((prevstate) => prevstate + 1);
+      })
+  }
+
+  // Function to wait for ms milliseconds
+  const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+
+  const asyncForEach = async (array, callback) => {
+    for (let index = 0; index < array.length; index++) { // start the loop
+      const projectBasicDetails = await axios.post(REACT_APP_AXIOS_API_V1.concat('project/basicdetails/'), {
+        url: array[index],
+        img_only: 0,
+      })
+      .then((res) => {
+        if(res.status === 200){
+          return res.data;        
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      
+      await callback(array[index], projectBasicDetails);
+    }
+  }
+
+  // Validation function that checks, fetches basic project details and then uploads it to the database one by one
+  async function onValidateForm () {
     setProcessing(true);
     const values = await validateFields();
 
@@ -112,53 +165,20 @@ const Step2 = (props) => {
       message.loading({
         content: 'Please wait while we create your projects. It takes a while...',
         key: 'processing',
-        duration: values.links.length * 5000,
+        duration: 1500,
       });
-
-      let pass = 0;
-      let fail = 0;
 
       setTotal(values.links.length);
+      
+      await asyncForEach(values.links, async (projectLink, basicDetails) => {await waitFor(500); await postProjectToDB(projectLink, basicDetails)});
 
-      Object.keys(values.links).forEach((k) => {
-        setTimeout(() => {
-          axios
-            .post(REACT_APP_AXIOS_API_V1.concat('project/basicdetails/'), {
-              url: values.links[k],
-              img_only: 0,
-            })
-
-            .then((res) => {
-              const img = res ? res.data.img_list[0] : null;
-
-              axios
-                .post(REACT_APP_AXIOS_API_V1.concat('project/'), {
-                  project_url: values.links[k],
-                  project_title: res.data.title,
-                  project_summary: res.data.description,
-                  project_author: JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
-                  project_img: img,
-                })
-                .then((project) => {
-                  if (values.links.includes(project.data.project_url) && project.status === 201) {
-                    pass += 1;
-                  } else {
-                    fail += 1;
-                  }
-                  setCompleted(pass);
-                  setFailed(fail);
-                });
-            });
-        }, 500 * k);
-      });
-    } else {
-      message.success('Done', 5000);
-
+    } 
+    else {
       dispatch({
         type: 'userAndregister/setCompletion',
         payload: {
           type: 'success',
-          message: `No projects were added. You can them later from your account command center. If you face any issues, contact us at admin@creativehire.co`,
+          message: `No projects were selected. You can them later from your account command center. If you face any issues, contact us at admin@creativehire.co`,
         },
       });
 
@@ -166,10 +186,8 @@ const Step2 = (props) => {
         type: 'userAndregister/saveCurrentStep',
         payload: 'confirmation',
       });
-
-      setProcessing(false);
     }
-  };
+  }
 
   return (
     <>
@@ -187,6 +205,13 @@ const Step2 = (props) => {
           }}
         />
 
+          {processing ? 
+            <>
+              {'Completed: '.concat(String(completed + failed)).concat('/').concat(String(total))}
+              <Progress percent={Number(((completed + failed)/ total) * 100).toFixed(0)} status="active" />
+            </>
+          :''}
+
         <Form.Item
           name="links"
           label="Select projects"
@@ -195,8 +220,9 @@ const Step2 = (props) => {
             icon: <QuestionCircleOutlined />,
           }}
         >
-          <Checkbox.Group options={project_links_list} />
+          <Checkbox.Group options={project_links_list} />          
         </Form.Item>
+        
 
         <Form.Item
           // label={

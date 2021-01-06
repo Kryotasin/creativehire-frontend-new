@@ -8,7 +8,6 @@ import {
   Popover,
   Progress,
   Divider,
-  message,
   Tooltip,
 } from 'antd';
 import { connect, Link } from 'umi';

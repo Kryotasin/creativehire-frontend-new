@@ -26,8 +26,6 @@ const Model = {
         const registeringMessage = message.loading('Registration in progress..', 0);
         const response = yield call(registerUserAndGetLinksService, payload);
 
-        console.log(response)
-
         if (response.status === 201) {
           setTimeout(registeringMessage, 500);
           const fetchProjectsMessage = message.loading('Registered! Fetching your projects...', 0);
@@ -50,7 +48,6 @@ const Model = {
           });
 
           if (payload.portfolio) {
-            console.log(payload)
             yield put({
               type: 'savePortfolioLink',
               payload: payload.portfolio,
