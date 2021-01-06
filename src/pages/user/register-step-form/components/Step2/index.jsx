@@ -117,8 +117,7 @@ const Step2 = (props) => {
         project_author: JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
         project_img: Object.keys(basicDetails.img_list).length !== 0 ? basicDetails.img_list[0] : 'https://picsum.photos/400',
       })
-      .then((res) => {
-        
+      .then((res) => {        
         if (res.status === 201) {
           // progressArrayTemp.push(true);
           setCompleted((prevstate) => prevstate + 1);
@@ -131,8 +130,8 @@ const Step2 = (props) => {
       .catch((err) => {
         console.log(err);        
         setFailed((prevstate) => prevstate + 1);
-      })
-  }
+      });
+    }
 
   // Function to wait for ms milliseconds
   const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
