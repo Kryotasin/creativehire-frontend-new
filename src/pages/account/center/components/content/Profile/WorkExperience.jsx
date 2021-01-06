@@ -82,8 +82,8 @@ const WorkExperience = (props) => {
 
   useEffect(() => {
     if (
-      titleTypes !== undefined &&
-      employmentTypes !== undefined &&
+      Object.keys(titleTypes).length !== 0 &&
+      Object.keys(employmentTypes).length !== 0 &&
       Object.keys(candidate_part).length !== 0 &&
       workList !== undefined
     ) {
@@ -112,6 +112,7 @@ const WorkExperience = (props) => {
       ) : (
         <>
           <Text strong>Total Years of Experience (YoE):</Text> <Text mark>{Math.floor(Number(yoe/12))} y {Math.floor((Number(yoe%12)))} m </Text>
+          
           <WorkCard
             setWorkList={(e) => {
               const temp = [];

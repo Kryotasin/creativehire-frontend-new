@@ -30,16 +30,10 @@ const Model = {
           setTimeout(registeringMessage, 500);
           const fetchProjectsMessage = message.loading('Registered! Fetching your projects...', 0);
 
-          localStorage.setItem('refreshToken', response.data.refresh);
-          localStorage.setItem('accessToken', response.data.access);
-          localStorage.setItem(
-            'refreshTokenDecoded',
-            JSON.stringify(jwt_decode(response.data.refresh)),
-          );
-          localStorage.setItem(
-            'accessTokenDecoded',
-            JSON.stringify(jwt_decode(response.data.access)),
-          );
+          localStorage.setItem("refreshToken", String(response.data.refresh));
+          localStorage.setItem("accessToken", String(response.data.access));
+          // localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
+          localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
 
           yield put({
             type: 'registerHandle',

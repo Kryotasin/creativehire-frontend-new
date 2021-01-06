@@ -24,7 +24,7 @@ const Remote = (props) => {
     }
   }, [candidate_part]);
 
-  useEffect(() => {
+  useEffect(() => {console.log('here')
     if (workAuthTypes.length === 0) {
       dispatch({
         type: 'accountAndcenter/fetchWorkAuthTypes',
@@ -34,7 +34,12 @@ const Remote = (props) => {
     }
   }, [workAuthTypes]);
 
-  useEffect(() => {}, [authorizationIndex, options]);
+  useEffect(() => {
+    console.log(Object.keys(options).length, Object.keys(candidate_part).length, authorizationIndex)
+    if(Object.keys(options).length > 0 && Object.keys(candidate_part).length > 0 && authorizationIndex !== undefined){
+      console.log('done')
+    }
+  }, [authorizationIndex, options]);
 
   const onChange = (value) => {
     const data = {
@@ -54,7 +59,8 @@ const Remote = (props) => {
       <Divider />
       <div className={styles.name}>Work authorization</div>
       <Space direction="horizontal" align="top" size="large">
-        {Object.keys(options).length > 0 &&
+        {
+        Object.keys(options).length > 0 &&
         Object.keys(candidate_part).length > 0 &&
         authorizationIndex !== undefined ? (
           <Select

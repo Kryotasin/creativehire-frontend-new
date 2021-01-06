@@ -47,9 +47,9 @@ const Model = {
           
           localStorage.clear();
 
-          localStorage.setItem("refreshToken", response.data.refresh);
-          localStorage.setItem("accessToken", response.data.access);
-          localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
+          localStorage.setItem("refreshToken", String(response.data.refresh));
+          localStorage.setItem("accessToken", String(response.data.access));
+          // localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
           localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
 
           

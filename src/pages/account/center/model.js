@@ -130,12 +130,14 @@ const Model = {
     },
 
     *fetchWorkAuthTypes(payload, { call, put }) {
+      console.log('calling......')
       const response = yield call(queryWorkAuth);
-
       if (response.status === 200) {
+        const workAuthTypesData = Object.assign({}, response.data);
+        console.log(workAuthTypesData)
         yield put({
-          type: 'saveWorkAuthTypes',
-          payload: response.data,
+          type: 'saveNewState',
+          payload: { workAuthTypes: workAuthTypesData },
         });
       }
     },
@@ -330,13 +332,13 @@ const Model = {
       return { ...state, degreeTypes: action.payload || {} };
     },
 
-    saveWorkAuthTypes(state, action) {
-      return { ...state, workAuthTypes: action.payload || {} };
-    },
+    // saveWorkAuthTypes(state, action) {
+    //   return { ...state, workAuthTypes: action.payload || {} };
+    // },
 
-    setUserID(state, action) {
-      return { ...state, workAuthTypes: action.payload || {} };
-    },
+    // setUserID(state, action) {
+    //   return { ...state, workAuthTypes: action.payload || {} };
+    // },
 
     saveCompanies(state, action) {
       return { ...state, companies: action.payload || {} };

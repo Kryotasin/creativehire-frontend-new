@@ -13,7 +13,7 @@ const { TextArea } = Input;
 
 const WorkCard = (props) => {
   const { workList, titleTypes, employmentTypes, projectList, saveCandidate, setWorkList, months, currentYear, defaultDate, setYoe } = props;
-  const [titlesList, setTitleList] = useState(undefined);
+  // const [titlesList, setTitleList] = useState(undefined);
   const [typesList, setTypesList] = useState(undefined);
 
   const [workListLoaded, setWorkListLoaded] = useState(false);
@@ -52,7 +52,7 @@ const WorkCard = (props) => {
     if (titleTypes !== undefined && employmentTypes !== undefined) {
       setWorkListLoaded(true);
     }
-  });
+  }, [titleTypes, employmentTypes]);
 
   const handleCancel = () => {
     form.resetFields();
@@ -89,14 +89,14 @@ const WorkCard = (props) => {
           {'('.concat(String((theDiffObject.years))).concat('y ').concat(String(theDiffObject.months)).concat('m').concat(')')}
         </div>
         {company.concat(' - ').concat(employmentTypes[type])}
-      </div>
+      </div> 
     );
   };
 
 
   const deleteWorkExpHandler = (workExpItemKey) => {
 
-    const out ={
+    const out = {
       type: 'deletion',
       deletion_type: 'work_exp',
       key: workExpItemKey
@@ -162,11 +162,11 @@ const WorkCard = (props) => {
       children.push(<Option key={k}>{employmentTypes[k]}</Option>);
     });
 
-    const c2 = [];
+    // const c2 = [];
 
-    Object.keys(titleTypes).forEach((k) => {
-      c2.push(<Option key={k}>{titleTypes[k]}</Option>);
-    });
+    // Object.keys(titleTypes).forEach((k) => {
+    //   c2.push(<Option key={k}>{titleTypes[k]}</Option>);
+    // });
 
     const c3 = [];
     Object.keys(projectList).forEach((k) => {
@@ -175,7 +175,7 @@ const WorkCard = (props) => {
 
     setTypesList(children);
     setProjectChoices(c3);
-    setTitleList(c2);
+    // setTitleList(c2);
 
     setWorkMod(data);
     setWorkID(key);

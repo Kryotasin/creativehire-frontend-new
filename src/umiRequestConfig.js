@@ -31,6 +31,10 @@ if(localStorage.getItem('accessToken') !== null && localStorage.getItem('accessT
     // console.log(jwt_decode(localStorage.getItem('accessToken')).exp - new Date().getTime()/1000)
 }
 
+if(localStorage.getItem('refreshToken') !== null && localStorage.getItem('refreshToken') !== undefined && localStorage.getItem('refreshToken') !== 'undefined'){
+    // console.log(jwt_decode(localStorage.getItem('refreshToken')).exp - new Date().getTime()/1000)
+}
+
 
 // Also add/ configure interceptors && all the other cool stuff
 instance.interceptors.request.use(request => {
@@ -53,6 +57,7 @@ instance.interceptors.request.use(request => {
 
 instance.interceptors.response.use(response => {
     // console.log(response);
+    
     // Edit response config
     return response;
 }, error => {
@@ -61,7 +66,10 @@ instance.interceptors.response.use(response => {
     const refreshToken = localStorage.getItem('refreshToken');
 
     if(refreshToken !== null && refreshToken !== undefined){
-        const refreshTokenCheck = jwt_decode(refreshToken);
+        const refreshTokenCheck = jwt_decode(refreshToken);        
+        if(Math.floor(new Date() / 1000) - refreshTokenCheck.exp > 0) {
+            console.log('Expired refresh token...')
+        }
     }
 
     if(refreshToken && refreshToken !== null && refreshToken !== undefined && !refreshToken.message){
@@ -88,7 +96,7 @@ instance.interceptors.response.use(response => {
                 .then((res) => res.json())
                 .then((res) => {
                     // console.log(res.access)
-                    localStorage.setItem('accessToken', res.access);
+                    localStorage.setItem('accessToken', String(res.access));
                     localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(res.access)));
                 })
                 .then(() => {
@@ -102,10 +110,10 @@ instance.interceptors.response.use(response => {
                 })
                 .finally(() => {isRefreshing = false})
                 // console.log("two")
-                resolve(refreshRequest)
+                
             }
             else{
-                failedQueue.push(originalRequest)
+                failedQueue.push(originalRequest); //push links here because token is refreshing
                 // console.log(failedQueue)
             }
         }
