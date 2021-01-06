@@ -12,6 +12,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import jwt_decode from 'jwt-decode';
 import logo from '../assets/new-blue-logo.svg';
+import styles from './BasicLayout.less';
 
 const noMatch = (
   <Result
