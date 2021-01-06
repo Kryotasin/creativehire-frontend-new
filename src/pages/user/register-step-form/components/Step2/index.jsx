@@ -107,7 +107,6 @@ const Step2 = (props) => {
     if(basicDetails.description === undefined || basicDetails.description === null || basicDetails.description === ''){
       basicDetails.description = 'This is an amazing project by me!'
     }
-    console.log(projectLink, basicDetails);
 
     return axios
       .post(REACT_APP_AXIOS_API_V1.concat('project/'), {
@@ -148,7 +147,7 @@ const Step2 = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
       })
       
       await callback(array[index], projectBasicDetails);
