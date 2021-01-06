@@ -20,7 +20,7 @@ export default () => (
     <Card>
       <Space size='large' direction='vertical'>
         <Typography.Title level={2}>
-          How Creativehire Works
+          How Creative Hire Works
         </Typography.Title>
 
         <Typography.Text strong         
@@ -28,7 +28,7 @@ export default () => (
             marginBottom: 12,
           }}>
             <ol style={decription}>
-              <li>Sign up on Creativehire and create your profile by uploading your resume and your projects.</li>
+              <li>Sign up on Creative Hire and create your profile by uploading your resume and your projects.</li>
 
               <li>Check your keywords and optimize them on your projects as required.</li>
 
