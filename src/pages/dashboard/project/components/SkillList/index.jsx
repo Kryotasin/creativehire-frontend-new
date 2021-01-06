@@ -44,7 +44,8 @@ const SkillList = (props) => {
   }, [keywords]);
 
   useEffect(() => {
-    if (sortedSkills) {
+    console.log(sortedSkills)
+    if (sortedSkills !== undefined && Object.keys(sortedSkills).length !== 0) {
       catNum = sortedSkills[0].split(',');
       cat = structure[0][catNum];
       subcat = structure[1][catNum];
@@ -75,6 +76,9 @@ const SkillList = (props) => {
         tempData.push({ label: k, value: (counts[k] * 100) / total });
       }
       setChartData(tempData);
+    }
+    if (sortedSkills !== undefined && Object.keys(sortedSkills).length === 0) {
+      message.warn('No skills found!')
     }
   }, [sortedSkills]);
 
