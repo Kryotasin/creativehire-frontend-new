@@ -122,6 +122,7 @@ const Search = (props) => {
       applied: appliedQuery,
       match_percent_sort_query: matchPercentSortQuery,
     }
+    console.log(data)
 
     axios.post(REACT_APP_AXIOS_API_V1.concat('job-search/'), data).then((res) => {
       // setQueryResults(res.data);
