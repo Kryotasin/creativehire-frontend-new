@@ -67,6 +67,10 @@ export async function queryAppliedJobs(params) {
   });
 }
 
+export async function querySearchJobs(params) {
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('job-search/'), params);
+}
+
 //                     UNUSED
 
 export async function query() {

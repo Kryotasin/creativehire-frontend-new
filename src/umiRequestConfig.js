@@ -124,4 +124,6 @@ instance.interceptors.response.use(response => {
 });
 
 
+instance.cancelTokenSource = axios.CancelToken.source();
+
 export default instance;

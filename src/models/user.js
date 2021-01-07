@@ -5,7 +5,10 @@ import {
   queryJobsUpdateAppliedOrSavedState,
   querySavedJobs,
   queryAppliedJobs,
+  querySearchJobs
 } from '@/services/user';
+
+import { message } from 'antd';
 
 const UserModel = {
   namespace: 'user',
@@ -15,7 +18,8 @@ const UserModel = {
     saved_jobs: undefined,
     random_jobs: undefined,
     applied_jobs: undefined,
-    search_all: undefined
+    search_all: undefined,
+    searching: false,
   },
   effects: {
     // *fetchCurrent(_, { call, put, delay }) {
@@ -66,6 +70,32 @@ const UserModel = {
     //     payload: response.data,
     //   });
     // },
+
+    *fetchSearchJobs(payload, { call, put }) {
+
+      yield put({
+        type: 'saveSearching',
+        payload: true,
+      });
+
+      const hide = message.loading('Loading results..', 0); 
+
+      const response = yield call(querySearchJobs, payload.payload);
+      
+      if(response.status === 200){
+        yield put({
+          type: 'saveSearchAllJobs',
+          payload: response.data,
+        });
+      }
+
+      setTimeout(hide, 1500);
+
+      yield put({
+        type: 'saveSearching',
+        payload: false,
+      });
+    },
 
     *fetchRandomJobs(_, { call, put }) {
       const response = yield call(
@@ -191,7 +221,9 @@ const UserModel = {
             const temp = Object.assign({}, state.user.search_all);
             temp[updateObjIndex] = response.data;
             const tempAsArray = Object.keys(temp).map((key) => temp[key]);
-            tempAsArray.splice(updateObjIndex, 1);
+            if(payload.payload.savedQuery){
+              tempAsArray.splice(updateObjIndex, 1);
+            }
             return tempAsArray;
           });
 
@@ -232,6 +264,10 @@ const UserModel = {
 
     saveSearchAllJobs(state, action) {
       return { ...state, search_all: action.payload || {} };
+    },
+
+    saveSearching(state, action) {
+      return { ...state, searching: action.payload };
     },
 
     changeNotifyCount(

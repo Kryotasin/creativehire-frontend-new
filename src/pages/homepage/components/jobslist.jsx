@@ -21,6 +21,7 @@ const JobsList = (props) => {
     showExtra,
     maxGridSize,
     runSearchQuery,
+    savedQuery
   } = props;
   const [data, setData] = useState(undefined);
   const [showModal, setShowModal] = useState(false);
@@ -39,6 +40,7 @@ const JobsList = (props) => {
         jmID: jmID,
         joblistType: joblistType,
         applyOrSave: applyOrSave,
+        savedQuery: savedQuery
       },
     });
   };

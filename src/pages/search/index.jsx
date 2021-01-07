@@ -4,12 +4,9 @@ import { connect } from 'umi';
 import {
   Collapse,
   Typography,
-  Card,
   Row,
   Col,
   Button,
-  Spin,
-  message,
   Checkbox,
   Space,
   Menu,
@@ -19,13 +16,12 @@ import JobsList from '../homepage/components/jobslist';
 import { DownOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
-import axios from '../../umiRequestConfig';
 
 const { Panel } = Collapse;
 const { Title } = Typography;
 
 const Search = (props) => {
-  const { dispatch, structure, keywords_part, employmentTypes, titleTypes, companies, search_all } = props;
+  const { dispatch, structure, keywords_part, employmentTypes, titleTypes, companies, search_all, searching } = props;
 
   const [remoteQuery, setRemoteQuery] = useState(false);
   const [employmentTypesQuery, setEmploymentTypesQuery] = useState([]);
@@ -35,7 +31,7 @@ const Search = (props) => {
   const [appliedQuery, setAppliedQuery] = useState(false);
   const [matchPercentSortQuery, setMatchPercentSortQuery] = useState(2);
 
-  const [disabled, setDisabled] = useState(false);
+  // const [disabled, setDisabled] = useState(false);
 
   // const [queryResults, setQueryResults] = useState([]);
 
@@ -65,15 +61,20 @@ const Search = (props) => {
     }
   }, [companies]);
 
-  useEffect(() => {}, [
+  useEffect(() => {
+    runSearchQuery();
+  }, [
     remoteQuery,
     employmentTypesQuery,
     jobTitleQuery,
     companyQuery,
     savedQuery,
     appliedQuery,
-    disabled,
   ]);
+
+  useEffect(() => {
+
+  }, [searching]);
 
   useEffect(() => {
     if (matchPercentSortQuery === 0 || matchPercentSortQuery === 1) {
@@ -99,12 +100,10 @@ const Search = (props) => {
   }, []);
 
   useEffect(() => {
-    runSearchQuery();
+    // runSearchQuery();
   }, []);
 
   const runSearchQuery = () => {
-    setDisabled(true);
-    const hide = message.loading('Loading results..', 0);
     let userID;
 
     if (localStorage.getItem('accessTokenDecoded')) {
@@ -122,19 +121,12 @@ const Search = (props) => {
       applied: appliedQuery,
       match_percent_sort_query: matchPercentSortQuery,
     }
-    console.log(data)
 
-    axios.post(REACT_APP_AXIOS_API_V1.concat('job-search/'), data).then((res) => {
-      // setQueryResults(res.data);
-      dispatch({
-        type: 'user/saveSearchAllJobs',
-        payload: res.data
-      })
+    dispatch({
+      type: 'user/fetchSearchJobs',
+      payload: data
     });
     
-
-    setTimeout(hide, 1500);
-    setTimeout(() => setDisabled(false), 1500);
   };
 
   const menu = (
@@ -160,13 +152,13 @@ const Search = (props) => {
               className={styles.sitecollapsecustomcollapse}
             >
               <Panel header="Remote" key="1" className={styles.sitecollapsecustompanel}>
-                <Checkbox disabled={disabled} onChange={(e) => setRemoteQuery(e.target.checked)}>
+                <Checkbox disabled={searching} onChange={(e) => setRemoteQuery(e.target.checked)}>
                   Show remote jobs
                 </Checkbox>
               </Panel>
               <Panel header="Employment Type" key="2" className={styles.sitecollapsecustompanel}>
                 <Checkbox.Group
-                  disabled={disabled}
+                  disabled={searching}
                   onChange={(checkedValues) => setEmploymentTypesQuery(checkedValues)}
                 >
                   <Row gutter={[0, 8]}>
@@ -182,7 +174,7 @@ const Search = (props) => {
               </Panel>
               <Panel header="Job Title" key="3" className={styles.sitecollapsecustompanel}>
                 <Checkbox.Group
-                  disabled={disabled}
+                  disabled={searching}
                   onChange={(checkedValues) => setJobTitleQuery(checkedValues)}
                 >
                   <Row gutter={[0, 8]}>
@@ -198,7 +190,7 @@ const Search = (props) => {
               </Panel>
               <Panel header="Company" key="4" className={styles.sitecollapsecustompanel}>
                 <Checkbox.Group
-                  disabled={disabled}
+                  disabled={searching}
                   onChange={(checkedValues) => setCompanyQuery(checkedValues)}
                 >
                   <Row gutter={[0, 8]}>
@@ -213,12 +205,12 @@ const Search = (props) => {
                 </Checkbox.Group>
               </Panel>
               <Panel header="Saved" key="5" className={styles.sitecollapsecustompanel}>
-                <Checkbox disabled={disabled} onChange={(e) => setSavedQuery(e.target.checked)}>
+                <Checkbox disabled={searching} onChange={(e) => setSavedQuery(e.target.checked)}>
                   Show saved jobs
                 </Checkbox>
               </Panel>
               <Panel header="Applied" key="6" className={styles.sitecollapsecustompanel}>
-                <Checkbox disabled={disabled} onChange={(e) => setAppliedQuery(e.target.checked)}>
+                <Checkbox disabled={searching} onChange={(e) => setAppliedQuery(e.target.checked)}>
                   Show jobs I applied to
                 </Checkbox>
               </Panel>
@@ -247,6 +239,7 @@ const Search = (props) => {
               pageSize={10}
               dispatch={dispatch}
               runSearchQuery={runSearchQuery}
+              savedQuery={savedQuery}
               // updateJobMatchItem={updateJobMatchItem}
             />
           </div>
@@ -262,5 +255,6 @@ export default connect(({ user, accountAndcenter }) => ({
   employmentTypes: accountAndcenter.employmentTypes,
   titleTypes: accountAndcenter.titleTypes,
   companies: accountAndcenter.companies,
-  search_all: user.search_all
+  search_all: user.search_all,
+  searching: user.searching
 }))(Search);
