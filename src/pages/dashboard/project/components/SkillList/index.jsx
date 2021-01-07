@@ -44,7 +44,6 @@ const SkillList = (props) => {
   }, [keywords]);
 
   useEffect(() => {
-    console.log(sortedSkills)
     if (sortedSkills !== undefined && Object.keys(sortedSkills).length !== 0) {
       catNum = sortedSkills[0].split(',');
       cat = structure[0][catNum];
@@ -217,7 +216,6 @@ const SkillList = (props) => {
 
 
   function confirm(e) {
-
     axios.delete(REACT_APP_AXIOS_API_V1.concat('project/'.concat(project.id)))
     .then((res) => { 
       
@@ -287,7 +285,7 @@ const SkillList = (props) => {
                       marginTop: 20,
                     }}
                   >
-                    Save Changes
+                    Save keywords
                   </Button>
 
                   <Popconfirm
@@ -305,7 +303,7 @@ const SkillList = (props) => {
                         marginTop: 20,
                       }}
                     >
-                      Delete Project
+                      Delete project
                     </Button>
                   </Popconfirm>
 
