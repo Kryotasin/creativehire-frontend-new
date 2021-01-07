@@ -318,9 +318,11 @@ const WorkCard = (props) => {
                 ]}
               >
                 <Select>
-                  {titleTypes.map((v, k) => (
-                    <Option key={k}>{v}</Option>
-                  ))}
+                {
+                  Object.keys(titleTypes).map((k) => (
+                    <Option key={k}>{titleTypes[k]}</Option>
+                  ))
+                }
                 </Select>
               </Form.Item>
 

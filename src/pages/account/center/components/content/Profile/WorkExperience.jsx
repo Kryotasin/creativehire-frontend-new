@@ -235,9 +235,11 @@ const WorkExperience = (props) => {
             ]}
           >
             <Select>
-              {titleTypes.map((v, k) => (
-                <Option key={k}>{v}</Option>
-              ))}
+            {
+              Object.keys(titleTypes).map((k) => (
+                <Option key={k}>{titleTypes[k]}</Option>
+              ))
+            }
             </Select>
           </Form.Item>
 
@@ -252,9 +254,11 @@ const WorkExperience = (props) => {
             ]}
           >
             <Select>
-              {employmentTypes.map((v, k) => (
-                <Option key={k}>{v}</Option>
-              ))}
+              {
+                Object.keys(employmentTypes).map((k) => (
+                  <Option key={k}>{employmentTypes[k]}</Option>
+                ))
+              }
             </Select>
           </Form.Item>
 
