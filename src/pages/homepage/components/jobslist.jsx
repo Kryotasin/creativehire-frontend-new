@@ -134,7 +134,12 @@ const JobsList = (props) => {
                             className={styles.jobTitle}
                           >
                             <Title level={4} ellipsis className={styles.jobTitle}>
-                              {item.jobpost_data.jobpost_title}
+                              {
+                                screen.width < 768 && String(item.jobpost_data.jobpost_title).length > 13 ? 
+                                  String(item.jobpost_data.jobpost_title).substring(0,13).concat('.')
+                                  :
+                                  item.jobpost_data.jobpost_title
+                              }
                             </Title>
                           </div>
                         </Paragraph>
