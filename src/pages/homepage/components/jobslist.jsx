@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { List, Typography, Card, Row, Col, Space, Progress, Button, Spin, Modal } from 'antd';
-import { CheckOutlined, CloseOutlined, CloseCircleTwoTone } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, CloseCircleTwoTone, CheckCircleTwoTone  } from '@ant-design/icons';
 import moment from 'moment';
 
 import JobCardData from './jobcard';
