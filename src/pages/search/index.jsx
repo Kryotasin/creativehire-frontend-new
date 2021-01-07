@@ -170,11 +170,13 @@ const Search = (props) => {
                   onChange={(checkedValues) => setEmploymentTypesQuery(checkedValues)}
                 >
                   <Row gutter={[0, 8]}>
-                    {employmentTypes.map((k, v) => (
-                      <Col key={k} span={24}>
-                        <Checkbox value={v + 1}>{k}</Checkbox>
-                      </Col>
-                    ))}
+                    {
+                      Object.keys(employmentTypes).map((k) => (
+                        <Col key={k} span={24}>
+                          <Checkbox value={k}>{employmentTypes[k]}</Checkbox>
+                        </Col>
+                      ))
+                    }
                   </Row>
                 </Checkbox.Group>
               </Panel>
@@ -184,11 +186,13 @@ const Search = (props) => {
                   onChange={(checkedValues) => setJobTitleQuery(checkedValues)}
                 >
                   <Row gutter={[0, 8]}>
-                    {titleTypes.map((k, v) => (
-                      <Col key={k} span={24}>
-                        <Checkbox value={v + 1}>{k}</Checkbox>
-                      </Col>
-                    ))}
+                    {
+                      Object.keys(titleTypes).map((k) => (
+                        <Col key={k} span={24}>
+                          <Checkbox value={k}>{titleTypes[k]}</Checkbox>
+                        </Col>
+                      ))
+                    }
                   </Row>
                 </Checkbox.Group>
               </Panel>
@@ -198,11 +202,13 @@ const Search = (props) => {
                   onChange={(checkedValues) => setCompanyQuery(checkedValues)}
                 >
                   <Row gutter={[0, 8]}>
-                    {companies.map((k, v) => (
-                      <Col key={k} span={24}>
-                        <Checkbox value={v + 1}>{k}</Checkbox>
-                      </Col>
-                    ))}
+                    {
+                      Object.keys(companies).map((k) => (
+                        <Col key={k} span={24}>
+                          <Checkbox value={k}>{companies[k]}</Checkbox>
+                        </Col>
+                      ))
+                    }
                   </Row>
                 </Checkbox.Group>
               </Panel>
