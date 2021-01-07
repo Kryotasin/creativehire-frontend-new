@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { List, Typography, Card, Row, Col, Space, Progress, Button, Spin, Modal } from 'antd';
-import { CheckOutlined, CloseOutlined, CheckCircleTwoTone } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, CloseCircleTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 
 import JobCardData from './jobcard';
@@ -153,12 +153,19 @@ const JobsList = (props) => {
                       <Space size="large" direction="vertical">
                         <Space size="large">
                           <Space size="small">
-                            {item.jobpost_data.jobpost_remote ? (
+                            {
+                              item.jobpost_data.jobpost_remote === '1' ? 
+                                <>
+                                  <CheckOutlined />
+                                  <Text strong>Remote</Text>
+                                </>
+                              : item.jobpost_data.jobpost_remote === '0' ?
                               <>
-                                <CheckOutlined />
-                                <Text>Remote</Text>
+                                <CloseCircleTwoTone twoToneColor="#ff4d4f" />
+                                <Text strong>Remote</Text>
                               </>
-                            ) : ''}
+                              : ''
+                            }
                           </Space>
 
                           <Space size="small">

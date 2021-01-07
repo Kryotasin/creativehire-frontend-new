@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Space, Typography, Tag, Button } from 'antd';
 
 import {
-  CheckOutlined,
   CloseCircleTwoTone,
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -108,53 +107,80 @@ const JobCardData = (props) => {
             </Col>
           </Row>
           <Row gutter={[16, 36]} align="top">
-            <Col xs={2} sm={2} md={4} lg={6} xl={8}>
+            <Col xs={8} sm={8} md={4} lg={6} xl={8}>
               <div className={styles.conditions}>
-                <Text strong>H1B</Text>
-                {jobData.jobpost_data.jobpost_sponsors_h1b ? (
-                  <CheckOutlined />
-                ) : (
-                  <CloseCircleTwoTone twoToneColor="#ff4d4f" />
-                )}
-              </div>
-
-              <div className={styles.conditions}>
-                <Text strong>OPT</Text>
-                {jobData.jobpost_data.jobpost_opt ? (
-                  <CheckOutlined />
-                ) : (
-                  <CloseCircleTwoTone twoToneColor="#ff4d4f" />
-                )}
-              </div>
-
-              <div className={styles.conditions}>
-                <Text strong>STEM OPT</Text>
-                {jobData.jobpost_data.jobpost_stem_opt ? (
-                  <CheckOutlined />
-                ) : (
-                  <CloseCircleTwoTone twoToneColor="#ff4d4f" />
-                )}
-              </div>
-
-              <div className={styles.conditions}>
-                {jobData.jobpost_data.jobpost_remote ? (
+                {
+                  jobData.jobpost_data.jobpost_sponsors_h1b === '1' ? 
+                    <>
+                      <CheckCircleTwoTone twoToneColor="#52c41a"/>
+                      <Text strong className={styles.visa_remote}>H1B</Text>
+                    </>
+                  : jobData.jobpost_data.jobpost_sponsors_h1b === '0' ?
                   <>
-                    <CheckOutlined />
-                    <Text strong>Remote</Text>
+                    <CloseCircleTwoTone twoToneColor="#ff4d4f" />
+                    <Text strong className={styles.visa_remote}>H1B</Text>
                   </>
-                ) :
-                ''}
+                  : ''
+                }
+              </div>
+
+              <div className={styles.conditions}>
+                {
+                  jobData.jobpost_data.jobpost_opt === '1' ? 
+                    <>
+                      <CheckCircleTwoTone twoToneColor="#52c41a"/>
+                      <Text strong className={styles.visa_remote}>OPT</Text>
+                    </>
+                  : jobData.jobpost_data.jobpost_opt === '0' ?
+                  <>
+                    <CloseCircleTwoTone twoToneColor="#ff4d4f" />
+                    <Text strong className={styles.visa_remote}>OPT</Text>
+                  </>
+                  : ''
+                }
+              </div>
+
+              <div className={styles.conditions}>
+                {
+                  jobData.jobpost_data.jobpost_stem_opt === '1' ? 
+                    <>
+                      <CheckCircleTwoTone twoToneColor="#52c41a"/>
+                      <Text strong className={styles.visa_remote}>STEM OPT</Text>
+                    </>
+                  : jobData.jobpost_data.jobpost_stem_opt === '0' ?
+                  <>
+                    <CloseCircleTwoTone twoToneColor="#ff4d4f" />
+                    <Text strong className={styles.visa_remote}>STEM OPT</Text>
+                  </>
+                  : ''
+                }
+              </div>
+
+              <div className={styles.conditions}>
+                {
+                  jobData.jobpost_data.jobpost_remote === '1' ? 
+                    <>
+                      <CheckCircleTwoTone twoToneColor="#52c41a"/>
+                      <Text strong className={styles.visa_remote}>Remote</Text>
+                    </>
+                  : jobData.jobpost_data.jobpost_remote === '0' ?
+                  <>
+                    <CloseCircleTwoTone twoToneColor="#ff4d4f" />
+                    <Text strong className={styles.visa_remote}>Remote</Text>
+                  </>
+                  : ''
+                }
               </div>
             </Col>
 
             <Col
-              push={8}
+              // push={8}
               xs={{ span: 6 }}
               sm={{ span: 6 }}
-              md={{ span: 6 }}
-              lg={{ span: 6 }}
-              xl={{ span: 6 }}
-            >{console.log(jobData.jm_data.jm_saved_by_candidate)}
+              md={{ span: 6, push:6 }}
+              lg={{ span: 6, push:8 }}
+              xl={{ span: 6, push:8 }}
+            >
               <Space size="large">
                 <a
                   href={jobData.jobpost_data.jobpost_application_link}
