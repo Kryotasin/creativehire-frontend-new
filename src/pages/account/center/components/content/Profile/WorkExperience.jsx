@@ -111,7 +111,7 @@ const WorkExperience = (props) => {
         <Spin />
       ) : (
         <>
-          <Text strong>Total Years of Experience (YoE):</Text> <Text mark>{Math.floor(Number(yoe/12))} y {Math.floor((Number(yoe%12)))} m </Text>
+          <Text strong>Total Years of Experience (YoE):</Text> <Text underline>{Math.floor(Number(yoe/12))} y {Math.floor((Number(yoe%12)))} m </Text>
           
           <WorkCard
             setWorkList={(e) => {
