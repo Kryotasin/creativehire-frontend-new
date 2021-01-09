@@ -14,6 +14,7 @@ import jwt_decode from 'jwt-decode';
 import styles from '../../Center.less';
 import axios from '../../../../../umiRequestConfig';
 import temp from '../../../../../assets/anony.png';
+import { isNumber } from 'lodash';
 
 // const dateFormat = 'YYYY/MM/DD';
 
@@ -46,7 +47,7 @@ const extractHostname = (url) => {
 };
 
 function BasicDetails(props) {
-  const { entity, editMode, action, titleTypes } = props;
+  const { entity, editMode, action, titleTypes, userID, dispatch } = props;
 
   
   const [first_name, setFirstName] = useState(entity.first_name);
@@ -105,6 +106,7 @@ function BasicDetails(props) {
       setBehance(entity.user_external_links.behance_link);
       setLinkedin(entity.user_external_links.linkedin_link);
       setDribble(entity.user_external_links.dribble_link);
+      
 
       const cu = entity;
       cu.behance_link = entity.user_external_links.behance_link;
@@ -192,30 +194,41 @@ function BasicDetails(props) {
       linkedin_link: values.linkedin_link,
       dribble_link: values.dribble_link,
     };
-
-    const user_title_id = titleTypes.findIndex(title => title === values.user_title);
     
     // if(values.user_dob){
     //     values.user_dob = values.user_dob._d.toString().replace('(Pacific Daylight Time)', '');
     // }
 
     // dt = datetime.strptime('Tue Sep 08 2020 23:35:02 GMT-0700', '%a %b %d %Y %X %Z%z')
+
+    let user_title_id;
+
+    if(Number.isInteger(Number(values.user_title))){
+      user_title_id = values.user_title;
+    }
+    else{
+      Object.keys(titleTypes).find(index => {if(titleTypes[index] === values.user_title) user_title_id = index});
+    }
+
+
+    const data = {
+      email: entity.email,
+      first_name: values.first_name,
+      last_name: values.last_name,
+      user_location: values.user_location,
+      user_summary: values.user_summary,
+      user_title: user_title_id,
+      // 'user_dob': values.user_dob
+      user_external_links: user_external_links,
+      // user_title: user_title_id
+    };
+
     axios
       .put(
         REACT_APP_AXIOS_API_V1.concat('entities/update-personal-details/').concat(
-          btoa(jwt_decode(localStorage.getItem('accessToken')).user_id),
+          btoa(userID),
         ),
-        {
-          email: entity.email,
-          first_name: values.first_name,
-          last_name: values.last_name,
-          user_location: values.user_location,
-          user_summary: values.user_summary,
-          user_title: values.user_title,
-          // 'user_dob': values.user_dob
-          user_external_links: user_external_links,
-          user_title: user_title_id
-        },
+        data,
       )
       .then((res) => {
         setFirstName(res.data.first_name);
@@ -228,12 +241,19 @@ function BasicDetails(props) {
         setLinkedin(res.data.user_external_links.linkedin_link);
         setDribble(res.data.user_external_links.dribble_link);
 
+        dispatch({
+          type: 'accountAndcenter/saveNewState',
+          payload: { entity_part: res.data },
+        });
+
         const cu = res.data;
         cu.portfolio_link = res.data.user_external_links.portfolio_link;
         cu.behance_link = res.data.user_external_links.behance_link;
         cu.linkedin_link = res.data.user_external_links.linkedin_link;
         cu.dribble_link = res.data.user_external_links.dribble_link;
-
+        
+        cu.user_title = titleTypes[res.data.user_title];
+        
         setCP(cu);
         // setDob(res.data.user_dob);
         action();
@@ -351,7 +371,7 @@ function BasicDetails(props) {
               rules={[
                 {
                   required: true,
-                  message: 'Please select one!',
+                  message: 'Please select title!',
                 },
               ]}>
                <Select
@@ -359,8 +379,8 @@ function BasicDetails(props) {
                   // onChange={onChange}
                   // disabled={saving}
                 >
-                  {Object.keys(titleTypes).map((d, k) => (
-                    <Option key={k}>{titleTypes[d]}</Option>
+                  {Object.keys(titleTypes).map((k) => (
+                    <Option key={k}>{titleTypes[k]}</Option>
                   ))}
                 </Select>
             </Form.Item>

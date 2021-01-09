@@ -52,7 +52,7 @@ const Step2 = (props) => {
       ...values,
       projectImage: imageLink,
       ...props.link,
-      projectAuthor: JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+      projectAuthor: userID,
     };
 
     if (dispatch) {

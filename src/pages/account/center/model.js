@@ -130,11 +130,10 @@ const Model = {
     },
 
     *fetchWorkAuthTypes(payload, { call, put }) {
-      console.log('calling......')
       const response = yield call(queryWorkAuth);
       if (response.status === 200) {
         const workAuthTypesData = Object.assign({}, response.data);
-        console.log(workAuthTypesData)
+
         yield put({
           type: 'saveNewState',
           payload: { workAuthTypes: workAuthTypesData },

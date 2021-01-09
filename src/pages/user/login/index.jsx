@@ -26,8 +26,6 @@ const Login = props => {
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState('account');
 
-  const t = localStorage.getItem('accessTokenDecoded');
-
   const handleSubmit = values => {
     const { dispatch } = props;
 
@@ -42,12 +40,7 @@ const Login = props => {
   }, [status, error]);
 
   useEffect(() => {
-  }, [t]);
-
-  useEffect(() => {
-    if(localStorage.getItem('accessToken') !== undefined){
-      localStorage.clear();
-    }
+    localStorage.clear();
   }, []);
 
   return (

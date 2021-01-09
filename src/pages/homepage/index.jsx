@@ -18,15 +18,58 @@ const Homepage = (props) => {
     keywords_part,
     reccommended_jobs,
     random_jobs,
-    candidate_part,
+    candidate_part
   } = props;
+
+  //----------------------------------------USER ID HANDLING--------------------------------------------------------------------
+  const [ userID, setUserID ] = useState(undefined);
+
+  const [ userIDInterval, setUserIDInterval ] = useState(undefined);
+
+  useEffect(() =>{
+    setUserIDInterval(setInterval(()=>{
+      try{
+        setUserID(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
+      }
+      catch(err){
+        console.log(err);
+      }
+    }, 100));
+
+    return () => clearInterval(userIDInterval);
+  }, []);
+
+  useEffect(() => {
+    if(userID !== undefined){
+      clearInterval(userIDInterval);
+    }
+  }, [userID, userIDInterval]);
+  
+  //------------------------------------------------------------------------------------------------------------
+
+  
+  useEffect(() => {
+    // if (
+    //   Object.keys(currentUser).length === 0 ||
+    //   Object.keys(candidate_part).length === 0 ||
+    //   Object.keys(keywords_part).length === 0
+    // ) {
+      if(userID !== undefined){
+        dispatch({
+          type: 'accountAndcenter/fetchCurrent',
+          payload: { userID: btoa(userID) },
+        });
+      }
+    // }
+  }, [userID]);
 
   useEffect(() => {
     
-    if (currentUser) {
+    if (currentUser && userID !== undefined) {
       // if(random_jobs === null || random_jobs === undefined){
       dispatch({
         type: 'user/fetchRandomJobs',
+        payload: { userID: userID },
       });
       // }
 
@@ -42,21 +85,8 @@ const Homepage = (props) => {
         });
       }
     }
-  }, [currentUser]);
+  }, [userID]);
 
-  useEffect(() => {
-    const userID = btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
-    // if (
-    //   Object.keys(currentUser).length === 0 ||
-    //   Object.keys(candidate_part).length === 0 ||
-    //   Object.keys(keywords_part).length === 0
-    // ) {
-      dispatch({
-        type: 'accountAndcenter/fetchCurrent',
-        payload: { userID },
-      });
-    // }
-  }, []);
 
   useEffect(() => {}, [structure, keywords_part, reccommended_jobs, random_jobs]);
 

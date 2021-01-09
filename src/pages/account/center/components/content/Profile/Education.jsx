@@ -26,7 +26,7 @@ const { TextArea } = Input;
 
 
 const Education = (props) => {
-  const { dispatch, projectList, candidate_part, degreeTypes, months, currentYear, defaultDate, saving } = props;
+  const { dispatch, projectList, candidate_part, degreeTypes, months, currentYear, defaultDate, saving, userID } = props;
 
   const [initLoading, setInitLoading] = useState(false);
   const [educationList, setEducationList] = useState(undefined);
@@ -70,7 +70,7 @@ const Education = (props) => {
 
   useEffect(() => {
     if (
-      degreeTypes !== undefined &&
+      Object.keys(degreeTypes).length !== 0 &&
       educationList !== undefined &&
       Object.keys(candidate_part).length !== 0
     ) {
@@ -111,6 +111,7 @@ const Education = (props) => {
             
             dispatch={dispatch}
             saving={saving}
+            userID={userID}
           />
 
           <Button
@@ -161,9 +162,7 @@ const Education = (props) => {
               axios
                 .post(
                   REACT_APP_AXIOS_API_V1.concat(
-                    `entities/candidate-complete-details/${btoa(
-                      JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
-                    )}`,
+                    `entities/candidate-complete-details/${btoa(userID)}`,
                   ),
                   out,
                 )

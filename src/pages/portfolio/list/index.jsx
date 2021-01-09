@@ -1,6 +1,6 @@
 // import { PlusOutlined } from '@ant-design/icons';
 import { Card, List, Typography, Pagination } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Link } from 'umi';
 import axios from '../../../umiRequestConfig';
@@ -24,10 +24,16 @@ const gaugeColor = (val) => {
   return '';
 };
 
-function ProjectList() {
-  const userID = localStorage.getItem('accessTokenDecoded') ? btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id) : null;
+const ProjectList = (props) => {
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState([]);
+  const [ userID, setUserID] = useState(undefined);
+
+  useEffect(() => {
+    if(userID === undefined){
+      setUserID(btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id));
+    }
+  }, [userID]);
 
   useEffect(() => {
     // const source = axios.CancelToken.source;
@@ -51,7 +57,7 @@ function ProjectList() {
     // return () => {
     //   source.cancel();
     // };
-  }, []);
+  }, [userID]);
 
   const nullData = { pk: -1 };
   const content = (

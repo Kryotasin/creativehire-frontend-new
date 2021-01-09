@@ -5,23 +5,22 @@ import styles from './index.less';
 import axios from '../../../../../../umiRequestConfig';
 
 const Remote = (props) => {
-  const { dispatch, candidate_part } = props;
+  const { dispatch, candidate_part, userID } = props;
 
   useEffect(() => {
-    if (Object.keys(candidate_part).length === 0) {
-      const userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
+    if (Object.keys(candidate_part).length === 0 && userID !== undefined) {
       dispatch({
         type: 'accountAndcenter/fetchCurrent',
         payload: { userID: btoa(userID) },
       });
     }
-  }, [candidate_part]);
+  }, [candidate_part, userID]);
 
   const onChange = (checked) => {
     const data = {
       candidate_remote_work: checked,
       type: 'remote',
-      userID: btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id),
+      userID: btoa(userID),
     };
 
     dispatch({

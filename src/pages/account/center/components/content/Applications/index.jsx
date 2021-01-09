@@ -6,21 +6,21 @@ import { connect } from 'umi';
 import JobsList from '../../../../../homepage/components/jobslist';
 
 const Applications = (props) => {
-  const { dispatch, applied_jobs, structure, keywords_part } = props;
-  // Object.keys(appliedJobs).length === 0
+  const { dispatch, applied_jobs, structure, keywords_part, userID } = props;
 
   useEffect(() => {
-    // if(applied_jobs===undefined){
-    const userID = btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
-    dispatch({
-      type: 'user/fetchAppliedJobs',
-      payload: { userID },
-    });
+     // if(applied_jobs===undefined){
+    
     // }
-  }, []);
+    // if(userID !== undefined){
+      dispatch({
+        type: 'user/fetchAppliedJobs',
+        payload: { userID: btoa(userID) },
+      });
+    // }
+  }, [userID]);
 
-  useEffect(() => {
-  }, [applied_jobs]);
+  useEffect(() => {}, [applied_jobs]);
 
   return (
     <>

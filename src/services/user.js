@@ -4,12 +4,6 @@ import axios from '../umiRequestConfig';
 export async function queryCurrent(params) {
   return axios.get(
     REACT_APP_AXIOS_API_V1.concat('entities/').concat('detail-view/').concat(params)
-    ,
-    {
-      headers: {
-        Authorization: 'Bearer '.concat(localStorage.getItem('accessToken')),
-      },
-    },
   );
 }
 
@@ -18,24 +12,14 @@ export async function queryRecommendedJobs(user_id) {
     REACT_APP_AXIOS_API_V1.concat('recommended-job-provider/'),
     {
       user_id,
-    },
-    {
-      headers: {
-        Authorization: 'Bearer '.concat(localStorage.getItem('accessToken')),
-      },
-    },
+    }
   );
 }
 
-export async function queryRandomJobs(user_id) {
+export async function queryRandomJobs(params) {
   return axios.post(REACT_APP_AXIOS_API_V1.concat('random-job-provider/'), {
-    user_id,
-  },
-  {
-    headers: {
-      Authorization: 'Bearer '.concat(localStorage.getItem('accessToken')),
-    },
-  },);
+    user_id: params.userID,
+  });
 }
 
 export async function queryJobsUpdateAppliedOrSavedState(params) {

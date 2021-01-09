@@ -31,11 +31,37 @@ const Search = (props) => {
   const [appliedQuery, setAppliedQuery] = useState(false);
   const [matchPercentSortQuery, setMatchPercentSortQuery] = useState(2);
 
+  const [ userID, setUserID ] = useState(undefined);
+
   // const [disabled, setDisabled] = useState(false);
 
   // const [queryResults, setQueryResults] = useState([]);
 
   const matchPercentSortItem = ['Sorting by ascending order', 'Sorting by descending order', 'Sort by Match Percent'];
+
+  
+  useEffect(() => {
+    if(userID === undefined){
+      setUserID(btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id));
+    }
+  }, [userID]);
+
+  
+  useEffect(() => {
+
+    if (Object.keys(structure).length === 0) {
+      dispatch({
+        type: 'accountAndcenter/fetchStructure',
+      });
+    }
+
+    if (Object.keys(keywords_part).length === 0 && userID !== undefined) {
+      dispatch({
+        type: 'accountAndcenter/fetchCurrent',
+        payload: { userID },
+      });
+    }
+  }, [userID]);
 
   useEffect(() => {
     if (Object.keys(employmentTypes).length === 0) {
@@ -62,7 +88,7 @@ const Search = (props) => {
   }, [companies]);
 
   useEffect(() => {
-    runSearchQuery();
+    if(userID !== undefined){runSearchQuery();}
   }, [
     remoteQuery,
     employmentTypesQuery,
@@ -70,6 +96,7 @@ const Search = (props) => {
     companyQuery,
     savedQuery,
     appliedQuery,
+    userID
   ]);
 
   useEffect(() => {
@@ -82,33 +109,7 @@ const Search = (props) => {
     }
   }, [matchPercentSortQuery]);
 
-  useEffect(() => {
-    const userID = btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
-
-    if (Object.keys(structure).length === 0) {
-      dispatch({
-        type: 'accountAndcenter/fetchStructure',
-      });
-    }
-
-    if (Object.keys(keywords_part).length === 0) {
-      dispatch({
-        type: 'accountAndcenter/fetchCurrent',
-        payload: { userID },
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    // runSearchQuery();
-  }, []);
-
   const runSearchQuery = () => {
-    let userID;
-
-    if (localStorage.getItem('accessTokenDecoded')) {
-      userID = btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
-    }
 
     const data = {
       id: userID,

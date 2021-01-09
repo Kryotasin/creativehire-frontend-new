@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Col, Divider, Row, Spin, Button, Space } from 'antd';
 import { GridContent } from '@ant-design/pro-layout';
 import { connect } from 'umi';
@@ -10,18 +10,83 @@ import BasicDetails from './components/sidebar/BasicDetails';
 import ProfileTabPane from './components/content/ProfileTabPane';
 import FileUploader from './components/sidebar/FileUploader';
 
-class Center extends Component {
-  constructor(props) {
-    super(props);
+const Center = (props) => {
 
-    // Bind the this context to the handler function
-    this.handler = this.handler.bind(this);
+  const {
+    dispatch,
+    currentUser = {},
+    entity_part = {},
+    keywords_part = {},
+    currentUserLoading,
+    structure = {},
+    titleTypes,
+    projectList,
+  } = props;
 
-    // Set some state
-    this.state = {
-      editMode: false,
-    };
-  }
+  const [ dataLoading, setDataLoading ] = useState(true);
+  // const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length && Object.keys(titleTypes).length > 0);
+
+  const [ editMode, setEditMode ] = useState(false);
+
+  //----------------------------------------USER ID HANDLING--------------------------------------------------------------------
+
+  const[ userID, setUserID ] = useState(undefined);
+
+  const [ userIDInterval, setUserIDInterval ] = useState(undefined);
+
+  useEffect(() =>{
+    setUserIDInterval(setInterval(()=>{
+      try{
+        setUserID(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
+      }
+      catch(err){
+        console.log(err);
+      }
+    }, 100));
+
+    return () => clearInterval(userIDInterval);
+  }, []);
+
+  useEffect(() => {
+    if(userID !== undefined){
+      clearInterval(userIDInterval);
+    }
+  }, [userID, userIDInterval]);
+
+  //------------------------------------------------------------------------------------------------------------
+
+  
+  useEffect(() => {
+    if(userID !== undefined){
+      if(Object.keys(currentUser).length === 0){
+        dispatch({
+          type: 'accountAndcenter/fetchCurrent',
+          payload: { userID: btoa(userID) },
+        });
+      }
+  
+      if(Object.keys(projectList).length === 0){
+        dispatch({
+          type: 'accountAndcenter/fetchProjects',
+          payload: { userID },
+        });
+      }
+  
+      if(Object.keys(titleTypes).length === 0){
+        dispatch({
+          type: 'accountAndcenter/fetchTitleTypes',
+        });
+      }
+    }
+
+  }, [currentUser, userID]);
+
+  useEffect(() => {
+    if(currentUser && Object.keys(currentUser).length > 0 && Object.keys(titleTypes).length > 0 && Object.keys(keywords_part).length > 0 && Object.keys(structure).length > 0){
+      setDataLoading(false);
+    }
+    
+  }, [currentUser, titleTypes, keywords_part, structure]);
 
   // static getDerivedStateFromProps(
   //   props,
@@ -39,47 +104,10 @@ class Center extends Component {
   //   return null;
   // }
 
-  componentDidMount() {
-    const { dispatch } = this.props;
-    let userID;
 
-    if (localStorage.getItem('accessTokenDecoded')) {
-      userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
-    }
-
-    // if(Object.keys(currentUser).length === 0){
-    dispatch({
-      type: 'accountAndcenter/fetchCurrent',
-      payload: { userID: btoa(userID) },
-    });
-    // }
-
-    dispatch({
-      type: 'accountAndcenter/fetchProjects',
-      payload: { userID },
-    });
-
-      dispatch({
-        type: 'accountAndcenter/fetchTitleTypes',
-      });
+  const handler = () => {
+    setEditMode(false);
   }
-
-  handler() {
-    this.setState({
-      editMode: false,
-    });
-  }
-
-  render() {
-    const {
-      currentUser = {},
-      entity_part = {},
-      keywords_part = {},
-      currentUserLoading,
-      structure = {},
-      titleTypes
-    } = this.props;
-    const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
     // const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     return (
@@ -95,9 +123,9 @@ class Center extends Component {
               extra={
                 <Button
                   type="link"
-                  icon={this.state.editMode ? <EditOutlined /> : <EditTwoTone />}
+                  icon={editMode ? <EditOutlined /> : <EditTwoTone />}
                   onClick={() => {
-                    this.setState((prevState) => ({ editMode: !prevState.editMode }));
+                    setEditMode(!editMode);
                   }}
                 />
               }
@@ -107,16 +135,18 @@ class Center extends Component {
                 <div>
                   <BasicDetails
                     entity={entity_part}
-                    editMode={this.state.editMode}
-                    action={this.handler}
+                    editMode={editMode}
+                    action={handler}
                     currentUser={currentUser}
                     titleTypes={titleTypes}
+                    userID={userID}
+                    dispatch={dispatch}
                   />
                   <Divider />
 
                   <Space size="large" direction="vertical">
                     <Space size="large">
-                      <FileUploader />
+                      <FileUploader userID={userID} />
                       {/* {fileuploading ? 
                           <Spin />
                       :
@@ -157,12 +187,12 @@ class Center extends Component {
                 </Row>
               </div> */}
           <Col lg={17} md={24}>
-            {currentUser && structure ? <ProfileTabPane /> : <Spin />}
+            {!dataLoading && (<ProfileTabPane userID={userID} />)}
           </Col>
         </Row>
       </GridContent>
     );
-  }
+  
 }
 
 export default connect(({ loading, accountAndcenter }) => ({

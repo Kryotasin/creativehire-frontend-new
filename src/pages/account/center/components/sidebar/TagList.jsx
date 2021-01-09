@@ -8,7 +8,7 @@ const { Title, Text } = Typography;
 
 
 
-const TagList = ({ keywords_part_input, structure }) => {
+const TagList = ({ keywords_part_input, structure, userID }) => {
     // const ref = useRef(null);
     // const [newTags, setNewTags] = useState([]);
     // const [inputVisible, setInputVisible] = useState(false);
@@ -58,7 +58,7 @@ const TagList = ({ keywords_part_input, structure }) => {
     // };
 
     // const skillAPI = info => {
-    //     return axios.put(REACT_APP_AXIOS_API_V1.concat('entities/candidate-complete-details/').concat(btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id)), info)
+    //     return axios.put(REACT_APP_AXIOS_API_V1.concat('entities/candidate-complete-details/').concat(btoa(userID))), info)
     // }
   
     const getSets = () => {

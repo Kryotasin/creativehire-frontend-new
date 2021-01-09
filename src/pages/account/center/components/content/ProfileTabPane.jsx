@@ -74,12 +74,15 @@ const operationTabList = [
   },
 ];
 
-const ProfileTabPane = ({ projectList }) => {
+const ProfileTabPane = (props) => {
+
+  const { userID } = props;
+
   const [tabKey, setTabKey] = useState('profile');
 
   const renderChildrenByTabKey = () => {
     if (tabKey === 'profile') {
-      return <Profile />;
+      return <Profile userID={userID} />;
     }
 
     if (tabKey === 'portfolio') {
@@ -96,11 +99,11 @@ const ProfileTabPane = ({ projectList }) => {
     }
 
     if (tabKey === 'savedjobs') {
-      return <SavedJobs />;
+      return <SavedJobs userID={userID} />;
     }
 
     if (tabKey === 'appliedjobs') {
-      return <Applications />;
+      return <Applications userID={userID} />;
     }
 
     return null;
@@ -132,7 +135,7 @@ const ProfileTabPane = ({ projectList }) => {
       activeTabKey={tabKey}
       onTabChange={onTabChange}
     >
-      {renderChildrenByTabKey(tabKey)}
+      {renderChildrenByTabKey()}
     </Card>
   );
 };

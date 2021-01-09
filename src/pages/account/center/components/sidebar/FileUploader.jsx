@@ -9,7 +9,7 @@ const { Title } = Typography;
 
 
 const FileUploader = props => {
-  const { dispatch, fileuploading, currentUser } = props;
+  const { dispatch, fileuploading, currentUser, userID } = props;
   
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const FileUploader = props => {
     // console.log()
   });
   
-  // http://localhost:3001/api/v1/entities/candidate-complete-details/${btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id)}
+  // http://localhost:3001/api/v1/entities/candidate-complete-details/${btoa(userID)}
   const config = {
     name: 'file',
     method: 'post',
@@ -38,7 +38,8 @@ const FileUploader = props => {
           payload: {
             "type": "resume",
             "text": info.file.response,
-            "filename": info.file.name
+            "filename": info.file.name,
+            "userID": btoa(userID)
           }
         });
 

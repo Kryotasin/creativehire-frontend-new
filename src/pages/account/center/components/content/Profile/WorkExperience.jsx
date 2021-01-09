@@ -28,7 +28,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const WorkExperience = (props) => {
-  const { dispatch, projectList, candidate_part, employmentTypes, titleTypes, months, currentYear, defaultDate, saving } = props;
+  const { dispatch, projectList, candidate_part, employmentTypes, titleTypes, months, currentYear, defaultDate, saving, userID } = props;
 
   const [initLoading, setInitLoading] = useState(true);
   const [workList, setWorkList] = useState(undefined);
@@ -134,6 +134,7 @@ const WorkExperience = (props) => {
             dispatch={dispatch}
             saving={saving}
             setYoe={setYoe}
+            userID={userID}
           />
           <Button
             type="link"
@@ -187,9 +188,7 @@ const WorkExperience = (props) => {
               axios
                 .post(
                   REACT_APP_AXIOS_API_V1.concat(
-                    `entities/candidate-complete-details/${btoa(
-                      JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
-                    )}`,
+                    `entities/candidate-complete-details/${btoa(userID)}`,
                   ),
                   out,
                 )

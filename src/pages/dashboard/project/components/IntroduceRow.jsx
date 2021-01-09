@@ -44,7 +44,7 @@ const IntroduceRow = (props) => {
 
   const { validateFields } = form;
 
-  const { project } = props;
+  const { project, userID } = props;
 
   const [projectData, setProjectData] = useState(undefined);
   const [imgCounter, setImgCount] = useState(0);
@@ -81,7 +81,7 @@ const IntroduceRow = (props) => {
       ...values,
       projectImage: img_list[imgCounter + 1],
       ...props.link,
-      projectAuthor: JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+      projectAuthor: userID,
     };
 
     axios

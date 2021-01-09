@@ -29,15 +29,16 @@ class Settings extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    const userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
+    const { dispatch, userID } = this.props;
 
-    dispatch({
-      type: 'accountAndsettings/fetchCurrent',
-      payload: {userID}
-    });
-    window.addEventListener('resize', this.resize);
-    this.resize();
+    if(dispatch && userID !== undefined){
+      dispatch({
+        type: 'accountAndsettings/fetchCurrent',
+        payload: {userID}
+      });
+      window.addEventListener('resize', this.resize);
+      this.resize();
+    }
   }
 
   componentWillUnmount() {

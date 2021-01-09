@@ -97,10 +97,10 @@ const UserModel = {
       });
     },
 
-    *fetchRandomJobs(_, { call, put }) {
+    *fetchRandomJobs(payload, { call, put }) {
       const response = yield call(
         queryRandomJobs,
-        JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+        payload.payload
       );
 
       yield put({

@@ -12,7 +12,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const WorkCard = (props) => {
-  const { workList, titleTypes, employmentTypes, projectList, saveCandidate, setWorkList, months, currentYear, defaultDate, setYoe } = props;
+  const { workList, titleTypes, employmentTypes, projectList, saveCandidate, setWorkList, months, currentYear, defaultDate, setYoe, userID } = props;
   // const [titlesList, setTitleList] = useState(undefined);
   const [typesList, setTypesList] = useState(undefined);
 
@@ -105,9 +105,7 @@ const WorkCard = (props) => {
     axios
       .post(
         REACT_APP_AXIOS_API_V1.concat(
-          `entities/candidate-complete-details/${btoa(
-            JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
-          )}`,
+          `entities/candidate-complete-details/${btoa(userID)}`,
         ),
         out,
       )
@@ -269,9 +267,7 @@ const WorkCard = (props) => {
                   axios
                     .post(
                       REACT_APP_AXIOS_API_V1.concat(
-                        `entities/candidate-complete-details/${btoa(
-                          JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
-                        )}`,
+                        `entities/candidate-complete-details/${btoa(userID)}`,
                       ),
                       out,
                     )

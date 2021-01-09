@@ -3,15 +3,16 @@ import React, { useEffect } from 'react';
 import { connect, Link } from 'umi';
 
 const EmailVerification = (props) => {
-  const { dispatch, emailVerificationStatus } = props;
+  const { dispatch, emailVerificationStatus, userID } = props;
 
   useEffect(() => {
-      const userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
+    if(userID !== undefined){
       dispatch({
         type: 'accountAndcenter/fetchEmailVerificationStatus',
         payload: { userID: btoa(userID) },
       });
-  }, []);
+    }
+  }, [userID]);
 
   useEffect(() => {
     if(emailVerificationStatus === 'False' && emailVerificationStatus !== undefined){
@@ -23,6 +24,8 @@ const EmailVerification = (props) => {
       })
     }
   }, [emailVerificationStatus]);
+
+
   return (
     <>
     </>

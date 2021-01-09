@@ -8,11 +8,11 @@ import axios from '../../umiRequestConfig';
 
 const AvatarDropdown = (props) => {
   
-  const { dispatch, currentUser, menu } = props;
+  const { dispatch, entity_part, menu } = props;
   const [ avatarSrc, setAvatarSrc ] = useState(undefined);
 
   useEffect(() => {
-  }, [currentUser]);
+  }, [entity_part]);
 
   const onMenuClick = (event) => {
     const { key } = event;
@@ -55,7 +55,7 @@ const AvatarDropdown = (props) => {
     );
     
     // const typeOfImage = (proc) => {
-    //   return {"type" : "profile_pic", "process": proc, "fileName": currentUser.img_salt}
+    //   return {"type" : "profile_pic", "process": proc, "fileName": entity_part.img_salt}
     // }
 
     // const getPic = () => {
@@ -73,11 +73,11 @@ const AvatarDropdown = (props) => {
     return (
       <>
         {
-          Object.keys(currentUser).length !== 0 ? 
+          Object.keys(entity_part).length !== 0 ? 
               <HeaderDropdown overlay={menuHeaderDropdown}>
                <span className={`${styles.action} ${styles.account}`}>
                  {/* <Avatar size="small" className={styles.avatar} src={} alt="avatar" /> */}
-                 <span className={styles.name}>{currentUser.entity ? currentUser.entity.first_name.concat(' ').concat(currentUser.entity.last_name) : ''}</span>
+                 <span className={styles.name}>{entity_part ? entity_part.first_name.concat(' ').concat(entity_part.last_name) : ''}</span>
                </span>
               </HeaderDropdown>
           : 
@@ -117,7 +117,6 @@ const AvatarDropdown = (props) => {
 }
 
 export default connect(({ user, accountAndcenter }) => ({
-  // currentUser: user.currentUser,
-  currentUser: accountAndcenter.currentUser,
+  entity_part: accountAndcenter.entity_part,
 }))(AvatarDropdown);
 

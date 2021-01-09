@@ -2,22 +2,12 @@ import axios from '../../../umiRequestConfig';
 
 export async function queryCurrent(params) {
   return axios.get(
-    REACT_APP_AXIOS_API_V1.concat('entities/candidate-complete-details/').concat(params.userID),
-    {
-      headers: {
-        Authorization: 'Bearer '.concat(localStorage.getItem('accessToken')),
-      },
-    },
+    REACT_APP_AXIOS_API_V1.concat('entities/candidate-complete-details/').concat(params.userID)
   );
 }
 
 export async function queryStructure() {
-  return axios.get(REACT_APP_AXIOS_API_V1.concat('metrics-structure/'),
-  {
-    headers: {
-      Authorization: 'Bearer '.concat(localStorage.getItem('accessToken')),
-    },
-  },);
+  return axios.get(REACT_APP_AXIOS_API_V1.concat('metrics-structure/'));
 }
 
 export async function queryProjects(params) {
@@ -29,9 +19,7 @@ export async function queryProjects(params) {
 export async function resumeText(params) {
   return axios.post(
     REACT_APP_AXIOS_API_V1.concat(
-      `entities/candidate-complete-details/${btoa(
-        JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
-      )}`,
+      `entities/candidate-complete-details/${params.userID}`,
     ),
     params,
   );

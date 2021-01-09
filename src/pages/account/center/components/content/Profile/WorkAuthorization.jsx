@@ -6,15 +6,14 @@ import axios from '../../../../../../umiRequestConfig';
 
 const { Option } = Select;
 
-const Remote = (props) => {
-  const { dispatch, candidate_part, workAuthTypes, saving } = props;
+const WorkAuthorization = (props) => {
+  const { dispatch, candidate_part, workAuthTypes, saving, userID } = props;
   const [options, setOptions] = useState([]);
 
   const [authorizationIndex, setAuthIndex] = useState(undefined);
 
   useEffect(() => {
-    if (Object.keys(candidate_part).length === 0) {
-      const userID = JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id;
+    if (Object.keys(candidate_part).length === 0 && userID !== undefined) {
       dispatch({
         type: 'accountAndcenter/fetchCurrent',
         payload: { userID: btoa(userID) },
@@ -24,7 +23,7 @@ const Remote = (props) => {
     }
   }, [candidate_part]);
 
-  useEffect(() => {console.log('here')
+  useEffect(() => {
     if (workAuthTypes.length === 0) {
       dispatch({
         type: 'accountAndcenter/fetchWorkAuthTypes',
@@ -35,17 +34,13 @@ const Remote = (props) => {
   }, [workAuthTypes]);
 
   useEffect(() => {
-    console.log(Object.keys(options).length, Object.keys(candidate_part).length, authorizationIndex)
-    if(Object.keys(options).length > 0 && Object.keys(candidate_part).length > 0 && authorizationIndex !== undefined){
-      console.log('done')
-    }
   }, [authorizationIndex, options]);
 
   const onChange = (value) => {
     const data = {
       candidate_work_authorization: Number(value) + 1,
       type: 'work_auth',
-      userID: btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id),
+      userID: btoa(userID),
     };
 
     dispatch({
@@ -89,4 +84,4 @@ export default connect(({ accountAndcenter }) => ({
   candidate_part: accountAndcenter.candidate_part,
   workAuthTypes: accountAndcenter.workAuthTypes,
   saving: accountAndcenter.saving,
-}))(Remote);
+}))(WorkAuthorization);

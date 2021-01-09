@@ -17,13 +17,13 @@ class BaseView extends Component {
   constructor(props){
     super(props);
     this.state = {
-      img: undefined
+      img: undefined,
     }
   }
 
 
   componentDidMount(){
-    axios.get(REACT_APP_AXIOS_API_V1.concat('entities/').concat('email-verified/').concat(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id))
+    axios.get(REACT_APP_AXIOS_API_V1.concat('entities/').concat('email-verified/').concat(this.props.userID))
     .then(res => {
 
       if(res.data === 'True'){

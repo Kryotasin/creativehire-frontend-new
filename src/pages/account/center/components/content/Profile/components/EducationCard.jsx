@@ -12,7 +12,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const EducationCard = (props) => {
-  const { educationList, projectList, setEducationList, degreeTypes, months, currentYear, defaultDate, saveCandidate, saving } = props;
+  const { educationList, projectList, setEducationList, degreeTypes, months, currentYear, defaultDate, saveCandidate, saving, userID } = props;
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -94,9 +94,7 @@ const EducationCard = (props) => {
     axios
       .post(
         REACT_APP_AXIOS_API_V1.concat(
-          `entities/candidate-complete-details/${btoa(
-            JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
-          )}`,
+          `entities/candidate-complete-details/${btoa(userID)}`,
         ),
         out,
       )
@@ -237,9 +235,7 @@ const EducationCard = (props) => {
               axios
                 .post(
                   REACT_APP_AXIOS_API_V1.concat(
-                    `entities/candidate-complete-details/${btoa(
-                      JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
-                    )}`,
+                    `entities/candidate-complete-details/${btoa(userID)}`,
                   ),
                   out,
                 )

@@ -10,14 +10,17 @@ const months = ['January', 'February', 'March', 'April', 'May', 'June','July', '
 const currentYear = 2020;
 const defaultDate = 1;
 
-const Profile = () => {
+const Profile = (props) => {
+
+  const { userID } = props;
+
   return (
     <>
-      <EmailVerification />
-      <Remote />
-      <WorkAuthorization />
-      <Education months={months} currentYear={currentYear} defaultDate={defaultDate} />
-      <WorkExperience months={months} currentYear={currentYear} defaultDate={defaultDate} />
+      <EmailVerification userID={userID} />
+      <Remote userID={userID} />
+      <WorkAuthorization userID={userID} />
+      <Education months={months} currentYear={currentYear} defaultDate={defaultDate} userID={userID} />
+      <WorkExperience months={months} currentYear={currentYear} defaultDate={defaultDate} userID={userID} />
     </>
   );
 };
