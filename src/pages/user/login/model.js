@@ -21,11 +21,15 @@ const Model = {
   state: {
     status: undefined,
     error: undefined,
-    // submitting: false
+    submitting: false
   },
   effects: {
     *login({ payload }, { call, put }) {
       try{
+        yield put({
+          type: 'changeSubmiting',
+          submitting: true,
+        }); // Change submitting to True
         const response = yield call(AccountLogin, payload);
 
         yield put({
@@ -34,12 +38,7 @@ const Model = {
         errors: ''
         }); // Login successfully
 
-        if (response.status === 200) {
-
-          // yield put({
-          //   type: 'changeSubmiting',
-          //   submitting: true,
-          // }); // Change submitting to True
+        if (response.status === 200) {       
 
           message.success('Login succesful!');        
 
@@ -72,11 +71,6 @@ const Model = {
               return;
             }
           }
-        
-        // yield put({
-        //   type: 'changeSubmiting',
-        //   submitting: false,
-        // }); // Change submitting to False
 
           interval = setInterval(check, 2000, redirect, JSON.stringify(jwt_decode(response.data.access)));
         }
@@ -93,13 +87,18 @@ const Model = {
             errors: 'Our server seems to be down. Please contact admin@creativehire.co if problem persists.'
           }); // Server is down
         }
-
-        yield put({
-          type: 'changeLoginStatus',
-          payload: err.response,
-          errors: err.response.data.detail
-        }); // Login failed
-    }
+        else{
+          yield put({
+            type: 'changeLoginStatus',
+            payload: err.response,
+            errors: err.response.data.detail
+          }); // Login failed
+        }
+      }
+      yield put({
+        type: 'changeSubmiting',
+        submitting: false,
+      }); // Change submitting to False
     },
 
   },
@@ -110,7 +109,7 @@ const Model = {
     },
 
     changeSubmiting(state, payload) {
-      return { ...state, submitting: payload}
+      return { ...state, submitting: payload.submitting}
     },
   },
 };

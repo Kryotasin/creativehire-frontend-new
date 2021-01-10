@@ -21,8 +21,8 @@ const LoginMessage = ({ content }) => (
 );
 
 const Login = props => {
-  const { userAndlogin = {}, submitting } = props;
-  const { status, error } = userAndlogin;
+  const { userAndlogin = {} } = props;
+  const { status, error, submitting } = userAndlogin;
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState('account');
 
@@ -37,7 +37,7 @@ const Login = props => {
   };
 
   useEffect(() => {
-  }, [status, error]);
+  }, [status, error, submitting]);
 
   useEffect(() => {
     localStorage.clear();
@@ -51,9 +51,9 @@ const Login = props => {
             <LoginMessage content={ error || "Incorrect credentials"} />
           )}
           
-          {(status === 521) && (
-            <LoginMessage content={error} />
-          )}
+          {(status === 521) &&
+            (<LoginMessage content={error} />)
+          }
 
           <UserName
             label="Username"
@@ -107,5 +107,5 @@ const Login = props => {
 
 export default connect(({ userAndlogin, loading }) => ({
   userAndlogin,
-  submitting: loading.effects['userAndlogin/login'],
+  // submitting: loading.effects['userAndlogin/login'],
 }))(Login);
