@@ -40,7 +40,7 @@ if(localStorage.getItem('refreshToken') !== null && localStorage.getItem('refres
 // Also add/ configure interceptors && all the other cool stuff
 instance.interceptors.request.use(request => {
 //     // Edit request config
-console.log(request)
+// console.log(request)
     return request;
 }, error => {
     // console.log(error);

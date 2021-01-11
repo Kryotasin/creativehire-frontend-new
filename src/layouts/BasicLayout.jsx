@@ -14,6 +14,8 @@ import jwt_decode from 'jwt-decode';
 import logo from '../assets/new-blue-logo.svg';
 import styles from './BasicLayout.less';
 
+import { askForPermissioToReceiveNotifications  } from '../firestore';
+
 const noMatch = (
   <Result
     status={403}
@@ -74,6 +76,12 @@ const BasicLayout = (props) => {
   /**
    * constructor
    */
+
+   useEffect(() => {
+     // Firebase messaging service
+     askForPermissioToReceiveNotifications()
+
+   }, []);
 
   useEffect(() => {
     if (localStorage.getItem('refreshToken')) {
@@ -173,6 +181,7 @@ const BasicLayout = (props) => {
           })
         }
       /> */}
+      
     </>
   );
 };
