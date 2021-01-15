@@ -7,6 +7,7 @@ import moment from 'moment';
 import JobCardData from './jobcard';
 import styles from '../index.less';
 import { Link } from 'umi';
+import axios from '../../../umiRequestConfig';
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -33,13 +34,13 @@ const JobsList = (props) => {
     }
   }, [job_list]);
 
-  const updateJobMatchItem = (jmID, joblistType, applyOrSave) => {
+  const updateJobMatchItem = (jmID, joblistType, applyOrSaveOrVisited) => {
     dispatch({
       type: 'user/updateJobMatch',
       payload: {
         jmID: jmID,
         joblistType: joblistType,
-        applyOrSave: applyOrSave,
+        applyOrSaveOrVisited: applyOrSaveOrVisited,
         savedQuery: savedQuery
       },
     });
@@ -111,6 +112,15 @@ const JobsList = (props) => {
                     <Col span={4}>
                       <div
                         onClick={() => {
+                          if(!item.jm_data.jm_viewed_by_candidate){
+                            updateJobMatchItem(item.jm_data.id, title, 'visited');  
+                          }
+
+                          dispatch({
+                            type: 'user/updateJobpostViewCount',
+                            payload: {jobpost_id: item.jobpost_data.id}
+                          });
+
                           setShowModal(true);
                           setModalData(item);
                         }}
@@ -127,7 +137,16 @@ const JobsList = (props) => {
                       <Space direction="vertical" size={0}>
                         <Paragraph ellipsis={{ rows: 1, expandable: false }}>
                           <div
-                            onClick={(e) => {
+                            onClick={() => {
+                              if(!item.jm_data.jm_viewed_by_candidate){
+                                updateJobMatchItem(item.jm_data.id, title, 'visited');  
+                              }
+
+                              dispatch({
+                                type: 'user/updateJobpostViewCount',
+                                payload: {jobpost_id: item.jobpost_data.id}
+                              });
+                              
                               setShowModal(true);
                               setModalData(item);
                             }}
@@ -259,12 +278,13 @@ const JobsList = (props) => {
         title=""
         // onOk={this.handleOk}
         onCancel={() => {
-          setShowModal(false);
-          
+          setShowModal(false);          
+          setModalData(undefined);
+        }}
+        afterClose={() => {
           if(runSearchQuery){
             runSearchQuery();
           }
-          setModalData(undefined);
         }}
         visible={showModal}
         width="80%"

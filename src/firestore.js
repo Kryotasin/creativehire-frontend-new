@@ -1,4 +1,21 @@
 import firebase from 'firebase';
+import { Button, notification } from 'antd';
+import axios from '../src/umiRequestConfig';
+import asyncLocalStorage from './asyncLocalStorage';
+import jwt_decode from 'jwt-decode';
+
+let messageTokenFirebase;
+
+
+
+const sendTokenToServer = (token, userID) => {
+  const data = {
+    'user_id': btoa(userID), 
+    'token': token
+  };
+
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('entities/post-login-session-record/'), data)
+} 
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -12,42 +29,94 @@ const firebaseConfig = {
     measurementId: 'G-LWN3E48BC7'
   };
 
-const app = firebase.initializeApp(firebaseConfig);
-const firestore = firebase.firestore(app);
+firebase.initializeApp(firebaseConfig);
 
-// export const messaging = firestore.md.firebase_.messaging;
+const messaging = firebase.messaging();
 
-navigator.serviceWorker
-     .register('firebase-messaging-sw.js')
-     .then((registration) => {
-      firestore.md.firebase_.messaging().useServiceWorker(registration);
-     });
+messaging.getToken({vapidKey: "BMYqb2tre5pNAjYUvv5p3d8XO4Cdpjn282k6c-CJxsaheEacW2ILSJK3ke_pzNXtDGpFvrYJt36VhkEW7ck924A"})
+  .then((currentToken) => {
+    messageTokenFirebase = currentToken;
 
-export const askForPermissioToReceiveNotifications = async () => {
-  try {
-    const messaging = firebase.messaging();
-    // await messaging.requestPermission();
-    const token = await messaging.getToken({vapidKey: 'BMYqb2tre5pNAjYUvv5p3d8XO4Cdpjn282k6c-CJxsaheEacW2ILSJK3ke_pzNXtDGpFvrYJt36VhkEW7ck924A'}).then((currentToken) => {
-      if (currentToken) {console.log(currentToken)
-        // sendTokenToServer(currentToken);
-        // updateUIForPushEnabled(currentToken);
-      } else {
-        // Show permission request.
-        console.log('No registration token available. Request permission to generate one.');
-        // Show permission UI.
-        // updateUIForPushPermissionRequired();
-        // setTokenSentToServer(false);
+    return asyncLocalStorage.getItem('accessToken') 
+  // if (currentToken) {console.log('Gotten permission', currentToken)
+    // const sentToServer = await sendTokenToServer(currentToken);
+    // updateUIForPushEnabled(currentToken);
+  // } else {
+    // Show permission request.
+    // console.log('No registration token available. Request permission to generate one.');
+    // Show permission UI.
+    // updateUIForPushPermissionRequired();
+    // setTokenSentToServer(false);
+  // }
+// }
+
+  })
+  .then((token) => {
+    return JSON.parse(JSON.stringify(jwt_decode(token)))
+  })
+  .then((token) => {
+    return sendTokenToServer(messageTokenFirebase, token.user_id)
+  })
+  .then((res) => {
+    if(res.status !== 200 || !Number.isInteger(res.data)){
+      return asyncLocalStorage.setItem('messageToken', -1)
+    }
+
+    if(res.status === 200){
+      return asyncLocalStorage.setItem('messageToken', messageTokenFirebase)
+    }
+    return Error('Failed')
+  })
+  .finally((res) => {
+    if(res === 'Failed'){      
+      return asyncLocalStorage.setItem('messageToken', -1)
+    }
+  })
+
+.catch(async (err) => {
+  console.log('An error occurred while retrieving token. ', err);
+  await asyncLocalStorage.setItem('messageToken', -1);
+  // showToken('Error retrieving registration token. ', err);
+  // setTokenSentToServer(false);
+});
+
+// Notification definition -------------------------------------------
+
+const close = () => {
+  console.log(
+    'Notification was closed. Either the close button was clicked or duration time elapsed.',
+  );
+};
+
+
+messaging.onMessage((payload) => {
+  
+  console.log('onMessage: ', payload);
+  const key = `open${Date.now()}`;
+  const btn = (
+    <Button type="primary" size="small" onClick={() => notification.close(key)}>
+      Close
+    </Button>
+  );
+  notification.info({
+    message: payload.notification.title,
+    description: payload.notification.body,
+    btn,
+    key,
+    onClose: close,
+    onClick: () => {
+      let url = REACT_APP_FRONTEND_BASEURL.concat('/search-jobs/?');
+
+      if(payload.data['gcm.notification.visited'] === '1'){        
+        url = url.concat(`visited=${(btoa('True'))}&`);
       }
-    }).catch((err) => {
-      console.log('An error occurred while retrieving token. ', err);
-      showToken('Error retrieving registration token. ', err);
-      // setTokenSentToServer(false);
-    });
-    
-    return token;
-  } catch (error) {
-    console.error(error);
-  }
-}
+      
+      if(payload.data['gcm.notification.today'] === '1'){        
+        url = url.concat(`posted_today=${(btoa('True'))}&`);
+      }
 
-export default firestore;
+      window.open(url, '_blank');
+      
+    }
+  });
+});

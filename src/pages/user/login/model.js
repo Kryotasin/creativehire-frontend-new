@@ -4,6 +4,8 @@ import jwt_decode from 'jwt-decode';
 import { AccountLogin } from './service';
 import { getPageQuery, setAuthority } from './utils/utils';
 
+import asyncLocalStorage from '../../../asyncLocalStorage';
+
 let interval;
 
 function check(redirect, verif){
@@ -46,33 +48,45 @@ const Model = {
           
           localStorage.clear();
 
-          localStorage.setItem("refreshToken", String(response.data.refresh));
-          localStorage.setItem("accessToken", String(response.data.access));
+          // localStorage.setItem("refreshToken", String(response.data.refresh));
+          // localStorage.setItem("accessToken", String(response.data.access));
           // localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
-          localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
+          // localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
 
-          
+          const setAccessToken = asyncLocalStorage.setItem('accessToken', response.data.access);
+          const setRefreshToken = asyncLocalStorage.setItem('refreshToken', response.data.refresh);
 
-          const urlParams = new URL(window.location.href);
-          const params = getPageQuery();
-          let { redirect } = params;
+          Promise.all([setAccessToken, setRefreshToken])
+          .then(function () {
+            return asyncLocalStorage.getItem('accessToken');
+          })          
+          .then(function () {
+            return asyncLocalStorage.getItem('refreshToken');
+          })        
+          .finally((c) =>{
+            const urlParams = new URL(window.location.href);
+            const params = getPageQuery();
+            let { redirect } = params;
 
-          if (redirect) {
-            const redirectUrlParams = new URL(redirect);
+            if (redirect) {
+              const redirectUrlParams = new URL(redirect);
 
-            if (redirectUrlParams.origin === urlParams.origin) {
-              redirect = redirect.substr(urlParams.origin.length);
+              if (redirectUrlParams.origin === urlParams.origin) {
+                redirect = redirect.substr(urlParams.origin.length);
 
-              if (redirect.match(/^\/.*#/)) {
-                redirect = redirect.substr(redirect.indexOf('#') + 1);
+                if (redirect.match(/^\/.*#/)) {
+                  redirect = redirect.substr(redirect.indexOf('#') + 1);
+                }
+              } else {
+                window.location.href = redirect;
+                return;
               }
-            } else {
-              window.location.href = redirect;
-              return;
             }
-          }
 
-          interval = setInterval(check, 2000, redirect, JSON.stringify(jwt_decode(response.data.access)));
+            // interval = setInterval(check, 2000, redirect, JSON.stringify(jwt_decode(response.data.access)));
+            history.replace(redirect || '/home');
+          });
+
         }
         if(response.status === 401){
           console.log("401")
@@ -80,7 +94,7 @@ const Model = {
       }
       catch(err) {
 
-        if(!err.response){
+        if(!err.response){console.log(err)
           yield put({
             type: 'changeLoginStatus',
             payload: {'status': 521},

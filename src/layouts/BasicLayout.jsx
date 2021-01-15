@@ -79,7 +79,7 @@ const BasicLayout = (props) => {
 
    useEffect(() => {
      // Firebase messaging service
-     askForPermissioToReceiveNotifications()
+    //  askForPermissioToReceiveNotifications()
 
    }, []);
 

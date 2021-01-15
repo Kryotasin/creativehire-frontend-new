@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 // import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'umi';
 
-import { Spin } from 'antd';
+import { Button, Spin } from 'antd';
 // import Recommended from './components/recommended';
 // import Saved from './components/saved';
 import JobsList from './components/jobslist';
 
 import styles from './index.less';
 import Recommended from './components/recommended';
+
+import asyncLocalStorage from '../../asyncLocalStorage';
+import jwt_decode from 'jwt-decode';
+import { Link } from 'umi';
 
 const Homepage = (props) => {
   const {
@@ -24,26 +28,38 @@ const Homepage = (props) => {
   //----------------------------------------USER ID HANDLING--------------------------------------------------------------------
   const [ userID, setUserID ] = useState(undefined);
 
-  const [ userIDInterval, setUserIDInterval ] = useState(undefined);
-
-  useEffect(() =>{
-    setUserIDInterval(setInterval(()=>{
-      try{
-        setUserID(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
-      }
-      catch(err){
-        console.log(err);
-      }
-    }, 100));
-
-    return () => clearInterval(userIDInterval);
-  }, []);
+  // const [ userIDInterval, setUserIDInterval ] = useState(undefined);
 
   useEffect(() => {
-    if(userID !== undefined){
-      clearInterval(userIDInterval);
-    }
-  }, [userID, userIDInterval]);
+
+    asyncLocalStorage.getItem('accessToken')
+    .then((token) => {
+      return JSON.parse(JSON.stringify(jwt_decode(token)))
+    })
+    .then((token) => {
+      setUserID(token.user_id)
+    })
+    
+  }, []);
+
+  // useEffect(() =>{
+  //   setUserIDInterval(setInterval(()=>{
+  //     try{
+  //       setUserID(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
+  //     }
+  //     catch(err){
+  //       console.log(err);
+  //     }
+  //   }, 100));
+
+  //   return () => clearInterval(userIDInterval);
+  // }, []);
+
+  // useEffect(() => {
+  //   if(userID !== undefined){
+  //     clearInterval(userIDInterval);
+  //   }
+  // }, [userID, userIDInterval]);
   
   //------------------------------------------------------------------------------------------------------------
 
@@ -76,6 +92,7 @@ const Homepage = (props) => {
       // if(reccommended_jobs === null || reccommended_jobs === undefined){
       dispatch({
         type: 'user/fetchRecommendedJobs',
+        payload: { userID: userID },
       });
       // }
 

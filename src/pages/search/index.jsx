@@ -11,6 +11,7 @@ import {
   Space,
   Menu,
   Dropdown,
+  Slider,
 } from 'antd';
 import JobsList from '../homepage/components/jobslist';
 import { DownOutlined } from '@ant-design/icons';
@@ -29,6 +30,9 @@ const Search = (props) => {
   const [companyQuery, setCompanyQuery] = useState([]);
   const [savedQuery, setSavedQuery] = useState(false);
   const [appliedQuery, setAppliedQuery] = useState(false);
+  const [viewedQuery, setViewedQuery] = useState(false);
+  const [newQuery, setNewQuery] = useState(false);
+  const [matchPercentRangeQuery, setMatchPercentRangeQuery] = useState([]);
   const [matchPercentSortQuery, setMatchPercentSortQuery] = useState(2);
 
   const [ userID, setUserID ] = useState(undefined);
@@ -38,6 +42,17 @@ const Search = (props) => {
   // const [queryResults, setQueryResults] = useState([]);
 
   const matchPercentSortItem = ['Sorting by ascending order', 'Sorting by descending order', 'Sort by Match Percent'];
+
+  useEffect(() => {
+    if(props.location.query.visited && atob(props.location.query.visited) === 'True'){
+      setViewedQuery(true);
+    }
+
+    if(props.location.query.posted_today && atob(props.location.query.posted_today) === 'True'){
+      setNewQuery(true);
+    }
+
+  }, []);
 
   
   useEffect(() => {
@@ -96,7 +111,10 @@ const Search = (props) => {
     companyQuery,
     savedQuery,
     appliedQuery,
-    userID
+    viewedQuery,
+    newQuery,
+    userID,
+    matchPercentRangeQuery
   ]);
 
   useEffect(() => {
@@ -120,8 +138,11 @@ const Search = (props) => {
       company: companyQuery,
       saved: savedQuery,
       applied: appliedQuery,
+      viewed: viewedQuery,
+      new: newQuery,
+      match_percent_range_query: matchPercentRangeQuery,
       match_percent_sort_query: matchPercentSortQuery,
-    }
+    };
 
     dispatch({
       type: 'user/fetchSearchJobs',
@@ -148,10 +169,21 @@ const Search = (props) => {
               Apply filters
             </Button>
             <Collapse
-              defaultActiveKey={['1', '2', '3', '4', '5', '6']}
+              defaultActiveKey={['0', '1', '2', '3', '4', '5', '6', '7', '8']}
               expandIconPosition="right"
               className={styles.sitecollapsecustomcollapse}
             >
+              <Panel header="Match Percent" key="0" className={styles.sitecollapsecustompanel}>
+                <Slider disabled={searching} range={{ draggableTrack: true }} defaultValue={[20, 90]} tooltipVisible className={styles.match_percent} 
+                // step={10} 
+                  onChange={(value) =>{
+                  }}
+
+                  onAfterChange={(value) =>{
+                    setMatchPercentRangeQuery(value);
+                  }}
+                />
+              </Panel>
               <Panel header="Remote" key="1" className={styles.sitecollapsecustompanel}>
                 <Checkbox disabled={searching} onChange={(e) => setRemoteQuery(e.target.checked)}>
                   Show remote jobs
@@ -215,12 +247,22 @@ const Search = (props) => {
                   Show jobs I applied to
                 </Checkbox>
               </Panel>
+              <Panel header="Not yet seen" key="7" className={styles.sitecollapsecustompanel}>
+                <Checkbox disabled={searching} checked={viewedQuery} onChange={(e) => setViewedQuery(e.target.checked)}>
+                  Show jobs I haven't seen
+                </Checkbox>
+              </Panel>
+              <Panel header="New" key="8" className={styles.sitecollapsecustompanel}>
+                <Checkbox disabled={searching} checked={newQuery} onChange={(e) => setNewQuery(e.target.checked)}>
+                  Show jobs posted today
+                </Checkbox>
+              </Panel>
             </Collapse>
           </Space>
         </Col>
 
         <Col xs={{ span: 24, offset: 0 }} lg={{ span: 18, offset: 1 }}>
-          <Title level={4}>Results</Title>
+          <Title level={4}>Results {search_all ? '(Showing '.concat(String(Object.keys(search_all).length)).concat(' results)') : ''} </Title>
           <Space direction="horizontal" size="middle">
             <Dropdown overlay={menu} placement="bottomRight" arrow trigger={['click']}>
               <Button>

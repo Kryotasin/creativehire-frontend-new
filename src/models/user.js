@@ -2,10 +2,11 @@ import {
   queryCurrent,
   queryRecommendedJobs,
   queryRandomJobs,
-  queryJobsUpdateAppliedOrSavedState,
+  queryJobsUpdateAppliedOrSavedOrVisitedState,
   querySavedJobs,
   queryAppliedJobs,
-  querySearchJobs
+  querySearchJobs,
+  queryUpdateJobpostViewCount
 } from '@/services/user';
 
 import { message } from 'antd';
@@ -49,10 +50,10 @@ const UserModel = {
     //   }
     // },
 
-    *fetchRecommendedJobs(_, { call, put }) {
+    *fetchRecommendedJobs(payload, { call, put }) {
       const response = yield call(
         queryRecommendedJobs,
-        JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+        payload.payload.userID
       );
 
       yield put({
@@ -139,7 +140,7 @@ const UserModel = {
     },
 
     *updateJobMatch(payload, { call, select, put }) {
-      const response = yield call(queryJobsUpdateAppliedOrSavedState, payload.payload);
+      const response = yield call(queryJobsUpdateAppliedOrSavedOrVisitedState, payload.payload);
 
       if (response.status === 200) {
         if (payload.payload.joblistType === 'All') {
@@ -233,9 +234,18 @@ const UserModel = {
           });
         }
 
-
       }
     },
+
+    *updateJobpostViewCount(payload, { call, put }) {
+      const response = yield call(queryUpdateJobpostViewCount, payload.payload);
+
+      if (response.status === 200) {
+        console.log(response.data)
+      }
+    },
+
+
   },
   reducers: {
     saveCurrentUser(state, action) {

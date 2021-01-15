@@ -22,15 +22,20 @@ export async function queryRandomJobs(params) {
   });
 }
 
-export async function queryJobsUpdateAppliedOrSavedState(params) {
-  if (params.applyOrSave === 'apply') {
+export async function queryJobsUpdateAppliedOrSavedOrVisitedState(params) {
+  if (params.applyOrSaveOrVisited === 'apply') {
     return axios.post(REACT_APP_AXIOS_API_V1.concat('applied-state-update/'), {
       jobmatch_id: params.jmID,
     });
   }
 
-  if (params.applyOrSave === 'save') {
+  if (params.applyOrSaveOrVisited === 'save') {
     return axios.post(REACT_APP_AXIOS_API_V1.concat('save-state-update/'), {
+      jobmatch_id: params.jmID,
+    });
+  }
+  if (params.applyOrSaveOrVisited === 'visited') {
+    return axios.post(REACT_APP_AXIOS_API_V1.concat('update-viewed-by-candidate/'), {
       jobmatch_id: params.jmID,
     });
   }
@@ -53,6 +58,10 @@ export async function queryAppliedJobs(params) {
 
 export async function querySearchJobs(params) {
   return axios.post(REACT_APP_AXIOS_API_V1.concat('job-search/'), params);
+}
+
+export async function queryUpdateJobpostViewCount(params) {
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('update-jobpost-count/'), params)
 }
 
 //                     UNUSED

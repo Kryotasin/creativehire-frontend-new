@@ -29,7 +29,7 @@ const processQueue = (error, token = null) => {
   
 // Where you would set stuff like your 'Authorization' header, etc ...
 if(localStorage.getItem('accessToken') !== null && localStorage.getItem('accessToken') !== undefined && localStorage.getItem('accessToken') !== 'undefined'){
-    console.log(jwt_decode(localStorage.getItem('accessToken')).exp - new Date().getTime()/1000)
+    // console.log(jwt_decode(localStorage.getItem('accessToken')).exp - new Date().getTime()/1000)
 }
 
 if(localStorage.getItem('refreshToken') !== null && localStorage.getItem('refreshToken') !== undefined && localStorage.getItem('refreshToken') !== 'undefined'){
@@ -100,12 +100,12 @@ instance.interceptors.response.use(response => {
             })
             .then((res) => res.json())
             .then((res) => {
-                console.log(res.access)
+                // console.log(res.access)
                 localStorage.setItem('accessToken', String(res.access));
                 localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(res.access)));
             })
             .then(() => {
-                console.log("one")
+                // console.log("one")
                 const token = localStorage.getItem('accessToken');
                 originalRequest.headers['Authorization'] = `Bearer ${token}`;
                 instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
