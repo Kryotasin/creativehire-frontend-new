@@ -1,6 +1,5 @@
 import { history } from 'umi';
 import { message } from 'antd';
-import jwt_decode from 'jwt-decode';
 import { AccountLogin } from './service';
 import { getPageQuery, setAuthority } from './utils/utils';
 
