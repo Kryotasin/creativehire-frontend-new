@@ -17,6 +17,8 @@ import JobsList from '../homepage/components/jobslist';
 import { DownOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
+import asyncLocalStorage from '../../asyncLocalStorage';
+import jwt_decode from 'jwt-decode';
 
 const { Panel } = Collapse;
 const { Title } = Typography;
@@ -56,10 +58,16 @@ const Search = (props) => {
 
   
   useEffect(() => {
-    if(userID === undefined){
-      setUserID(btoa(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id));
-    }
-  }, [userID]);
+
+    asyncLocalStorage.getItem('accessToken')
+    .then((token) => {
+      return JSON.parse(JSON.stringify(jwt_decode(token)))
+    })
+    .then((token) => {
+      setUserID(btoa(token.user_id))
+    })
+    
+  }, []);
 
   
   useEffect(() => {
