@@ -2,12 +2,13 @@
 // import { extend } from 'umi-request';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import asyncLocalStorage from './asyncLocalStorage';
 
 // Next we make an 'instance' of it
 const instance = axios.create({
 // .. where we make our configurations
     baseURL: REACT_APP_AXIOS_BASEURL,
-    headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}
+    // headers: {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}
 });
 
 let isRefreshing = false;
@@ -39,7 +40,20 @@ if(localStorage.getItem('refreshToken') !== null && localStorage.getItem('refres
 
 // Also add/ configure interceptors && all the other cool stuff
 instance.interceptors.request.use(request => {
-//     // Edit request config
+    // Edit request config
+
+    asyncLocalStorage.getItem('accessToken')
+    .then((token) => {
+        if(token !== null || token !== undefined){
+            instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
+    });
+
+    // if(){
+        
+    //     instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+    // }
+
 // console.log(request)
     return request;
 }, error => {
@@ -50,12 +64,12 @@ instance.interceptors.request.use(request => {
 
 
 instance.interceptors.response.use(response => {
-    // console.log(response);
+    // console.log('response',response);
     
     // Edit response config
     return response;
 }, (error) => {
-    // console.log(error);
+    // console.log('error', error);
     // Object.keys(error).forEach((k)=> console.log(k, error[k]))
     // return Promise.reject(error);
 
