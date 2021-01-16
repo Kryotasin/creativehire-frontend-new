@@ -9,6 +9,8 @@ import TagList from './components/sidebar/TagList';
 import BasicDetails from './components/sidebar/BasicDetails';
 import ProfileTabPane from './components/content/ProfileTabPane';
 import FileUploader from './components/sidebar/FileUploader';
+import asyncLocalStorage from '../../../asyncLocalStorage';
+import jwt_decode from 'jwt-decode';
 
 const Center = (props) => {
 
@@ -32,26 +34,37 @@ const Center = (props) => {
 
   const[ userID, setUserID ] = useState(undefined);
 
-  const [ userIDInterval, setUserIDInterval ] = useState(undefined);
+  // const [ userIDInterval, setUserIDInterval ] = useState(undefined);
+  useEffect(() => {
 
-  useEffect(() =>{
-    setUserIDInterval(setInterval(()=>{
-      try{
-        setUserID(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
-      }
-      catch(err){
-        console.log(err);
-      }
-    }, 100));
-
-    return () => clearInterval(userIDInterval);
+    asyncLocalStorage.getItem('accessToken')
+    .then((token) => {
+      return JSON.parse(JSON.stringify(jwt_decode(token)))
+    })
+    .then((token) => {
+      setUserID(token.user_id)
+    })
+    
   }, []);
 
-  useEffect(() => {
-    if(userID !== undefined){
-      clearInterval(userIDInterval);
-    }
-  }, [userID, userIDInterval]);
+  // useEffect(() =>{
+  //   setUserIDInterval(setInterval(()=>{
+  //     try{
+  //       setUserID(JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id);
+  //     }
+  //     catch(err){
+  //       console.log(err);
+  //     }
+  //   }, 100));
+
+  //   return () => clearInterval(userIDInterval);
+  // }, []);
+
+  // useEffect(() => {
+  //   if(userID !== undefined){
+  //     clearInterval(userIDInterval);
+  //   }
+  // }, [userID, userIDInterval]);
 
   //------------------------------------------------------------------------------------------------------------
 
