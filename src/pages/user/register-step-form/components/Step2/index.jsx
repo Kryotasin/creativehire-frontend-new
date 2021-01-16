@@ -100,11 +100,11 @@ const Step2 = (props) => {
   // Function to post the project to database
   const postProjectToDB = async(projectLink, basicDetails) => {
 
-    if(basicDetails.title === undefined || basicDetails.title === null || basicDetails.title === ''){
+    if(basicDetails === undefined || basicDetails.title === undefined || basicDetails.title === null || basicDetails.title === ''){
       basicDetails.title = 'Untitled Project'
     }
 
-    if(basicDetails.description === undefined || basicDetails.description === null || basicDetails.description === ''){
+    if(basicDetails === undefined || basicDetails.description === undefined || basicDetails.description === null || basicDetails.description === ''){
       basicDetails.description = 'This is an amazing project by me!'
     }
 
@@ -130,7 +130,7 @@ const Step2 = (props) => {
         console.log(err);        
         setFailed((prevstate) => prevstate + 1);
       });
-    }
+  }
 
   // Function to wait for ms milliseconds
   const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
@@ -143,6 +143,7 @@ const Step2 = (props) => {
       })
       .then((res) => {
         if(res.status === 200){
+          console.log(res.data)
           return res.data;        
         }
       })

@@ -2,6 +2,7 @@ import jwt_decode from 'jwt-decode';
 
 import { registerUserAndGetLinksService, urlFetcher } from './service';
 import { message } from 'antd';
+import asyncLocalStorage from '../../../asyncLocalStorage';
 
 const Model = {
   namespace: 'userAndregister',
@@ -30,17 +31,28 @@ const Model = {
           setTimeout(registeringMessage, 500);
           const fetchProjectsMessage = message.loading('Registered! Fetching your projects...', 0);
 
-          localStorage.setItem("refreshToken", String(response.data.refresh));
-          localStorage.setItem("accessToken", String(response.data.access));
+          // localStorage.setItem("refreshToken", String(response.data.refresh));
+          // localStorage.setItem("accessToken", String(response.data.access));
           // localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
-          localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
+          // localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
+          console.log(response.data)
+          const setAccessToken = asyncLocalStorage.setItem('accessToken', response.data.access);
+          const setRefreshToken = asyncLocalStorage.setItem('refreshToken', response.data.refresh);
 
+          Promise.all([setAccessToken, setRefreshToken])
+          .then(function () {
+            return asyncLocalStorage.getItem('accessToken');
+          })          
+          .then(function () {
+            return asyncLocalStorage.getItem('refreshToken');
+          });        
+          
           yield put({
             type: 'registerHandle',
             payload: response,
             errors: '',
           });
-
+          
           if (payload.portfolio) {
             yield put({
               type: 'savePortfolioLink',
@@ -48,7 +60,7 @@ const Model = {
             });
 
             const project_links_list = yield call(urlFetcher, payload.portfolio);
-
+            
             yield put({
               type: 'saveProjectLinksList',
               payload: project_links_list.data,
@@ -62,7 +74,8 @@ const Model = {
             setTimeout(fetchProjectsMessage, 500);
             message.success('Done! Select your projects.', 0);
 
-          } else {
+          } 
+          else {
             message.warning('No project link...', 3500);
 
             yield put({
@@ -74,18 +87,19 @@ const Model = {
               payload: 'success',
             });
           }
-        }
-      } catch (errRes) {
-        const errs = Object.keys(errRes.response.data).map((key) => {
-          // return [key.concat(" : ").concat(errRes.response.data[key])];
-          return [errRes.response.data[key]];
-        });
-
-        yield put({
-          type: 'registerHandle',
-          payload: errRes.response,
-          errors: errs,
-        });
+              
+      }
+    } catch (errRes) {
+      const errs = Object.keys(errRes.response.data).map((key) => {
+        // return [key.concat(" : ").concat(errRes.response.data[key])];
+        return [errRes.response.data[key]];
+      });
+      console.log(errs)
+      yield put({
+        type: 'registerHandle',
+        payload: errRes.response,
+        errors: errs,
+      });
       }
 
       yield put({

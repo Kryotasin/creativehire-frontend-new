@@ -67,7 +67,7 @@ const Step1 = (props) => {
 
   const onValidateForm = async () => {
     const values = await validateFields();
-
+    
     dispatch({
       type: 'userAndregister/registerUserAndGetLinks',
       payload: values,
@@ -332,7 +332,7 @@ const Step1 = (props) => {
         >
           <Input.Password size="large" placeholder="" />
         </Form.Item>
-
+          
         {(status === 400 || status === 500 || status === 401) && !submitting && (
           <RegisterMessage content={errorMessages ? errorMessages : 'Incorrect credentials'} />
         )}
