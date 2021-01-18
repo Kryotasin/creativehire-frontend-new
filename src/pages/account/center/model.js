@@ -12,6 +12,7 @@ import {
   queryWorkAuthUpdate,
   queryRemoteUpdate,
   queryWorkExpEducationUpdate,
+  queryUserSettings,
 } from './service';
 import { message } from 'antd';
 
@@ -23,6 +24,8 @@ const Model = {
     entity_part: {},
     candidate_part: {},
     keywords_part: {},
+
+    settings_part: {},
 
     projectList: [],
 
@@ -74,7 +77,7 @@ const Model = {
       }
     },
 
-    *fetchStructure(payload, { call, put }) {
+    *fetchStructure(_, { call, put }) {
       const struct = yield call(queryStructure);
 
       if (struct.status === 200) {
@@ -160,6 +163,17 @@ const Model = {
           type: 'saveEmailVerificationStatus',
           payload: response.data,
         });
+      }
+    },
+
+    *fetchUserSettings(payload, { call, put }) {
+      const response = yield call(queryUserSettings, payload.payload);
+
+      if(response.status === 200){
+        yield put({
+          type: 'saveNewState',
+          payload: { settings_part: response.data}
+        })
       }
     },
 

@@ -7,21 +7,9 @@ import JobsList from '../../../../../homepage/components/jobslist';
 
 const SavedJobs = (props) => {
   const { dispatch, saved_jobs, structure, keywords_part, userID } = props;
-  // Object.keys(saved_jobs).length === 0 &&
 
   useEffect(() => {
-    // if(saved_jobs===undefined){
-      if(userID !== undefined){
-        dispatch({
-          type: 'user/fetchSavedJobs',
-          payload: { userID: btoa(userID) },
-        });
-      }      
-    // }
-  }, [userID]);
-
-  useEffect(() => {
-  }, [saved_jobs]);
+  }, [saved_jobs, userID]);
 
   return (
     <>

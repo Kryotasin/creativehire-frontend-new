@@ -53,6 +53,19 @@ export async function queryEmailVerificationStatus(params) {
   return axios.get(REACT_APP_AXIOS_API_V1.concat('entities/email-verified/'.concat(params.userID)));
 }
 
+export async function queryUserSettings(params) {
+  
+  if(params.type === 'fetch'){
+    return axios.get(REACT_APP_AXIOS_API_V1.concat('entities/').concat('update-settings/').concat(params.id));
+  }
+
+  if(params.type === 'update'){
+    delete params.type;
+    return axios.post(REACT_APP_AXIOS_API_V1.concat('entities/').concat('update-settings/').concat(params.id), params);
+  }
+
+}
+
 export async function queryWorkAuthUpdate(params) {
   return axios.post(
     REACT_APP_AXIOS_API_V1.concat('entities/').concat('candidate-partials/workauth/'),
@@ -68,7 +81,6 @@ export async function queryRemoteUpdate(params) {
 }
 
 export async function queryWorkExpEducationUpdate(params){
-  console.log(params)
   return axios.put(REACT_APP_AXIOS_API_V1.concat(`entities/candidate-complete-details/${params.userID}`),
     params
   );

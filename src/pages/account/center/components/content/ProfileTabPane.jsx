@@ -7,9 +7,10 @@ import Projects from './Projects';
 import Articles from './SavedJobs';
 import Applications from './Applications';
 import Profile from './Profile';
+import SavedJobs from './SavedJobs';
+import Settings from './Settings';
 
 import styles from '../../Center.less';
-import SavedJobs from './SavedJobs';
 
 const operationTabList = [
   {
@@ -71,6 +72,21 @@ const operationTabList = [
         </span>
       </span>
     ),
+  },  
+  {
+    key: 'settings',
+    tab: (
+      <span>
+        Settings{' '}
+        <span
+          style={{
+            fontSize: 14,
+          }}
+        >
+          {/* (8) */}
+        </span>
+      </span>
+    ),
   },
 ];
 
@@ -104,6 +120,10 @@ const ProfileTabPane = (props) => {
 
     if (tabKey === 'appliedjobs') {
       return <Applications userID={userID} />;
+    }
+
+    if (tabKey === 'settings') {
+      return <Settings userID={userID} />;
     }
 
     return null;
