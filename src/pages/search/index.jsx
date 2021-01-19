@@ -12,6 +12,7 @@ import {
   Menu,
   Dropdown,
   Slider,
+  Divider,
 } from 'antd';
 import JobsList from '../homepage/components/jobslist';
 import { DownOutlined } from '@ant-design/icons';
@@ -27,6 +28,9 @@ const Search = (props) => {
   const { dispatch, structure, keywords_part, employmentTypes, titleTypes, companies, search_all, searching } = props;
 
   const [remoteQuery, setRemoteQuery] = useState(false);
+  const [h1bQuery, setH1BQuery] = useState(false);
+  const [optQuery, setOptQuery] = useState(false);
+  const [stemOptQuery, setStemOptQuery] = useState(false);
   const [employmentTypesQuery, setEmploymentTypesQuery] = useState([]);
   const [jobTitleQuery, setJobTitleQuery] = useState([]);
   const [companyQuery, setCompanyQuery] = useState([]);
@@ -114,6 +118,9 @@ const Search = (props) => {
     if(userID !== undefined){runSearchQuery();}
   }, [
     remoteQuery,
+    h1bQuery,
+    optQuery,
+    stemOptQuery,
     employmentTypesQuery,
     jobTitleQuery,
     companyQuery,
@@ -141,6 +148,9 @@ const Search = (props) => {
       id: userID,
       type: props.location.query.type,
       remote: remoteQuery,
+      h1b: h1bQuery,
+      opt: optQuery,
+      stem_opt: stemOptQuery,
       employment_types: employmentTypesQuery,
       job_title_types: jobTitleQuery,
       company: companyQuery,
@@ -192,9 +202,21 @@ const Search = (props) => {
                   }}
                 />
               </Panel>
-              <Panel header="Remote" key="1" className={styles.sitecollapsecustompanel}>
+              <Panel header="Benefits" key="1" className={styles.sitecollapsecustompanel}>
                 <Checkbox disabled={searching} onChange={(e) => setRemoteQuery(e.target.checked)}>
-                  Show remote jobs
+                  Remote work
+                </Checkbox>
+                <Divider />
+                <Checkbox disabled={searching} onChange={(e) => setH1BQuery(e.target.checked)}>
+                  Sponsors H1B
+                </Checkbox>
+                <br />
+                <Checkbox disabled={searching} onChange={(e) => setOptQuery(e.target.checked)}>
+                  Sponsors OPT 
+                </Checkbox>
+                <br />
+                <Checkbox disabled={searching} onChange={(e) => setStemOptQuery(e.target.checked)}>
+                  Sponsors STEM-OPT 
                 </Checkbox>
               </Panel>
               <Panel header="Employment Type" key="2" className={styles.sitecollapsecustompanel}>
