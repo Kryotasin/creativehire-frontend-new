@@ -81,7 +81,7 @@ export async function queryRemoteUpdate(params) {
 }
 
 export async function queryWorkExpEducationUpdate(params){
-  return axios.put(REACT_APP_AXIOS_API_V1.concat(`entities/candidate-complete-details/${params.userID}`),
+  return axios.post(REACT_APP_AXIOS_API_V1.concat(`entities/candidate-complete-details/${params.userID}`),
     params
   );
 }
