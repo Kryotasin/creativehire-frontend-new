@@ -1,6 +1,7 @@
-import { Button, Space, Switch, Spin, Tooltip, InputNumber } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { Button, Space, Switch, Spin, Tooltip, InputNumber } from 'antd';
 import { connect } from 'umi';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import JobsList from '../../../../../homepage/components/jobslist';
 
@@ -52,9 +53,10 @@ const Settings = (props) => {
             <div className="parts">
                 <div className={styles.name}>Remote work</div>
                 <Space direction='vertical' size='large'>
-                    <Space direction="horizontal" align="top" size="large">                
-                        <Tooltip title="prompt text">
-                            <span>Allow email notifications</span>
+                    <Space direction="horizontal" align="top" size="large">   
+                        <span>Allow email notifications</span>          
+                        <Tooltip title="Enabling will allow us to send email notification to you">
+                            <QuestionCircleOutlined />
                         </Tooltip>
 
                         <Switch checked={email} size="small" onChange={(checked) => {
@@ -62,9 +64,10 @@ const Settings = (props) => {
                         }} />
                         
                     </Space>
-                    <Space direction="horizontal" align="top" size="large">                
-                        <Tooltip title="prompt text">
-                            <span>Allow desktop notifications</span>
+                    <Space direction="horizontal" align="top" size="large">
+                        <span>Allow desktop notifications</span>                
+                        <Tooltip title="Enabling will allow us to send email notification to you">
+                            <QuestionCircleOutlined />
                         </Tooltip>
 
                         <Switch checked={desktop} size="small" onChange={(checked) => {
@@ -72,9 +75,10 @@ const Settings = (props) => {
                         }} />
                         
                     </Space>
-                    <Space direction="horizontal" align="top" size="large">                
-                        <Tooltip title="prompt text">
-                            <span>Minimum match percent</span>
+                    <Space direction="horizontal" align="top" size="large">    
+                        <span>Minimum match percent</span>            
+                        <Tooltip title="The minimum match percent of the jobs you will be notified about">
+                            <QuestionCircleOutlined />
                         </Tooltip>
 
                         <InputNumber
