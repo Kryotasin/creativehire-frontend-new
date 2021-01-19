@@ -14,7 +14,7 @@ import jwt_decode from 'jwt-decode';
 import logo from '../assets/new-blue-logo.svg';
 import styles from './BasicLayout.less';
 
-import { askForPermissioToReceiveNotifications  } from '../firestore';
+import { messageTokenRunner  } from '../firestore';
 
 const noMatch = (
   <Result
@@ -79,7 +79,7 @@ const BasicLayout = (props) => {
 
    useEffect(() => {
      // Firebase messaging service
-    //  askForPermissioToReceiveNotifications()
+     messageTokenRunner()
 
    }, []);
 
