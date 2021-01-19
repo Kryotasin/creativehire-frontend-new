@@ -77,21 +77,26 @@ function BasicDetails(props) {
   };
 
   const reloadProfilePicture = () => {
-    axios
-      .post('api/v1/file-handler/', {
-        ...typeOfImage('fetch'),
-      })
-      .then((res) => {
-        if (res.status === 404) {
-          // Set something to show lack of profile picture.
-          setTimeout(() => message.warning('Profile picture not found.'), 100);
-        } else if (res.status === 200 && res.data !== 'ErrorResponseMetadata') {
-          setProfilepic(res.data);
-        } else if (res.status === 200 && res.data === 'ErrorResponseMetadata') {
-          // Set something to show lack of profile picture.
-          setTimeout(() => message.warning('Profile picture not found.'), 100);
-        }
-      });
+    if(REACT_APP_ENV !== 'dev'){
+      axios
+        .post('api/v1/file-handler/', {
+          ...typeOfImage('fetch'),
+        })
+        .then((res) => {
+          if (res.status === 404) {
+            // Set something to show lack of profile picture.
+            setTimeout(() => message.warning('Profile picture not found.'), 100);
+          } else if (res.status === 200 && res.data !== 'ErrorResponseMetadata') {
+            setProfilepic(res.data);
+          } else if (res.status === 200 && res.data === 'ErrorResponseMetadata') {
+            // Set something to show lack of profile picture.
+            setTimeout(() => message.warning('Profile picture not found.'), 100);
+          }
+        });
+    }
+    else{
+      console.log('dev mode, skipping s3 image fetch')
+    }
   };
 
   useEffect(() => {
