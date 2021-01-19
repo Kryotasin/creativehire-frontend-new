@@ -9,7 +9,14 @@ const SavedJobs = (props) => {
   const { dispatch, saved_jobs, structure, keywords_part, userID } = props;
 
   useEffect(() => {
-  }, [saved_jobs, userID]);
+     dispatch({
+       type: 'user/fetchSavedJobs',
+       payload: { userID: btoa(userID) },
+     });
+ }, [userID]);
+
+  useEffect(() => {
+  }, [saved_jobs]);
 
   return (
     <>
