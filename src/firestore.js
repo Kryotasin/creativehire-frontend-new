@@ -14,7 +14,7 @@ const sendTokenToServer = (token, userID) => {
     'token': token
   };
 
-  return axios.post(REACT_APP_AXIOS_API_V1.concat('entities/post-login-session-record/'), data)
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('reporting/post-login-session-record/'), data)
 } 
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -33,22 +33,18 @@ firebase.initializeApp(firebaseConfig);
 
 const messaging = firebase.messaging();
 
-messaging.getToken({vapidKey: "BMYqb2tre5pNAjYUvv5p3d8XO4Cdpjn282k6c-CJxsaheEacW2ILSJK3ke_pzNXtDGpFvrYJt36VhkEW7ck924A"})
-  .then((currentToken) => {
-    messageTokenFirebase = currentToken;
-
-    return asyncLocalStorage.getItem('accessToken') 
-  // if (currentToken) {console.log('Gotten permission', currentToken)
-    // const sentToServer = await sendTokenToServer(currentToken);
-    // updateUIForPushEnabled(currentToken);
-  // } else {
-    // Show permission request.
-    // console.log('No registration token available. Request permission to generate one.');
-    // Show permission UI.
-    // updateUIForPushPermissionRequired();
-    // setTokenSentToServer(false);
-  // }
-// }
+export const messageTokenRunner = () =>{
+  messaging.getToken({vapidKey: "BMYqb2tre5pNAjYUvv5p3d8XO4Cdpjn282k6c-CJxsaheEacW2ILSJK3ke_pzNXtDGpFvrYJt36VhkEW7ck924A"})
+  .then(async (currentToken) => {
+    if (currentToken) {
+      messageTokenFirebase = currentToken;
+  
+      return asyncLocalStorage.getItem('accessToken') 
+    } else {
+      // Show permission request UI
+      console.log('No registration token available. Request permission to generate one.');
+      // ...
+    }
 
   })
   .then((token) => {
@@ -79,6 +75,7 @@ messaging.getToken({vapidKey: "BMYqb2tre5pNAjYUvv5p3d8XO4Cdpjn282k6c-CJxsaheEacW
   // showToken('Error retrieving registration token. ', err);
   // setTokenSentToServer(false);
 });
+}
 
 // Notification definition -------------------------------------------
 
