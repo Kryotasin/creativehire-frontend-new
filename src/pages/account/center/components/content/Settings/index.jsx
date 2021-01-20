@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Space, Switch, Spin, Tooltip, InputNumber } from 'antd';
+import { Button, Space, Switch, Spin, Tooltip, InputNumber, message } from 'antd';
 import { connect } from 'umi';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
@@ -14,6 +14,8 @@ const Settings = (props) => {
   const [ desktop, setDesktop ] = useState(undefined);
   const [ matchPercent, setMatchPercent ] = useState(undefined);
   const [ loaded, setLoaded ] = useState(false);
+  
+  let msg = undefined;
 
 
   useEffect(() => {
@@ -42,6 +44,14 @@ const Settings = (props) => {
         setDesktop(settings_part.user_desktop_notification_setting);
         setMatchPercent(settings_part.user_match_percent_setting);
         setLoaded(true);
+        if(msg !== undefined){
+            msg.destroy();
+            msg = message.success('Settings saved...', 1500);
+            setTimeout(() => {
+                msg.destroy();
+                msg = undefined;
+            }, 1500);
+        }
     }
 
   }, [settings_part, userID]);
@@ -94,6 +104,7 @@ const Settings = (props) => {
 
                     <Button type='primary' disabled={!loaded} onClick={() => {
                         setLoaded(false);
+                        msg = message.loading('Saving settings...')
 
                         dispatch({
                             type: 'accountAndcenter/saveNewState',
