@@ -12,7 +12,6 @@ import Recommended from './components/recommended';
 
 import asyncLocalStorage from '../../asyncLocalStorage';
 import jwt_decode from 'jwt-decode';
-import { Link } from 'umi';
 
 const Homepage = (props) => {
   const {
@@ -25,6 +24,7 @@ const Homepage = (props) => {
     candidate_part
   } = props;
 
+  
   //----------------------------------------USER ID HANDLING--------------------------------------------------------------------
   const [ userID, setUserID ] = useState(undefined);
 
