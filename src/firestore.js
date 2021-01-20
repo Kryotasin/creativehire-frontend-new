@@ -4,18 +4,9 @@ import axios from '../src/umiRequestConfig';
 import asyncLocalStorage from './asyncLocalStorage';
 import jwt_decode from 'jwt-decode';
 
+import getBrowserDetails from './browser';
+
 let messageTokenFirebase;
-
-
-
-const sendTokenToServer = (token, userID) => {
-  const data = {
-    'user_id': btoa(userID), 
-    'token': token
-  };
-
-  return axios.post(REACT_APP_AXIOS_API_V1.concat('reporting/post-login-session-record/'), data)
-} 
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -32,6 +23,23 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const messaging = firebase.messaging();
+
+
+const sendTokenToServer = (token, userID) => {
+  const browserInfo = getBrowserDetails();
+  const date = new Date();
+  const data = {
+   fcm: {
+    userID: btoa(userID),
+    token: token,
+    timestamp: date,
+    browserInfo: browserInfo
+   }
+  };
+
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('reporting/post-login-session-record/'), data)
+} 
+
 
 export const messageTokenRunner = () =>{
   messaging.getToken({vapidKey: "BMYqb2tre5pNAjYUvv5p3d8XO4Cdpjn282k6c-CJxsaheEacW2ILSJK3ke_pzNXtDGpFvrYJt36VhkEW7ck924A"})
@@ -54,14 +62,15 @@ export const messageTokenRunner = () =>{
     return sendTokenToServer(messageTokenFirebase, token.user_id)
   })
   .then((res) => {
-    if(res.status !== 200 || !Number.isInteger(res.data)){
-      return asyncLocalStorage.setItem('messageToken', -1)
-    }
+    console.log(res)
+    // if(res.status !== 200 || !Number.isInteger(res.data)){
+    //   return asyncLocalStorage.setItem('messageToken', -1)
+    // }
 
-    if(res.status === 200){
-      return asyncLocalStorage.setItem('messageToken', messageTokenFirebase)
-    }
-    return Error('Failed')
+    // if(res.status === 200){
+    //   return asyncLocalStorage.setItem('messageToken', messageTokenFirebase)
+    // }
+    // return Error('Failed')
   })
   .finally((res) => {
     if(res === 'Failed'){      
