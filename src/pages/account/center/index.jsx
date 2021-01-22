@@ -78,12 +78,12 @@ const Center = (props) => {
         });
       }
   
-      if(Object.keys(projectList).length === 0){
+      // if(Object.keys(projectList).length === 0){
         dispatch({
           type: 'accountAndcenter/fetchProjects',
           payload: { userID },
         });
-      }
+      // }
   
       if(Object.keys(titleTypes).length === 0){
         dispatch({
