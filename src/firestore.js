@@ -65,14 +65,14 @@ export const messageTokenRunner = () =>{
     return sendTokenToServer(messageTokenFirebase, token.user_id)
   })
   .then((res) => {
-    console.log(res)
-    // if(res.status !== 200 || !Number.isInteger(res.data)){
-    //   return asyncLocalStorage.setItem('messageToken', -1)
-    // }
+    // console.log(res)
+    if(res.status !== 200 || !Number.isInteger(res.data)){
+      return asyncLocalStorage.setItem('messageToken', -1)
+    }
 
-    // if(res.status === 200){
-    //   return asyncLocalStorage.setItem('messageToken', messageTokenFirebase)
-    // }
+    if(res.status === 200){
+      return asyncLocalStorage.setItem('messageToken', messageTokenFirebase)
+    }
     // return Error('Failed')
   })
   .finally((res) => {
