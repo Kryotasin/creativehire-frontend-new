@@ -58,8 +58,11 @@ const JobsList = (props) => {
     if(Math.abs(splits.months) > 0){
       return String(Math.abs(splits.months)).concat(' months ago');
     }
-    else{
+    else if(Math.abs(splits.months) < 0 && Math.abs(splits.days) > 0){
       return String(Math.abs(splits.days)).concat(' days ago');
+    }
+    else{
+      return 'Today';
     }
   };
 
