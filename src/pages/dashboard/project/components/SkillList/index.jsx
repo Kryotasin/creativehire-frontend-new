@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Divider, Card, Typography, Tabs, AutoComplete, message, Row, Col, Popconfirm } from 'antd';
+import { Button, Divider, Card, Typography, Tabs, AutoComplete, message, Row, Col, Popconfirm, Spin } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { PieChart } from 'react-charts-d3';
 import axios from '../../../../../umiRequestConfig';
@@ -17,6 +17,8 @@ const SkillList = (props) => {
   const [loading, setLoading] = useState(false);
   const [chartData, setChartData] = useState(undefined);
   const [sortedSkills, setSortedSkills] = useState(undefined);
+
+  const [ loaded, setLoaded ] = useState(false);
 
   let cat;
   let subcat;
@@ -44,42 +46,50 @@ const SkillList = (props) => {
   }, [keywords]);
 
   useEffect(() => {
-    if (sortedSkills !== undefined && Object.keys(sortedSkills).length !== 0) {
-      catNum = sortedSkills[0].split(',');
-      cat = structure[0][catNum];
-      subcat = structure[1][catNum];
-      label = structure[3][catNum];
+    // if (sortedSkills !== undefined && Object.keys(sortedSkills).length !== 0) {
+    //   catNum = sortedSkills[0].split(',');
+    //   cat = structure[0][catNum];
+    //   subcat = structure[1][catNum];
+    //   label = structure[3][catNum];
 
-      const counts = {};
-      let total = 0;
-      let prevIndex = -1;
-      let prevCat = '';
-      if (keywords) {
-        for (let i = 0; i < keywords.length; ++i) {
-          const [index, ..._] = keywords[i].split(',');
-          if (index != prevIndex) {
-            if (structure[0][index] === prevCat) {
-              counts[prevCat]++;
-            } else {
-              prevCat = structure[0][index];
-              counts[prevCat] = 1;
-            }
-            total++;
-            prevIndex = index;
-          }
-        }
-      }
+    //   const counts = {};
+    //   let total = 0;
+    //   let prevIndex = -1;
+    //   let prevCat = '';
+    //   if (keywords) {
+    //     for (let i = 0; i < keywords.length; ++i) {
+    //       const [index, ..._] = keywords[i].split(',');
+    //       if (index != prevIndex) {
+    //         if (structure[0][index] === prevCat) {
+    //           counts[prevCat]++;
+    //         } else {
+    //           prevCat = structure[0][index];
+    //           counts[prevCat] = 1;
+    //         }
+    //         total++;
+    //         prevIndex = index;
+    //       }
+    //     }
+    //   }
 
-      const tempData = [];
-      for (let k in counts) {
-        tempData.push({ label: k, value: (counts[k] * 100) / total });
-      }
-      setChartData(tempData);
-    }
+    //   const tempData = [];
+    //   for (let k in counts) {
+    //     tempData.push({ label: k, value: (counts[k] * 100) / total });
+    //   }
+    //   setChartData(tempData);
+    // }
     if (sortedSkills !== undefined && Object.keys(sortedSkills).length === 0) {
       message.warn('No skills found!')
     }
   }, [sortedSkills]);
+
+  useEffect(() =>{
+    if(structure && Object.keys(structure).length > 0 && sortedSkills !== undefined && Object.keys(sortedSkills).length > 0){
+      setLoaded(true);
+    }
+
+    return () => { setLoaded(false)}
+  }, [structure, sortedSkills]);
 
   const onDeleteButtonClick = (cn) => {
     message.warn(`${structure[3][cn]} has been removed`);
@@ -251,79 +261,86 @@ const SkillList = (props) => {
     });
 
   return (
-    <Row>
-      <Col xs={{ span: 24 }} lg={{ span: 22, offset: 2 }}>
-        <Card>
-          <Tabs defaultActiveKey="keywords">
-            <TabPane tab="Keywords" key="keywords">
-              <div className={styles.stepForm}>
-                <div className={styles.inputContainer}>
-                  <AutoComplete
-                    placeholder="Add a skill!"
-                    options={autoCompleteValues}
-                    filterOption={(inputValue, option) =>
-                      option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
-                    }
-                    style={{ width: 350 }}
-                    notFoundContent="No Keywords Found"
-                    onSelect={onSelect}
-                    onChange={(value) => {
-                      setSelected(value);
-                    }}
-                    value={selected}
-                  />
-                </div>
-                <div className={styles.result}>
-                  {structure !== null && sortedSkills ? <>{renderSkills()}</> : null}
-                  <Button
-                    type="primary"
-                    onClick={onSave}
-                    loading={loading}
-                    size="middle"
-                    style={{
-                      marginLeft: 16,
-                      marginTop: 20,
-                    }}
-                  >
-                    Save keywords
-                  </Button>
-
-                  <Popconfirm
-                    title="Are you sure to delete this project?"
-                    onConfirm={confirm}
-                    onCancel={cancel}
-                    okText="Yes"
-                    cancelText="No"
-                  >
+    <>
+      {
+      loaded ? 
+        <Row>
+        <Col xs={{ span: 24 }} lg={{ span: 22, offset: 2 }}>
+          <Card>
+            <Tabs defaultActiveKey="keywords">
+              <TabPane tab="Keywords" key="keywords">
+                <div className={styles.stepForm}>
+                  <div className={styles.inputContainer}>
+                    <AutoComplete
+                      placeholder="Add a skill!"
+                      options={autoCompleteValues}
+                      filterOption={(inputValue, option) =>
+                        option.item.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+                      }
+                      style={{ width: 350 }}
+                      notFoundContent="No Keywords Found"
+                      onSelect={onSelect}
+                      onChange={(value) => {
+                        setSelected(value);
+                      }}
+                      value={selected}
+                    />
+                  </div>
+                  <div className={styles.result}>
+                    {structure !== null && sortedSkills ? <>{renderSkills()}</> : null}
                     <Button
-                      type="danger"
+                      type="primary"
+                      onClick={onSave}
+                      loading={loading}
                       size="middle"
                       style={{
                         marginLeft: 16,
                         marginTop: 20,
                       }}
                     >
-                      Delete project
+                      Save keywords
                     </Button>
-                  </Popconfirm>
 
-                  
+                    <Popconfirm
+                      title="Are you sure to delete this project?"
+                      onConfirm={confirm}
+                      onCancel={cancel}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <Button
+                        type="danger"
+                        size="middle"
+                        style={{
+                          marginLeft: 16,
+                          marginTop: 20,
+                        }}
+                      >
+                        Delete project
+                      </Button>
+                    </Popconfirm>
+
+                    
+                  </div>
+
+                  <Divider
+                    style={{
+                      margin: '40px 0 24px',
+                    }}
+                  />
                 </div>
-
-                <Divider
-                  style={{
-                    margin: '40px 0 24px',
-                  }}
-                />
-              </div>
-            </TabPane>
-            {/* <TabPane tab="Charts" key="charts">
-              <PieChart data={chartData} />
-            </TabPane> */}
-          </Tabs>
-        </Card>
-      </Col>
-    </Row>
+              </TabPane>
+              {/* <TabPane tab="Charts" key="charts">
+                <PieChart data={chartData} />
+              </TabPane> */}
+            </Tabs>
+          </Card>
+        </Col>
+      </Row>
+      :
+      <Spin />
+      }
+    </>
   );
 };
 
