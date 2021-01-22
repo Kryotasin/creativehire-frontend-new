@@ -80,7 +80,7 @@ const BasicLayout = (props) => {
 
    useEffect(() => {
      // Firebase messaging service
-    //  messageTokenRunner();
+     messageTokenRunner();
 
    }, []);
 
