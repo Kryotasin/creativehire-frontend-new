@@ -8,7 +8,7 @@ export async function basicProjectDetails(params) {
 }
 
 export async function newProject(params) {
-  return axios.post(REACT_APP_AXIOS_API_V1.concat('project/'), {
+  return axios.post(REACT_APP_AXIOS_API_V1.concat('project-post/'), {
     project_url: params.projectLink,
     project_title: params.projectName,
     project_summary: params.projectSummary,

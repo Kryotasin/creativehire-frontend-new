@@ -4,6 +4,8 @@ import { ArrowRightOutlined, ArrowLeftOutlined, InfoCircleOutlined } from '@ant-
 
 import { connect } from 'umi';
 import styles from './index.less';
+import asyncLocalStorage from '../../../../../asyncLocalStorage';
+import jwt_decode from 'jwt-decode';
 
 const { TextArea } = Input;
 
@@ -40,9 +42,11 @@ const Step2 = (props) => {
 
   const onValidateForm = async () => {
     const values = await validateFields();
+    let userID = await asyncLocalStorage.getItem('accessToken');
+    userID = JSON.parse(JSON.stringify(jwt_decode(userID))).user_id;
 
     // if(values.pastedProjectImage){
-    const imageLink = values.pastedProjectImage || img_list[img_counter + 1];
+    const imageLink = values.pastedProjectImage || img_list[img_counter];
     // }
     // else{
     //   console.log('nos')
@@ -126,7 +130,7 @@ const Step2 = (props) => {
             </>
           ) : (
             <Space direction="vertical" size="middle">
-              <img src={img_list[img_counter + 1]} width="320" alt={title.concat(' image')} />
+              <img src={img_list[img_counter]} width="320"  alt={title.concat(' image')} />
               <Space direction="horizontal" size="small">
                 <Button
                   disabled={img_counter === 0}

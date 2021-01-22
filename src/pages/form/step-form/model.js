@@ -33,7 +33,7 @@ const Model = {
       });
 
       const basicdetails = yield call(basicProjectDetails, payload);
-
+      
       if (basicdetails.status === 200) {
         // Save the project link
         yield put({
@@ -68,7 +68,7 @@ const Model = {
       });
 
       const newproj = yield call(newProject, payload);
-
+      
       if (newproj.status === 201) {
         yield put({
           type: 'saveProjectSkills',
