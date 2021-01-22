@@ -4,6 +4,7 @@ import { AccountLogin } from './service';
 import { getPageQuery, setAuthority } from './utils/utils';
 
 import asyncLocalStorage from '../../../asyncLocalStorage';
+import { messageTokenRunner  } from '../../../firestore';
 
 let interval;
 
@@ -57,11 +58,14 @@ const Model = {
 
           Promise.all([setAccessToken, setRefreshToken])
           .then(function () {
-            return asyncLocalStorage.getItem('accessToken');
+            return asyncLocalStorage.getItem('refreshToken');
           })          
           .then(function () {
-            return asyncLocalStorage.getItem('refreshToken');
+            return asyncLocalStorage.getItem('accessToken');
           })        
+          .then((token) =>{
+            messageTokenRunner();
+          })
           .finally((c) =>{
             const urlParams = new URL(window.location.href);
             const params = getPageQuery();
@@ -93,7 +97,7 @@ const Model = {
       }
       catch(err) {
 
-        if(!err.response){console.log(err)
+        if(!err.response){
           yield put({
             type: 'changeLoginStatus',
             payload: {'status': 521},

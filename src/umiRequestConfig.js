@@ -83,6 +83,10 @@ instance.interceptors.response.use(response => {
         }
     }
 
+    if(refreshToken === null || refreshToken === undefined){
+        console.log('expired man')
+    }
+
     if(error.response && error.response.status === 401 && !originalRequest._retry && refreshToken && refreshToken !== null && refreshToken !== undefined && !refreshToken.message){
     
         if(isRefreshing){
@@ -132,10 +136,6 @@ instance.interceptors.response.use(response => {
             })
             .finally(() => {isRefreshing = false; })
         });
-
-                         
-
-
     }
     else{
         return Promise.reject(error); 
