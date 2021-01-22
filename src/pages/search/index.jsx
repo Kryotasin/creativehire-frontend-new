@@ -36,8 +36,11 @@ const Search = (props) => {
   const [companyQuery, setCompanyQuery] = useState([]);
   const [savedQuery, setSavedQuery] = useState(false);
   const [appliedQuery, setAppliedQuery] = useState(false);
+
   const [viewedQuery, setViewedQuery] = useState(false);
   const [newQuery, setNewQuery] = useState(false);
+  const [tracker, setTracker] = useState(undefined);
+  
   const [matchPercentRangeQuery, setMatchPercentRangeQuery] = useState([]);
   const [matchPercentSortQuery, setMatchPercentSortQuery] = useState(2);
 
@@ -56,6 +59,10 @@ const Search = (props) => {
 
     if(props.location.query.posted_today && atob(props.location.query.posted_today) === 'True'){
       setNewQuery(true);
+    }
+
+    if(props.location.query.tracker && props.location.query.tracker !== undefined){
+      setTracker(props.location.query.tracker);
     }
 
   }, []);
@@ -128,6 +135,7 @@ const Search = (props) => {
     appliedQuery,
     viewedQuery,
     newQuery,
+    tracker,
     userID,
     matchPercentRangeQuery
   ]);
@@ -158,6 +166,7 @@ const Search = (props) => {
       applied: appliedQuery,
       viewed: viewedQuery,
       new: newQuery,
+      tracker: tracker,
       match_percent_range_query: matchPercentRangeQuery,
       match_percent_sort_query: matchPercentSortQuery,
     };
