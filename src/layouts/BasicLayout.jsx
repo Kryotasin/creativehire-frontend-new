@@ -13,7 +13,6 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import jwt_decode from 'jwt-decode';
 import logo from '../assets/new-blue-logo.svg';
 import styles from './BasicLayout.less';
-import asyncLocalStorage from '../asyncLocalStorage';
 
 import { messageTokenRunner  } from '../firestore';
 
@@ -80,7 +79,7 @@ const BasicLayout = (props) => {
 
    useEffect(() => {
      // Firebase messaging service
-    //  messageTokenRunner();
+     messageTokenRunner();
 
    }, []);
 
