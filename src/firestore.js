@@ -27,12 +27,10 @@ const messaging = firebase.messaging();
 
 const sendTokenToServer = (token, userID) => {
   const browserInfo = getBrowserDetails();
-  const date = new Date();
   const data = {
    fcm: {
     userID: btoa(userID),
     token: token,
-    timestamp: date,
     browserInfo: browserInfo
    }
   };
@@ -56,7 +54,12 @@ export const messageTokenRunner = () =>{
 
   })
   .then((token) => {
-    return JSON.parse(JSON.stringify(jwt_decode(token)))
+    if(token){
+      return JSON.parse(JSON.stringify(jwt_decode(token)));
+    }
+    else{
+      throw Error('No refresh token found');
+    }
   })
   .then((token) => {
     return sendTokenToServer(messageTokenFirebase, token.user_id)
@@ -81,6 +84,7 @@ export const messageTokenRunner = () =>{
 .catch(async (err) => {
   console.log('An error occurred while retrieving token. ', err);
   await asyncLocalStorage.setItem('messageToken', -1);
+  // messageTokenRunner();
   // showToken('Error retrieving registration token. ', err);
   // setTokenSentToServer(false);
 });
@@ -113,12 +117,14 @@ messaging.onMessage((payload) => {
     onClick: () => {
       let url = REACT_APP_FRONTEND_BASEURL.concat('/search-jobs/?');
 
-      if(payload.data['gcm.notification.visited'] === '1'){        
-        url = url.concat(`visited=${(btoa('True'))}&`);
-      }
-      
-      if(payload.data['gcm.notification.today'] === '1'){        
-        url = url.concat(`posted_today=${(btoa('True'))}&`);
+      if(payload.data !== undefined){
+        if(payload.data['gcm.notification.visited'] === '1'){        
+          url = url.concat(`visited=${(btoa('True'))}&`);
+        }
+        
+        if(payload.data['gcm.notification.today'] === '1'){        
+          url = url.concat(`posted_today=${(btoa('True'))}&`);
+        }
       }
 
       window.open(url, '_blank');
