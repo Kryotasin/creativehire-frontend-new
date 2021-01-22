@@ -407,7 +407,7 @@ function BasicDetails(props) {
         ) : (
           <Space style={{ marginTop: '5%' }} size="large">
             {behance_link ? (
-              <a href={entity.user_external_links.behance_link}>
+              <a href={entity.user_external_links.behance_link} target='_blank'>
                 <BehanceCircleFilled style={{ fontSize: '2.3em', color: '#000' }} />
               </a>
             ) : (
@@ -415,7 +415,7 @@ function BasicDetails(props) {
             )}
 
             {linkedin_link ? (
-              <a to={entity.user_external_links.linkedin_link}>
+              <a href={entity.user_external_links.linkedin_link} target='_blank'>
                 <LinkedinFilled style={{ fontSize: '2.3em', color: '#0072b1' }} />
               </a>
             ) : (
@@ -423,7 +423,7 @@ function BasicDetails(props) {
             )}
 
             {dribble_link ? (
-              <a to={entity.user_external_links.dribble_link}>
+              <a href={entity.user_external_links.dribble_link} target='_blank'>
                 <DribbbleCircleFilled style={{ fontSize: '2.3em', color: '#ea4c89' }} />
               </a>
             ) : (
