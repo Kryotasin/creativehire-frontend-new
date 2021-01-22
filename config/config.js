@@ -198,7 +198,7 @@ export default defineConfig({
             {
               name: 'Project',
               icon: 'project',
-              path: '/project/:matchID',
+              path: '/project/:projectID',
               component: './dashboard/project',
               hideInMenu: true,
             },
