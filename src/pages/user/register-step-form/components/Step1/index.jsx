@@ -332,9 +332,9 @@ const Step1 = (props) => {
         >
           <Input.Password size="large" placeholder="" />
         </Form.Item>
-          
+        
         {(status === 400 || status === 500 || status === 401) && !submitting && (
-          <RegisterMessage content={errorMessages ? errorMessages : 'Incorrect credentials'} />
+          <RegisterMessage content={errorMessages ? errorMessages[0] : 'Incorrect credentials'} />
         )}
 
         <Form.Item
