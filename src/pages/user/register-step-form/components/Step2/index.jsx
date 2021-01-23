@@ -6,6 +6,9 @@ import { ArrowRightOutlined, ArrowLeftOutlined, QuestionCircleOutlined } from '@
 import axios from '../../../../../umiRequestConfig';
 import styles from './index.less';
 
+import asyncLocalStorage from '../../../../../asyncLocalStorage';
+import jwt_decode from  'jwt-decode';
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -33,6 +36,21 @@ const Step2 = (props) => {
   const [failed, setFailed] = useState(0);
 
   // const [ progressArray, setProgressArray ] = useState([]);
+  const [ userID, setUserID ] = useState(undefined);
+
+  useEffect(() => {
+
+    asyncLocalStorage.getItem('accessToken')
+    .then((token) => {
+      return JSON.parse(JSON.stringify(jwt_decode(token)))
+    })
+    .then((token) => {
+      setUserID(token.user_id)
+    })
+    
+  }, []);
+
+
 
   useEffect(() => {
     if (project_links_list.length === 0) {
@@ -109,11 +127,11 @@ const Step2 = (props) => {
     }
 
     return axios
-      .post(REACT_APP_AXIOS_API_V1.concat('project/'), {
+      .post(REACT_APP_AXIOS_API_V1.concat('project-post/'), {
         project_url: projectLink,
         project_title: basicDetails.title,
         project_summary: basicDetails.description,
-        project_author: JSON.parse(localStorage.getItem('accessTokenDecoded')).user_id,
+        project_author: userID,
         project_img: Object.keys(basicDetails.img_list).length !== 0 ? basicDetails.img_list[0] : 'https://picsum.photos/400',
       })
       .then((res) => {        
@@ -143,7 +161,6 @@ const Step2 = (props) => {
       })
       .then((res) => {
         if(res.status === 200){
-          console.log(res.data)
           return res.data;        
         }
       })

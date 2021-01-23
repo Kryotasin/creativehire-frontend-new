@@ -20,22 +20,24 @@ const Model = {
       yield put({
         type: 'saveLoadingStatus',
         payload: true,
-      });
+      });      
+      
+      const msgKey = 'registration';
 
       try {
         localStorage.clear();        
-        const registeringMessage = message.loading('Registration in progress..', 0);
+        message.loading({ content: 'Registration in progress...', msgKey });
+        
         const response = yield call(registerUserAndGetLinksService, payload);
-
+        
+        
         if (response.status === 201) {
-          setTimeout(registeringMessage, 500);
-          const fetchProjectsMessage = message.loading('Registered! Fetching your projects...', 0);
+          message.loading({content: 'Registered! Fetching your projects...', msgKey});
 
           // localStorage.setItem("refreshToken", String(response.data.refresh));
           // localStorage.setItem("accessToken", String(response.data.access));
           // localStorage.setItem('refreshTokenDecoded', JSON.stringify(jwt_decode(response.data.refresh)));
           // localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(response.data.access)));
-          console.log(response.data)
           const setAccessToken = asyncLocalStorage.setItem('accessToken', response.data.access);
           const setRefreshToken = asyncLocalStorage.setItem('refreshToken', response.data.refresh);
 
@@ -52,49 +54,52 @@ const Model = {
             payload: response,
             errors: '',
           });
-          
-          if (payload.portfolio) {
-            yield put({
-              type: 'savePortfolioLink',
-              payload: payload.portfolio,
-            });
 
-            const project_links_list = yield call(urlFetcher, payload.portfolio);
-            
-            yield put({
-              type: 'saveProjectLinksList',
-              payload: project_links_list.data,
-            });
+          // Get all project links           
+          yield put({
+            type: 'savePortfolioLink',
+            payload: payload.portfolio,
+          });
 
-            yield put({
-              type: 'saveCurrentStep',
-              payload: 'urls',
-            });
-            
-            setTimeout(fetchProjectsMessage, 500);
-            message.success('Done! Select your projects.', 0);
+          const project_links_list = yield call(urlFetcher, payload.portfolio);
 
-          } 
+          if(project_links_list.status === 200){
+              yield put({
+                type: 'saveProjectLinksList',
+                payload: project_links_list.data,
+              });
+
+              yield put({
+                type: 'saveCurrentStep',
+                payload: 'urls',
+              });
+
+              message.success({ content: 'Done! Select your projects.', msgKey, duration: 2 });
+          }          
           else {
-            message.warning('No project link...', 3500);
+            message.warning({ content: 'FaNo project link...', msgKey, duration: 2 });
 
-            yield put({
-              type: 'savePortfolioLink',
-              payload: payload.portfolio,
-            });
             yield put({
               type: 'saveCurrentStep',
               payload: 'success',
             });
           }
-              
-      }
-    } catch (errRes) {
+        
+        }
+        else{
+          message.error({ content: 'Failed...', msgKey, duration: 2 });
+        }
+      } 
+  
+    catch (errRes) {
+      message.error({ content: 'Failed...', msgKey, duration: 2 });
+      
       const errs = Object.keys(errRes.response.data).map((key) => {
         // return [key.concat(" : ").concat(errRes.response.data[key])];
         return [errRes.response.data[key]];
       });
-      console.log(errs)
+      
+      
       yield put({
         type: 'registerHandle',
         payload: errRes.response,
