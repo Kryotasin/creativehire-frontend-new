@@ -44,7 +44,7 @@ instance.interceptors.request.use(request => {
 
     asyncLocalStorage.getItem('accessToken')
     .then((token) => {
-        if(token !== null || token !== undefined){
+        if(token !== null && token !== undefined){
             instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         }
     });
@@ -68,78 +68,86 @@ instance.interceptors.response.use(response => {
     
     // Edit response config
     return response;
-}, (error) => {
+}, async (error) => {
     // console.log('error', error);
     // Object.keys(error).forEach((k)=> console.log(k, error[k]))
     // return Promise.reject(error);
-
-    const refreshToken = localStorage.getItem('refreshToken');
-    const originalRequest = error.config;
-
-    if(refreshToken !== null && refreshToken !== undefined){
-        const refreshTokenCheck = jwt_decode(refreshToken);        
-        if(Math.floor(new Date() / 1000) - refreshTokenCheck.exp > 0) {
-            console.log('Expired refresh token...');
-        }
-    }
-
-    if(refreshToken === null || refreshToken === undefined){
-        console.log('expired man')
-    }
-
-    if(error.response && error.response.status === 401 && !originalRequest._retry && refreshToken && refreshToken !== null && refreshToken !== undefined && !refreshToken.message){
     
-        if(isRefreshing){
-            return new Promise(function(resolve, reject) {
-                failedQueue.push({resolve, reject})
-              }).then(token => {
-                originalRequest.headers['Authorization'] = 'Bearer ' + token;
-                return instance(originalRequest);
-              }).catch(err => {
-                return Promise.reject(err);
-              });
+    if(error.config.url !== 'api/v1/register/'){
+        const refreshToken = localStorage.getItem('refreshToken');
+        const originalRequest = error.config;        
+
+        if(refreshToken !== null && refreshToken !== undefined){
+            const refreshTokenCheck = jwt_decode(refreshToken);        
+            if(Math.floor(new Date() / 1000) - refreshTokenCheck.exp > 0) {
+                console.log('Expired refresh token...');
+            }
         }
 
-        originalRequest._retry = true;
+        if(refreshToken === null || refreshToken === undefined){
+            console.log('expired man')
+        }
 
-        isRefreshing = true;
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('accessTokenDecoded');
+        if(error.response && error.response.status === 401 && !originalRequest._retry && refreshToken && refreshToken !== null && refreshToken !== undefined && !refreshToken.message){
+        
+            if(isRefreshing){
+                return new Promise(function(resolve, reject) {
+                    failedQueue.push({resolve, reject})
+                }).then(token => {
+                    originalRequest.headers['Authorization'] = 'Bearer ' + token;
+                    return instance(originalRequest);
+                }).catch(err => {
+                    return Promise.reject(err);
+                });
+            }
 
-        return new Promise(function (resolve, reject) {
-            fetch(REACT_APP_AXIOS_BASEURL.concat('/').concat(REACT_APP_AXIOS_API_V1).concat('token/refresh/'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    refresh: refreshToken
-                }),
-            })
-            .then((res) => res.json())
-            .then((res) => {
-                // console.log(res.access)
-                localStorage.setItem('accessToken', String(res.access));
-                localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(res.access)));
-            })
-            .then(() => {
-                // console.log("one")
-                const token = localStorage.getItem('accessToken');
-                originalRequest.headers['Authorization'] = `Bearer ${token}`;
-                instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                processQueue(null, token);
-                resolve(instance(originalRequest));    
-            })            
-            .catch((err) => {
-                processQueue(err, null);
-                reject(err);
-            })
-            .finally(() => {isRefreshing = false; })
-        });
+            originalRequest._retry = true;
+
+            isRefreshing = true;
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('accessTokenDecoded');
+
+            return new Promise(function (resolve, reject) {
+                fetch(REACT_APP_AXIOS_BASEURL.concat('/').concat(REACT_APP_AXIOS_API_V1).concat('token/refresh/'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        refresh: refreshToken
+                    }),
+                })
+                .then((res) => res.json())
+                .then((res) => {
+                    // console.log(res.access)
+                    localStorage.setItem('accessToken', String(res.access));
+                    localStorage.setItem('accessTokenDecoded', JSON.stringify(jwt_decode(res.access)));
+                })
+                .then(() => {
+                    // console.log("one")
+                    const token = localStorage.getItem('accessToken');
+                    originalRequest.headers['Authorization'] = `Bearer ${token}`;
+                    instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                    processQueue(null, token);
+                    resolve(instance(originalRequest));    
+                })            
+                .catch((err) => {
+                    processQueue(err, null);
+                    reject(err);
+                })
+                .finally(() => {isRefreshing = false; })
+            });
+        }
+        else{
+            return Promise.reject(error); 
+        }
     }
     else{
+        // for registrations
         return Promise.reject(error); 
     }
+
+
 });
 
 
