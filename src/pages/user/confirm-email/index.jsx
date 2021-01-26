@@ -52,7 +52,7 @@ class ConfirmEmail extends React.Component {
             else if(res.status !== 200){
                 this.setState({
                     message: 'Email verification failed!',
-                    description: 'Please check the token again If problem persists contact us at admin@creativehire.co.',
+                    description: 'Please check the token again. If problem persists contact us at admin@creativehire.co.',
                     type: 'error'         
                 });
             }

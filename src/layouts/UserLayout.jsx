@@ -53,24 +53,25 @@ const UserLayout = (props) => {
         copyright="2020 CreativeHire"
         links={[
           {
-              key: 'terms',
-              title: 'Terms',
-              href: 'https://creativehire.co/misc/terms',
-              blankTarget: true,
-            },
-            {
-              key: 'privacy',
-              title: 'Privacy Policy',
-              href: 'https://creativehire.co/misc/privacy',
-              blankTarget: true,
-            },
-            {
-              key: 'contact',
-              title: 'Contact Us',
-              href: 'https://creativehire.co/misc/contact',
-              blankTarget: true,
-            },
-        ]}/>
+            key: 'terms',
+            title: 'Terms',
+            href: 'https://app.creativehire.co/misc/terms',
+            blankTarget: true,
+          },
+          {
+            key: 'privacy',
+            title: 'Privacy Policy',
+            href: 'https://app.creativehire.co/misc/privacy',
+            blankTarget: true,
+          },
+          {
+            key: 'contact',
+            title: 'Contact Us',
+            href: 'https://app.creativehire.co/misc/contact',
+            blankTarget: true,
+          },
+        ]}
+        />
       </div>
     </HelmetProvider>
   );

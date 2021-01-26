@@ -71,12 +71,12 @@ const Center = (props) => {
   
   useEffect(() => {
     if(userID !== undefined){
-      if(Object.keys(currentUser).length === 0){
+      // if(Object.keys(currentUser).length === 0){
         dispatch({
           type: 'accountAndcenter/fetchCurrent',
           payload: { userID: btoa(userID) },
         });
-      }
+      // }
   
       // if(Object.keys(projectList).length === 0){
         dispatch({
@@ -85,11 +85,11 @@ const Center = (props) => {
         });
       // }
   
-      if(Object.keys(titleTypes).length === 0){
+      // if(Object.keys(titleTypes).length === 0){
         dispatch({
           type: 'accountAndcenter/fetchTitleTypes',
         });
-      }
+      // }
     }
 
   }, [currentUser, userID]);
