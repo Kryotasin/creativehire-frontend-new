@@ -339,7 +339,13 @@ const Step1 = (props) => {
 
         <Form.Item
           label={
-            <Button
+            <Link className={styles.login} to="/user/login">
+              Back to Login
+            </Link>
+          }
+        >
+          <Button
+              block
               size="large"
               onClick={onValidateForm}
               loading={props.loading}
@@ -348,12 +354,7 @@ const Step1 = (props) => {
               htmlType="submit"
             >
               Register
-            </Button>
-          }
-        >
-          <Link className={styles.login} to="/user/login">
-            Already registered?
-          </Link>
+          </Button>
         </Form.Item>
       </Form>
       <Divider
