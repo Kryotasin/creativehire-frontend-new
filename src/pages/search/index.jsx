@@ -46,6 +46,8 @@ const Search = (props) => {
 
   const [ userID, setUserID ] = useState(undefined);
 
+  const[tooltipVisible, setTooltipVisible] = useState(true);
+
   // const [disabled, setDisabled] = useState(false);
 
   // const [queryResults, setQueryResults] = useState([]);
@@ -199,9 +201,17 @@ const Search = (props) => {
               defaultActiveKey={['0', '1', '2', '3', '4', '5', '6', '7', '8']}
               expandIconPosition="right"
               className={styles.sitecollapsecustomcollapse}
+              onChange={(e) => {
+                if(e.includes('0')){
+                  setTooltipVisible(true);
+                }
+                else{
+                  setTooltipVisible(false);
+                }
+              }}
             >
               <Panel header="Match Percent" key="0" className={styles.sitecollapsecustompanel}>
-                <Slider disabled={searching} range={{ draggableTrack: true }} defaultValue={[20, 90]} tooltipVisible className={styles.match_percent} 
+                <Slider disabled={searching} range={{ draggableTrack: true }} defaultValue={[20, 90]} tooltipVisible={tooltipVisible} className={styles.match_percent} 
                 // step={10} 
                   onChange={(value) =>{
                   }}
