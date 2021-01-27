@@ -42,8 +42,18 @@ const Center = (props) => {
       return JSON.parse(JSON.stringify(jwt_decode(token)))
     })
     .then((token) => {
-      setUserID(token.user_id)
+      setUserID(token.user_id);
+      
+      dispatch({
+        type: 'accountAndcenter/fetchCurrent',
+        payload: { userID: btoa(token.user_id) },
+      });
     })
+    .then(() => {
+      dispatch({
+        type: 'accountAndcenter/fetchTitleTypes',
+      })
+    });
     
   }, []);
 
@@ -68,16 +78,9 @@ const Center = (props) => {
 
   //------------------------------------------------------------------------------------------------------------
 
-  
   useEffect(() => {
     if(userID !== undefined){
-      // if(Object.keys(currentUser).length === 0){
-        dispatch({
-          type: 'accountAndcenter/fetchCurrent',
-          payload: { userID: btoa(userID) },
-        });
-      // }
-  
+        
       // if(Object.keys(projectList).length === 0){
         dispatch({
           type: 'accountAndcenter/fetchProjects',
@@ -86,13 +89,11 @@ const Center = (props) => {
       // }
   
       // if(Object.keys(titleTypes).length === 0){
-        dispatch({
-          type: 'accountAndcenter/fetchTitleTypes',
-        });
+        
       // }
     }
 
-  }, [currentUser, userID]);
+  }, [userID]);
 
   useEffect(() => {
     if(currentUser && Object.keys(currentUser).length > 0 && Object.keys(titleTypes).length > 0 && Object.keys(keywords_part).length > 0 && Object.keys(structure).length > 0){
