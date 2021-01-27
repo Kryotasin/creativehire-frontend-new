@@ -77,7 +77,7 @@ function BasicDetails(props) {
   };
 
   const reloadProfilePicture = () => {
-    if(REACT_APP_ENV !== 'dev'){
+    // if(REACT_APP_ENV !== 'dev'){
       axios
         .post('api/v1/file-handler/', {
           ...typeOfImage('fetch'),
@@ -93,10 +93,10 @@ function BasicDetails(props) {
             setTimeout(() => message.warning('Profile picture not found.'), 100);
           }
         });
-    }
-    else{
-      console.log('dev mode, skipping s3 image fetch')
-    }
+    // }
+    // else{
+    //   console.log('dev mode, skipping s3 image fetch')
+    // }
   };
 
   useEffect(() => {
