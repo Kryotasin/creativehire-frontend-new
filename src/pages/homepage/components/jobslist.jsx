@@ -294,6 +294,7 @@ const JobsList = (props) => {
         footer={null}
         style={{ top: 20 }}
         destroyOnClose="true"
+        zIndex={1080}
       >
         <JobCardData jobData={modalData} structure={structure} keywords_part={keywords_part} updateJobMatchItem={updateJobMatchItem} title={title} />
       </Modal>
