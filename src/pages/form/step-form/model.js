@@ -1,6 +1,7 @@
 import { basicProjectDetails, newProject, submitProjectSkills } from './service';
 
 import { queryStructure } from '../../account/center/service';
+import { history } from 'umi';
 
 const Model = {
   namespace: 'formAndstepForm',
@@ -98,6 +99,7 @@ const Model = {
     },
 
     *submitNewProjectSkills({ payload }, { call, put, select }) {
+      
         yield put({
           type: 'saveStepLoadingState',
           payload: true,
@@ -140,7 +142,10 @@ const Model = {
           yield put({
             type: 'savequeryStructure',
             payload: null
-          })
+          });
+
+          
+          history.push(`/project/${response.data.id}`);
         }
 
     },

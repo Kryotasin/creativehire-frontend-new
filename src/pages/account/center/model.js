@@ -144,10 +144,11 @@ const Model = {
       }
     },
 
-    *fetchCompanies(payload, { call, put }) {
+    *fetchCompanies(_, { call, put }) {
       const response = yield call(queryCompanies);
 
       if (response.status === 200) {
+        console.log(response.data)
         yield put({
           type: 'saveCompanies',
           payload: response.data,

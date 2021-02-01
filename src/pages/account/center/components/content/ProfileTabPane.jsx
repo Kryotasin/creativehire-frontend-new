@@ -108,7 +108,7 @@ const ProfileTabPane = (props) => {
           <Link to="/portfolio/new">
             <PlusOutlined /> Add New{' '}
           </Link>
-          <Projects />
+          <Projects userID={userID} />
         {/* </Space> */}
         </>
       );

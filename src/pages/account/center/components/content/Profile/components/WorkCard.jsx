@@ -56,6 +56,7 @@ const WorkCard = (props) => {
 
   const handleCancel = () => {
     form.resetFields();
+    setWorkMod(undefined);
     setVisible(false);
     Modal.destroyAll();
   };
@@ -101,6 +102,8 @@ const WorkCard = (props) => {
       deletion_type: 'work_exp',
       key: workExpItemKey
     };
+
+    console.log(out)
     
     axios
       .post(
@@ -137,11 +140,9 @@ const WorkCard = (props) => {
 
 
   const setModalData = (data, key) => {
-
     const [ start, end ] = data.startend;
-
     const startDate = moment(start);
-
+    
     setStartMonth(startDate.month());
     setStartYear(startDate.year());
 
@@ -174,7 +175,7 @@ const WorkCard = (props) => {
     setTypesList(children);
     setProjectChoices(c3);
     // setTitleList(c2);
-
+    console.log(data)
     setWorkMod(data);
     setWorkID(key);
     setVisible(true);
@@ -255,8 +256,8 @@ const WorkCard = (props) => {
 
                   values.yoe = moment.duration(values.startend[1].diff(values.startend[0])).asMonths();
 
-                  delete values.start;
-                  delete values.end;
+                  // delete values.start;
+                  // delete values.end;
 
                   const out = {
                     type: 'work_exp',
@@ -366,25 +367,25 @@ const WorkCard = (props) => {
               </Form.Item>
 
               <Form.Item
-            name="start"
-            label="Start month and year"
-            rules={[
-              {
-                required: true,
-                message: 'Please choose month and year!',
-              },
-              () => ({
-                validator(rule, value) {
-                  if((startMonth === undefined || startMonth === null) || (startYear === undefined || startYear === null || startYear === "")){
-                    return Promise.reject('')
+              name="start"
+              label="Start month and year"
+              rules={[
+                {
+                  required: true,
+                //   message: 'Please choose month and year!',
+                },
+                () => ({
+                  validator(rule, value) {
+                    if((startMonth === undefined || startMonth === null) || (startYear === undefined || startYear === null || startYear === "")){
+                      return Promise.reject('')
+                    }
+                    else{
+                      return Promise.resolve();
+                    }
                   }
-                  else{
-                    return Promise.resolve();
-                  }
-                }
-              }),
-            ]}
-          >
+                }),
+              ]}
+            >
             <Space direction='horizontal' size='middle'>
               <Select defaultValue={months[startMonth]} onChange={(e) => setStartMonth(e)} style={{width:'90px'}}>
                 {months.map((v, k) => (

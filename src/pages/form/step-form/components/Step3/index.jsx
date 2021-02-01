@@ -1,4 +1,4 @@
-import { connect, history } from 'umi';
+import { connect } from 'umi';
 import { CloseOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { Spin, Form, Button, Divider, Typography, AutoComplete, message } from 'antd';
@@ -30,7 +30,7 @@ const Step3 = (props) => {
 
   const renderSkills = () => {
     if (skills.length === 0) {
-      console.log('skills zero');
+      console.log('zero skills found');
       return null;
     }
 
@@ -127,7 +127,6 @@ const Step3 = (props) => {
         type: 'formAndstepForm/submitNewProjectSkills',
         payload: { ...values },
       });
-      history.push(`/project/${project.id}`);
     }
   };
 

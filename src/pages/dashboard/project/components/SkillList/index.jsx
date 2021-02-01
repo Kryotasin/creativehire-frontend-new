@@ -88,7 +88,7 @@ const SkillList = (props) => {
       setLoaded(true);
     }
 
-    return () => { setLoaded(false)}
+    // return () => { setLoaded(false)}
   }, [structure, sortedSkills]);
 
   const onDeleteButtonClick = (cn) => {

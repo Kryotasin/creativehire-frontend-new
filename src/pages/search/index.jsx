@@ -221,7 +221,7 @@ const Search = (props) => {
                   }}
                 />
               </Panel>
-              <Panel header="Benefits" key="1" className={styles.sitecollapsecustompanel}>
+              {/* <Panel header="Benefits" key="1" className={styles.sitecollapsecustompanel}>
                 <Checkbox disabled={searching} onChange={(e) => setRemoteQuery(e.target.checked)}>
                   Remote work
                 </Checkbox>
@@ -237,7 +237,7 @@ const Search = (props) => {
                 <Checkbox disabled={searching} onChange={(e) => setStemOptQuery(e.target.checked)}>
                   Sponsors STEM-OPT 
                 </Checkbox>
-              </Panel>
+              </Panel> */}
               <Panel header="Employment Type" key="2" className={styles.sitecollapsecustompanel}>
                 <Checkbox.Group
                   disabled={searching}
@@ -279,7 +279,7 @@ const Search = (props) => {
                     {
                       Object.keys(companies).map((k) => (
                         <Col key={k} span={24}>
-                          <Checkbox value={k}>{companies[k]}</Checkbox>
+                          <Checkbox value={k[1]}>{companies[k]}</Checkbox>
                         </Col>
                       ))
                     }

@@ -84,7 +84,6 @@ const EducationCard = (props) => {
   };
 
   const deleteEducationHandler = (educationItemKey) => {
-
     const out ={
       type: 'deletion',
       deletion_type: 'education',
@@ -212,6 +211,8 @@ const EducationCard = (props) => {
           form
             .validateFields()
             .then((values) => {
+              setConfirmLoading(true);
+
               const startDate = moment().set({'year': startYear, 'month': startMonth, 'date': defaultDate});
               let endDate = undefined;
 
@@ -223,9 +224,7 @@ const EducationCard = (props) => {
                 endDate = moment().set({'year': endYear, 'month': endMonth, 'date': defaultDate});
               }
               
-
               values.startend = [startDate, endDate];
-
               const out = {
                 type: 'education',
                 data: values,
@@ -255,7 +254,7 @@ const EducationCard = (props) => {
                     form.resetFields();
                     setVisible(false);
                     message.success('Succesfully added');
-                    setConfirmLoading(true);
+                    setConfirmLoading(false);
                   });
 
                 });
