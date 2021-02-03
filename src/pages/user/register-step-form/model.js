@@ -115,7 +115,12 @@ const Model = {
 
     *setCompletion({ payload }, { put }) {
       yield put({
-        type: 'saveCompeltionStatus',
+        type: 'saveCurrentStep',
+        payload: 'urls',
+      });
+
+      yield put({
+        type: 'saveCompletionStatus',
         payload,
       });
     },
@@ -141,7 +146,7 @@ const Model = {
       return { ...state, loading: payload };
     },
 
-    saveCompeltionStatus(state, { payload }) {
+    saveCompletionStatus(state, { payload }) {
       return { ...state, completionStatus: payload };
     },
   },
