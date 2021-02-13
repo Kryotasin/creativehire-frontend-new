@@ -213,7 +213,7 @@ export default defineConfig({
               path: '/portfolio',
               icon: 'folder',
               name: 'Portfolio',
-              hideInMenu: true,
+              // hideInMenu: true,
               routes: [
                 {
                   path: '/portfolio',
@@ -229,7 +229,8 @@ export default defineConfig({
                   name: 'My Projects',
                   icon: 'project',
                   path: '/portfolio/list',
-                  component: './portfolio/list',
+                  // component: './portfolio/list',
+                  redirect: '/account/center?tab=portfolio'
                 },
               ],
             },

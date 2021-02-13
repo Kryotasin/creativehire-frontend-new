@@ -11,6 +11,13 @@ import styles from '../index.less';
 
 const { Paragraph, Title, Text } = Typography;
 
+const colors = new Map();
+  
+colors.set('custom', '#f50');
+colors.set('resume', '#87d068');
+colors.set('projects', '#108ee9');
+
+
 const JobCardData = (props) => {
   const { jobData, structure, keywords_part, updateJobMatchItem, title } = props;
 
@@ -56,13 +63,13 @@ const JobCardData = (props) => {
       jobKeys.forEach((e) => {
         if (keywords_part.ck_keywords.projects.includes(parseInt(e, 10))) {
           output.push(
-            <Tag icon={<CheckCircleOutlined />} color="success" key={e}>
+            <Tag color={colors.get('projects')} key={e}>
               {structure[3][e]}
             </Tag>,
           );
         } else {
           output.push(
-            <Tag icon={<CloseCircleOutlined />} color="error" key={e}>
+            <Tag key={e}>
               {structure[3][e]}
             </Tag>,
           );
@@ -78,13 +85,13 @@ const JobCardData = (props) => {
       jobKeys.forEach((e) => {
         if (keywords_part.ck_keywords.resume.includes(parseInt(e, 10))) {
           output.push(
-            <Tag icon={<CheckCircleOutlined />} color="success" key={'project-'.concat(e)}>
+            <Tag color={colors.get('resume')} key={'project-'.concat(e)}>
               {structure[3][e]}
             </Tag>,
           );
         } else {
           output.push(
-            <Tag icon={<CloseCircleOutlined />} color="error" key={'resume-'.concat(e)}>
+            <Tag key={'resume-'.concat(e)}>
               {structure[3][e]}
             </Tag>,
           );
