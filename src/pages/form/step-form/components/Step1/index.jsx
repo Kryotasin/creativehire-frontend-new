@@ -24,7 +24,7 @@ const ErrorMessage = ({ content }) => (
 );
 
 const Step1 = (props) => {
-  const { dispatch, link, loading, prefix } = props;
+  const { dispatch, link, loading } = props;
   const [form] = Form.useForm();
 
   const { validateFields } = form;
@@ -33,7 +33,7 @@ const Step1 = (props) => {
     const values = await validateFields();
 
     if(values.projectLink.includes('://')){
-      values.projectLink = values.prefix.concat(values.projectLink.split('://')[1]);
+      values.projectLink = values.projectLink.split('://')[1];
     }
 
     if (dispatch) {
@@ -51,8 +51,8 @@ const Step1 = (props) => {
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
       <Select style={{ width: 100 }} onChange={handleChange}>
-        <Option value="https://">https://</Option>
-        <Option value="http://">http://</Option>
+        <Select.Option value="https://">https://</Select.Option>
+        <Select.Option value="http://">http://</Select.Option>
       </Select>
     </Form.Item>
   );
@@ -64,11 +64,11 @@ const Step1 = (props) => {
         form={form}
         layout="horizontal"
         initialValues={{
-          prefix: prefix || 'https://',
-          projectLink: link ? link.split('://')[1] : 'www.myportfolio.com/my-design-project'
+          prefix: link ? link.prefix : 'https://',
+          projectLink: link ? link.projectLink : ''
         }}
         className={styles.stepForm}
-      >{console.log(link)}
+      >
         <Form.Item
           label="Project Link"
           name="projectLink"
@@ -121,6 +121,5 @@ const Step1 = (props) => {
 
 export default connect(({ formAndstepForm }) => ({
   link: formAndstepForm.link,
-  prefix: formAndstepForm.prefix,
   loading: formAndstepForm.loading,
 }))(Step1);

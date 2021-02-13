@@ -8,7 +8,6 @@ const Model = {
   state: {
     current: 'link',
     link: undefined,
-    prefix: undefined,
     basics: [],
     project: undefined,
     structure: null,
@@ -68,7 +67,7 @@ const Model = {
         type: 'saveStepLoadingState',
         payload: true,
       });
-
+      
       const newproj = yield call(newProject, payload);
       
       if (newproj.status === 201) {
@@ -133,10 +132,6 @@ const Model = {
             payload: undefined
           })
           yield put({
-            type: 'saveProjectLink',
-            payload: undefined
-          });
-          yield put({
             type: 'saveCurrentStep',
             payload: 'link'
           });
@@ -182,10 +177,6 @@ const Model = {
 
     saveError(state, { payload }) {
       return {...state, error: payload}
-    },
-
-    saveLinkPrefix(state, { payload }) {
-      return {...state, prefix: payload}
     }
   },
 };
