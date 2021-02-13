@@ -9,6 +9,8 @@ import React, { useState, useEffect } from 'react';
 import axios from '../../../../umiRequestConfig';
 import { Link } from 'umi';
 
+import {getPageQuery} from '../../../../utils/utils';
+
 const { TextArea } = Input;
 
 const formItemLayout = {
@@ -60,7 +62,13 @@ const IntroduceRow = (props) => {
     if (projectData === undefined && Object.keys(project).length !== 0) {
       setProjectData(project);
     }
-  }, [project]);
+    const {edit} = getPageQuery();
+
+    if(projectData !== undefined && edit){
+      openModal(); 
+    }
+
+  }, [project, projectData]);
 
   useEffect(() => {
     if (modalData !== undefined) {
@@ -68,11 +76,11 @@ const IntroduceRow = (props) => {
     }
   }, [modalData]);
 
-  // useEffect(() => {
+  useEffect(() => {
   //   if(isModalVisible === false && modalData !== undefined){
   //     setModalData(undefined);
   //   }
-  // }, [isModalVisible]);
+  }, [isModalVisible]);
 
   const onValidateForm = async () => {
     setConfirmLoading(true);
@@ -106,6 +114,27 @@ const IntroduceRow = (props) => {
       });
   };
 
+  const openModal = () => {
+    setModalVisible(true);
+    
+    axios
+      .post(REACT_APP_AXIOS_API_V1.concat('project/basicdetails/'), {
+        url: projectData.project_url,
+        img_only: 1,
+      })
+      .then((res) => {
+        console.log(res)
+        const finalData = {
+          ...res.data,
+          pastedProjectImage: res.data.img_list.includes(projectData.project_img)
+            ? ''
+            : projectData.project_img,
+        };
+        setModalData(finalData);
+        setImgList(res.data.img_list);
+      });
+  }
+
   return (
     <>
       <Row gutter={[16, 32]} type="flex">
@@ -134,26 +163,7 @@ const IntroduceRow = (props) => {
                   <Button
                     type="link"
                     icon={<EditOutlined />}
-                    onClick={() => {
-                      setModalVisible(true);
-
-                      console.log(projectData.project_url);
-                      axios
-                        .post(REACT_APP_AXIOS_API_V1.concat('project/basicdetails/'), {
-                          url: projectData.project_url,
-                          img_only: 1,
-                        })
-                        .then((res) => {
-                          const finalData = {
-                            ...res.data,
-                            pastedProjectImage: res.data.img_list.includes(projectData.project_img)
-                              ? ''
-                              : projectData.project_img,
-                          };
-                          setModalData(finalData);
-                          setImgList(res.data.img_list);
-                        });
-                    }}
+                    onClick={openModal}
                   />
                 </Tooltip>
               }
@@ -234,7 +244,7 @@ const IntroduceRow = (props) => {
                 >
                   <Space direction="vertical" size="middle">
                     <img
-                      src={modalData.img_list[imgCounter + 1]}
+                      src={modalData.img_list[imgCounter]}
                       width="320"
                       alt={projectData.project_title.concat(' image')}
                     />

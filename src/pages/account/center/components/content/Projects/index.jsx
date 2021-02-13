@@ -1,4 +1,4 @@
-import { List, Card, Popconfirm, Row, Col, message, Typography, Button } from 'antd';
+import { List, Card, Popconfirm, Row, Col, message, Typography, Button, Alert } from 'antd';
 import React, { useEffect } from 'react';
 import { connect, Link } from 'umi';
 // import moment from 'moment';
@@ -9,6 +9,8 @@ import { history } from 'umi';
 import axios from '../../../../../../umiRequestConfig';
 
 const { Title, Text, Paragraph } = Typography;
+
+let editMsg = 'Click to change ';
 
 const Projects = (props) => {
   const { dispatch, projectList, userID, keywords_part } = props;
@@ -76,7 +78,14 @@ const Projects = (props) => {
           }>
             <Row gutter={[0, 16]}>
               <Col xs={{ span: 24, offset: 0 }} lg={{ span: 24, offset: 0 }}>
-                <Link to={`/project/${item.pk}`}>
+                <Link to={`/project/${item.pk}${item.fields.project_img === 'https://picsum.photos/400' ? '?edit=true' : ''}`}>
+                  { 
+                    item.fields.project_img === 'https://picsum.photos/400' ? 
+                    // editMsg += ' project link'
+                      <Alert message="Click to change the project image" type="info" showIcon />
+                    :
+                    ''
+                  }
                   <img className={styles.projectCover} alt={item.fields.project_title} src={item.fields.project_img} />
                 </Link>
               </Col>
