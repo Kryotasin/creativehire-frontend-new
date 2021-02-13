@@ -7,6 +7,7 @@ import {
 import { Col, Row, Tooltip, Space, Card, Button, Modal, Form, Input, Skeleton, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import axios from '../../../../umiRequestConfig';
+import { Link } from 'umi';
 
 const { TextArea } = Input;
 
@@ -107,6 +108,20 @@ const IntroduceRow = (props) => {
 
   return (
     <>
+      <Row gutter={[16, 32]} type="flex">
+        <Col xs={{ span: 24 }} lg={{ span: 22, offset: 2 }}>
+          <Link
+            to={{
+              pathname: "/account/center",
+              search: "?tab=portfolio",
+              // state: { fromDashboard: true },
+            }}
+          >
+            <Button><ArrowLeftOutlined /> Back to Portfolio</Button>
+          </Link>
+        </Col>
+        
+      </Row>
       <Row gutter={[16, 32]} type="flex">
         <Col xs={{ span: 24 }} lg={{ span: 22, offset: 2 }}>
           {projectData !== undefined ? (

@@ -8,12 +8,16 @@ const Applications = React.lazy(() => import('./Applications'));
 const Profile = React.lazy(() => import('./Profile'));
 const Settings = React.lazy(() => import('./Settings'));
 
+import { getPageQuery } from '../../../../../utils/utils';
+
+import { history } from 'umi';
+
 import styles from '../../Center.less';
 
 
 const ProfileTabPane = (props) => {
 
-  const { userID, projectList } = props;
+  const { userID, projectList, match } = props;
 
   useEffect(() =>{
 
@@ -117,11 +121,16 @@ const ProfileTabPane = (props) => {
   const onTabChange = (key) => {
     // If you need to sync state to url
     // const { match } = this.props;
-    // router.push(`${match.url}/${key}`);
+    history.replace(`center?tab=${key}`);
     setTabKey(key);
   };
 
   useEffect(() => {
+    
+    const {tab} = getPageQuery();
+    if(tab !== undefined){
+      setTabKey(tab);
+    }
     // const path = match && match.path;
     // const urlTabKey = location.pathname.replace(`${path}/`, '');
     // if (urlTabKey && urlTabKey !== '/' && tabKey !== urlTabKey) {

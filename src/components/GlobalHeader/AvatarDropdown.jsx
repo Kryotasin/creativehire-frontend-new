@@ -66,7 +66,7 @@ const AvatarDropdown = (props) => {
       return;
     }
 
-    history.push(`/account/${key}`);
+    history.push(`/account/${key}?tab=profile`);
   };
 
     const menuHeaderDropdown = (
