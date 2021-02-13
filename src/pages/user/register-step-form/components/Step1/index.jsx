@@ -9,9 +9,12 @@ import {
   Progress,
   Divider,
   Tooltip,
+  Select
 } from 'antd';
 import { connect, Link } from 'umi';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+
+import {validURL} from '../../../../../utils/utils';
 
 import styles from './index.less';
 
@@ -68,6 +71,13 @@ const Step1 = (props) => {
   const onValidateForm = async () => {
     const values = await validateFields();
     
+    if(values.portfolio.includes('://')){
+      values.portfolio = values.prefix.concat(values.portfolio.split('://')[1]);
+    }
+    else{
+      values.portfolio = values.prefix.concat(values.portfolio);
+    }
+
     dispatch({
       type: 'userAndregister/registerUserAndGetLinks',
       payload: values,
@@ -132,6 +142,7 @@ const Step1 = (props) => {
     return promise.resolve();
   };
 
+  // Password strength display
   const renderPasswordProgress = () => {
     const value = form.getFieldValue('password');
     const passwordStatus = getPasswordStatus();
@@ -148,6 +159,21 @@ const Step1 = (props) => {
     ) : null;
   };
 
+  // Functionality for the url prefix and link
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select style={{ width: 100 }} onChange={handleChange}>
+        <Select.Option value="https://">https://</Select.Option>
+        <Select.Option value="http://">http://</Select.Option>
+      </Select>
+    </Form.Item>
+  );
+
+  
+  function handleChange(value) {
+    
+  }
+
   return (
     <>
       <Form
@@ -157,6 +183,9 @@ const Step1 = (props) => {
         className={styles.stepForm}
         colon={false}
         labelAlign="left"
+        initialValues={{
+          prefix: 'https://',
+        }}
       >
         <Form.Item
           label="Email"
@@ -185,17 +214,13 @@ const Step1 = (props) => {
               required: true,
               message: 'Enter your portfolio URL so we can fetch your projects',
             },
-            {
-              type: 'url',
-              message: 'Invalid url',
-            },
           ]}
           tooltip={{
             title: 'We will fetch your projects and set up your profile',
             icon: <QuestionCircleOutlined />,
           }}
         >
-          <Input size="large" placeholder="http://www.myportfolio.com/" />
+          <Input size="large" placeholder="www.myportfolio.com" addonBefore={prefixSelector} />
         </Form.Item>
 
         <Form.Item

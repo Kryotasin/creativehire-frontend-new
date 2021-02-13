@@ -74,10 +74,6 @@ const Step1 = (props) => {
           name="projectLink"
           rules={[
             {
-              type: 'url',
-              message: 'The input is not valid link!',
-            },
-            {
               required: true,
               message: 'Please enter exact link to project ',
             },

@@ -232,7 +232,7 @@ const Step2 = (props) => {
           name="links"
           label="Select projects"
           tooltip={{
-            title: 'Do not choose password protected projects.',
+            title: 'Do not choose password protected projects, about or homepages.',
             icon: <QuestionCircleOutlined />,
           }}
         >
@@ -265,14 +265,13 @@ const Step2 = (props) => {
       />
       <div className={styles.desc}>
         <h3>Help</h3>
-        <h4>What is Project Image?</h4>
+        <h4>What is this page?</h4>
         <p>
-          Project images are images we could retrieve from the link you provided. Pick 3-4. You can
-          add more later.
+          We try to get all your projects under your portfolio website. Selecting these will add the keywords from your projects into your profile for job matching.
+        <p>
+          <Typography.Text strong>Note: </Typography.Text>Do not select <Text underline>password protected project pages</Text>, <Text underline>about pages</Text>,
+          <Text underline>home/index pages</Text>. 
         </p>
-        <p>
-          <Typography.Text strong>Note: </Typography.Text>The images are fetched directly from the
-          original source. We currently do not support uploading project cover images.
         </p>
       </div>
     </>
