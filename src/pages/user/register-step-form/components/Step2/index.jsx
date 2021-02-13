@@ -207,6 +207,22 @@ const Step2 = (props) => {
 
   return (
     <>
+      <div className={styles.desc}>
+        <h3>Help</h3>
+        <h4>What is this page?</h4>
+        <p>
+          We try to get all your projects under your portfolio website. Selecting these will add the keywords from your projects into your profile for job matching.       
+        </p>
+        <p>
+          <Typography.Text strong>Note: Do not select password protected project pages, about pages,
+          home/index pages</Typography.Text>. 
+        </p>
+      </div>
+      {/* <Divider
+        style={{
+          margin: '40px 0 24px',
+        }}
+      /> */}
       <Form
         {...formItemLayout}
         form={form}
@@ -230,7 +246,7 @@ const Step2 = (props) => {
 
         <Form.Item
           name="links"
-          label="Select projects"
+          label="Select your projects"
           tooltip={{
             title: 'Do not choose password protected projects, about or homepages.',
             icon: <QuestionCircleOutlined />,
@@ -258,22 +274,6 @@ const Step2 = (props) => {
         </Form.Item>
       </Form>
 
-      <Divider
-        style={{
-          margin: '40px 0 24px',
-        }}
-      />
-      <div className={styles.desc}>
-        <h3>Help</h3>
-        <h4>What is this page?</h4>
-        <p>
-          We try to get all your projects under your portfolio website. Selecting these will add the keywords from your projects into your profile for job matching.
-        <p>
-          <Typography.Text strong>Note: </Typography.Text>Do not select <Text underline>password protected project pages</Text>, <Text underline>about pages</Text>,
-          <Text underline>home/index pages</Text>. 
-        </p>
-        </p>
-      </div>
     </>
   );
 };
