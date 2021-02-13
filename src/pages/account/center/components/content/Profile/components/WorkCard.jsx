@@ -86,7 +86,7 @@ const WorkCard = (props) => {
     return (
       <div style={{color: '#505050'}}>
         <div className={styles.dates}>
-          {s.locale('en').format('MMM YYYY')} - {current ? 'Now ' : e.locale('en').format('MMMM YYYY')} 
+          {s.locale('en').format('MMM YYYY')} - {current ? 'Present ' : e.locale('en').format('MMMM YYYY')} 
           {'('.concat(String((theDiffObject.years))).concat('y ').concat(String(theDiffObject.months)).concat('m').concat(')')}
         </div>
         {company.concat(' - ').concat(employmentTypes[type])}
@@ -175,7 +175,6 @@ const WorkCard = (props) => {
     setTypesList(children);
     setProjectChoices(c3);
     // setTitleList(c2);
-    console.log(data)
     setWorkMod(data);
     setWorkID(key);
     setVisible(true);

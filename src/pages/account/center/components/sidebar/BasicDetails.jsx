@@ -6,10 +6,9 @@ import {
   BehanceCircleFilled,
   LinkedinFilled,
   DribbbleCircleFilled,
-  UploadOutlined,
+  CameraOutlined,
   AppstoreOutlined,
 } from '@ant-design/icons';
-import jwt_decode from 'jwt-decode';
 
 import styles from '../../Center.less';
 import axios from '../../../../../umiRequestConfig';
@@ -47,7 +46,7 @@ const extractHostname = (url) => {
 };
 
 function BasicDetails(props) {
-  const { entity, editMode, action, titleTypes, userID, dispatch } = props;
+  const { entity, editMode, action, titleTypes, userID, dispatch, profile_picture } = props;
 
   
   const [first_name, setFirstName] = useState(entity.first_name);
@@ -76,28 +75,28 @@ function BasicDetails(props) {
     return { type: 'profile_pic', process: proc, fileName: entity.user_img_salt };
   };
 
-  const reloadProfilePicture = () => {
-    // if(REACT_APP_ENV !== 'dev'){
-      axios
-        .post('api/v1/file-handler/', {
-          ...typeOfImage('fetch'),
-        })
-        .then((res) => {
-          if (res.status === 404) {
-            // Set something to show lack of profile picture.
-            setTimeout(() => message.warning('Profile picture not found.'), 100);
-          } else if (res.status === 200 && res.data !== 'ErrorResponseMetadata') {
-            setProfilepic(res.data);
-          } else if (res.status === 200 && res.data === 'ErrorResponseMetadata') {
-            // Set something to show lack of profile picture.
-            setTimeout(() => message.warning('Profile picture not found.'), 100);
-          }
-        });
-    // }
-    // else{
-    //   console.log('dev mode, skipping s3 image fetch')
-    // }
-  };
+  // const reloadProfilePicture = () => {
+  //   // if(REACT_APP_ENV !== 'dev'){
+  //     axios
+  //       .post('api/v1/file-handler/', {
+  //         ...typeOfImage('fetch'),
+  //       })
+  //       .then((res) => {
+  //         if (res.status === 404) {
+  //           // Set something to show lack of profile picture.
+  //           setTimeout(() => message.warning('Profile picture not found.'), 100);
+  //         } else if (res.status === 200 && res.data !== 'ErrorResponseMetadata') {
+  //           setProfilepic(res.data);
+  //         } else if (res.status === 200 && res.data === 'ErrorResponseMetadata') {
+  //           // Set something to show lack of profile picture.
+  //           setTimeout(() => message.warning('Profile picture not found.'), 100);
+  //         }
+  //       });
+  //   // }
+  //   // else{
+  //   //   console.log('dev mode, skipping s3 image fetch')
+  //   // }
+  // };
 
   useEffect(() => {
     // let formBaseData = {
@@ -137,7 +136,7 @@ function BasicDetails(props) {
   }, []);
 
   useEffect(() => {
-    reloadProfilePicture();
+    // reloadProfilePicture();
   }, []);
 
   // https://api.creativehire.co/api/v1/
@@ -164,7 +163,12 @@ function BasicDetails(props) {
 
       if (status === 'done') {
         message.success(`${info.file.name} file uploaded successfully.`);
-        reloadProfilePicture();
+        
+        dispatch({
+          type: 'accountAndcenter/fetchProfilePicture',
+          payload: userID
+        });
+
       } else if (status === 'error') {
         message.error(`${info.file.name} file upload failed.`.concat(info));
       }
@@ -285,16 +289,20 @@ function BasicDetails(props) {
               setLocation(res.results[0].locations[0]);
             });
         },
-        () => message.error('Failed to get location'),
+        (err) => {
+          if(err.code === 1){
+            message.error('Location access is blocked. Please check browser permissions.', 4)
+          }
+        },
       );
     } else {
-      message.error('Failed to get location');
+      message.error('Cannot find location.');
     }
   };
 
   const suffix = (
     <Tooltip title="Locate me">
-      <Button onClick={getLocation} type="link" icon={<EnvironmentTwoTone />} size="small" />
+      <Button onClick={getLocation} type="link" icon={<EnvironmentTwoTone />} size="small" >Locate me</Button>
     </Tooltip>
   );
 
@@ -310,16 +318,16 @@ function BasicDetails(props) {
           ''
         ) : (
           <>
-            {profilepic ? (
-              <img src={`data:image/png;base64,${profilepic}`} alt="avatar" />
+            {profile_picture ? (
+              <img src={`data:image/png;base64,${profile_picture}`} alt="avatar" />
             ) : (
-              <img alt={profilepic || 'Default pic'} src={profilepic || temp} />
+              <img alt={profile_picture || 'Default pic'} src={profile_picture || temp} />
             )}
 
             <div className={styles.overlay} />
             <Upload {...entityPictureUploadProps} showUploadList={false}>
               <div className={styles.button_view}>
-                <Button shape="round" icon={<UploadOutlined />} />
+                <Button shape="round" icon={<CameraOutlined />} />
               </div>
             </Upload>
           </>

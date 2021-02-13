@@ -21,6 +21,7 @@ const UserModel = {
     applied_jobs: undefined,
     search_all: undefined,
     searching: false,
+    userID: undefined
   },
   effects: {
     // *fetchCurrent(_, { call, put, delay }) {

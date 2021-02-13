@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Divider, Input, Alert } from 'antd';
+import { Form, Button, Divider, Input, Alert, Select } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -24,13 +24,17 @@ const ErrorMessage = ({ content }) => (
 );
 
 const Step1 = (props) => {
-  const { dispatch, link, loading } = props;
+  const { dispatch, link, loading, prefix } = props;
   const [form] = Form.useForm();
 
   const { validateFields } = form;
 
   const onValidateForm = async () => {
     const values = await validateFields();
+
+    if(values.projectLink.includes('://')){
+      values.projectLink = values.prefix.concat(values.projectLink.split('://')[1]);
+    }
 
     if (dispatch) {
       dispatch({
@@ -40,15 +44,31 @@ const Step1 = (props) => {
     }
   };
 
+  function handleChange(value) {
+    
+  }
+
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select style={{ width: 100 }} onChange={handleChange}>
+        <Option value="https://">https://</Option>
+        <Option value="http://">http://</Option>
+      </Select>
+    </Form.Item>
+  );
+
   return (
     <>
       <Form
         {...formItemLayout}
         form={form}
         layout="horizontal"
-        initialValues={link}
+        initialValues={{
+          prefix: prefix || 'https://',
+          projectLink: link ? link.split('://')[1] : 'www.myportfolio.com/my-design-project'
+        }}
         className={styles.stepForm}
-      >
+      >{console.log(link)}
         <Form.Item
           label="Project Link"
           name="projectLink"
@@ -63,7 +83,7 @@ const Step1 = (props) => {
             },
           ]}
         >
-          <Input placeholder="Project link" />
+          <Input placeholder="www.myportfolio.com/my-design-project" addonBefore={prefixSelector} />
         </Form.Item>
 
         <Form.Item
@@ -101,5 +121,6 @@ const Step1 = (props) => {
 
 export default connect(({ formAndstepForm }) => ({
   link: formAndstepForm.link,
+  prefix: formAndstepForm.prefix,
   loading: formAndstepForm.loading,
 }))(Step1);

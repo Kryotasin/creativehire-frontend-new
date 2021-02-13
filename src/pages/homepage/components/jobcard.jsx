@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Space, Typography, Tag, Button } from 'antd';
+import { Row, Col, Space, Typography, Tag, Button, Popconfirm } from 'antd';
 
 import {
   CloseCircleTwoTone,
@@ -18,13 +18,9 @@ const JobCardData = (props) => {
   
   const [ applied, setApplied ] = useState(undefined);
   const [ saved, setSaved ] = useState(undefined);
-
-  const uniqueItems = (arr) => {
-    return arr.filter((value, index, self) => {
-      return self.indexOf(value) === index;
-    });
-  };
-
+  const [visible, setVisible] = React.useState(false);
+  const [confirmLoading, setConfirmLoading] = React.useState(false);
+  
   useEffect(() => {
     if (jobKeys === undefined) {
       const temp = [];
@@ -43,6 +39,16 @@ const JobCardData = (props) => {
     }
 
   }, [jobData]);
+
+  const uniqueItems = (arr) => {
+    return arr.filter((value, index, self) => {
+      return self.indexOf(value) === index;
+    });
+  };
+
+  function cancel(e) {
+    console.log(e);
+  }
 
   const printProjectTags = () => {
     const output = [];
@@ -182,13 +188,13 @@ const JobCardData = (props) => {
               xl={{ span: 6, push:8 }}
             >
               <Space size="large">
-                <a
-                  href={jobData.jobpost_data.jobpost_application_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                
                   {applied ? (
-                    <>
+                      <a
+                      href={jobData.jobpost_data.jobpost_application_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <Button
                         type="primary"
                         style={{
@@ -200,20 +206,22 @@ const JobCardData = (props) => {
                       >
                         Applied
                       </Button>
-                      {/* <Button type="link" style={{textDecoration: 'underline'}}>undo</Button> */}
-                    </>
+                    </a>
                   ) : (
-                    <Button
-                      type="primary"
-                      onClick={() => {
+                    <Popconfirm
+                      title="Did you apply for this job?"
+                      onConfirm={() => {
                         setApplied(true);
                         updateJobMatchItem(jobData.jm_data.id, title, 'apply');
                       }}
+                      onCancel={cancel}
+                      okText="Yes"
+                      cancelText="No"
                     >
-                      Apply
-                    </Button>
+                      <Button type="primary" onClick={() => window.open(jobData.jobpost_data.jobpost_application_link)}>Apply</Button>
+                    </Popconfirm>
+                    
                   )}
-                </a>
 
                 {saved ? (
                   <Button

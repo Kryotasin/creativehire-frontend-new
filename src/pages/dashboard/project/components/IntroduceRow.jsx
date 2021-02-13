@@ -167,7 +167,8 @@ const IntroduceRow = (props) => {
                           rel="noreferrer"
                           href={projectData.project_url}
                         >
-                          {extractHostname(projectData.project_url)}
+                          {/* {extractHostname(projectData.project_url)} */}
+                          {projectData.project_url}
                         </a>
                       </div>
                     </Space>

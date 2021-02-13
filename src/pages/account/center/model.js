@@ -13,6 +13,7 @@ import {
   queryRemoteUpdate,
   queryWorkExpEducationUpdate,
   queryUserSettings,
+  queryProfilePicture
 } from './service';
 import { message } from 'antd';
 
@@ -24,6 +25,7 @@ const Model = {
     entity_part: {},
     candidate_part: {},
     keywords_part: {},
+    profile_picture: undefined,
 
     settings_part: {},
 
@@ -64,6 +66,28 @@ const Model = {
             payload: struct,
           });
         }
+      }
+    },
+
+    *fetchProfilePicture(payload, { select, call, put }){     
+
+      const data = {type: 'profile_pic', process: "fetch", fileName: payload.payload};
+      
+      const res = yield call(queryProfilePicture, data);
+
+      if(res.status === 200){
+      }
+      if (res.status === 404) {
+        // Set something to show lack of profile picture.
+        setTimeout(() => message.warning('Profile picture not found.'), 100);
+      } else if (res.status === 200 && res.data !== 'ErrorResponseMetadata') {
+        yield put({
+          type: 'saveNewState',
+          payload: { profile_picture: res.data }
+        });
+      } else if (res.status === 200 && res.data === 'ErrorResponseMetadata') {
+        // Set something to show lack of profile picture.
+        setTimeout(() => message.warning('Profile picture not found.'), 100);
       }
     },
 
@@ -148,7 +172,6 @@ const Model = {
       const response = yield call(queryCompanies);
 
       if (response.status === 200) {
-        console.log(response.data)
         yield put({
           type: 'saveCompanies',
           payload: response.data,

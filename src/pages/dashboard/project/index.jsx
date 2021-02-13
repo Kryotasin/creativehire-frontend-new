@@ -64,7 +64,7 @@ const ProjectMain = (props) => {
           project_id: projectID,
           user_id: btoa(userID)
         })
-        .then((res) => {console.log(res)
+        .then((res) => {
           if (res.status === 200) {
             setProject(res.data);
           }

@@ -14,11 +14,10 @@ const Projects = (props) => {
   const { dispatch, projectList, userID, keywords_part } = props;
 
   useEffect(() => {
-    console.log(keywords_part)
   }, [projectList]);
   
   function cancel(e) {
-    console.log(e);
+    // console.log(e);
   }
 
 
@@ -42,7 +41,7 @@ const Projects = (props) => {
           {/* <Card className={styles.card} hoverable cover={<img alt={item.fields.project_title} src={item.fields.project_img} />}>
               <Card.Meta title={item.fields.project_title} description={new Date(item.fields.project_post_date).toDateString()} />
             </Card> */}
-          <Card title={<Link to={`/project/${item.pk}`}>{item.fields.project_title}</Link>} extra={
+            <Card title={<Link to={`/project/${item.pk}`}>{item.fields.project_title}</Link>} extra={
                     <Popconfirm
                       title="Are you sure to delete this project?"
                       onConfirm={() => {

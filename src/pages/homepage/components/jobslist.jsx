@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { List, Typography, Card, Row, Col, Space, Progress, Button, Spin, Modal } from 'antd';
+import { List, Typography, Card, Row, Col, Space, Progress, Button, Spin, Modal, Popconfirm } from 'antd';
 import { CheckOutlined, CloseOutlined, CloseCircleTwoTone, CheckCircleTwoTone  } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -56,6 +56,9 @@ const JobsList = (props) => {
     }
     
     if(Math.abs(splits.months) > 0){
+      if(Math.abs(splits.months) === 1){
+        return String(Math.abs(splits.months)).concat(' month ago');
+      }
       return String(Math.abs(splits.months)).concat(' months ago');
     }
     else if(Math.abs(splits.months) < 0 && Math.abs(splits.days) > 0){
@@ -75,6 +78,10 @@ const JobsList = (props) => {
     }
     return '#1890ff';
   };
+  
+  function cancel(e) {
+    console.log(e);
+  }
 
   return (
     <>
@@ -204,13 +211,13 @@ const JobsList = (props) => {
                         </Space>
 
                         <Space size={item.jm_data.jm_applied_by_candidate ? 'small' : 'large'}>
-                          <a
-                            href={item.jobpost_data.jobpost_application_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
+                          
                             {item.jm_data.jm_applied_by_candidate ? (
-                              <>
+                                <a
+                                href={item.jobpost_data.jobpost_application_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
                                 <Button
                                   type="primary"
                                   style={{
@@ -222,19 +229,20 @@ const JobsList = (props) => {
                                 >
                                   Applied
                                 </Button>
-                                {/* <Button type="link" style={{textDecoration: 'underline'}}>undo</Button> */}
-                              </>
+                              </a>
                             ) : (
-                              <Button
-                                type="primary"
-                                onClick={() => {
+                              <Popconfirm
+                                title="Did you apply for this job?"
+                                onConfirm={() => {
                                   updateJobMatchItem(item.jm_data.id, title, 'apply');
                                 }}
+                                onCancel={cancel}
+                                okText="Yes"
+                                cancelText="No"
                               >
-                                Apply
-                              </Button>
+                                <Button type="primary" onClick={() => window.open(item.jobpost_data.jobpost_application_link)}>Apply</Button>
+                              </Popconfirm>
                             )}
-                          </a>
 
                           {item.jm_data.jm_saved_by_candidate ? (
                             <Button
@@ -294,7 +302,7 @@ const JobsList = (props) => {
         footer={null}
         style={{ top: 20 }}
         destroyOnClose="true"
-        zIndex={1080}
+        zIndex={200}
       >
         <JobCardData jobData={modalData} structure={structure} keywords_part={keywords_part} updateJobMatchItem={updateJobMatchItem} title={title} />
       </Modal>

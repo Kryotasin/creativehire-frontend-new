@@ -3,17 +3,16 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
 import { Link, useIntl, connect } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import jwt_decode from 'jwt-decode';
 import logo from '../assets/new-blue-logo.svg';
 import styles from './BasicLayout.less';
-import asyncLocalStorage from '../asyncLocalStorage';
+import jwt_decode from 'jwt-decode';
 
 import { messageTokenRunner  } from '../firestore';
 
@@ -72,17 +71,18 @@ const BasicLayout = (props) => {
     settings,
     location = {
       pathname: '/home',
-    },
+    }
   } = props;
   /**
    * constructor
    */
 
-   useEffect(() => {
-     // Firebase messaging service
-     messageTokenRunner();
 
+   useEffect(() => {
+      // Firebase messaging service
+      messageTokenRunner();
    }, []);
+
 
   useEffect(() => {
     if (localStorage.getItem('refreshToken')) {

@@ -202,6 +202,13 @@ export default defineConfig({
               component: './dashboard/project',
               hideInMenu: true,
             },
+            
+            {
+              name: 'Saved Jobs',
+              icon: 'save',
+              path: '/saved-jobs',
+              component: './savedjobs',
+            },
             {
               path: '/portfolio',
               icon: 'folder',

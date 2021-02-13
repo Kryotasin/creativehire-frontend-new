@@ -23,6 +23,7 @@ const Center = (props) => {
     structure = {},
     titleTypes,
     projectList,
+    profile_picture
   } = props;
 
   const [ dataLoading, setDataLoading ] = useState(true);
@@ -43,6 +44,13 @@ const Center = (props) => {
     })
     .then((token) => {
       setUserID(token.user_id);
+
+      if(profile_picture === undefined){
+        dispatch({
+          type: 'accountAndcenter/fetchProfilePicture',
+          payload: token.user_id
+        });
+      }
       
       dispatch({
         type: 'accountAndcenter/fetchCurrent',
@@ -56,6 +64,7 @@ const Center = (props) => {
     });
     
   }, []);
+  
 
   // useEffect(() =>{
   //   setUserIDInterval(setInterval(()=>{
@@ -100,7 +109,7 @@ const Center = (props) => {
       setDataLoading(false);
     }
     
-  }, [currentUser, titleTypes, keywords_part, structure]);
+  }, [currentUser, titleTypes, keywords_part, structure, profile_picture]);
 
   // static getDerivedStateFromProps(
   //   props,
@@ -155,6 +164,7 @@ const Center = (props) => {
                     titleTypes={titleTypes}
                     userID={userID}
                     dispatch={dispatch}
+                    profile_picture={profile_picture}
                   />
                   <Divider />
 
@@ -201,7 +211,7 @@ const Center = (props) => {
                 </Row>
               </div> */}
           <Col lg={17} md={24}>
-            {!dataLoading && (<ProfileTabPane userID={userID} />)}
+            {!dataLoading && (<ProfileTabPane userID={userID} projectList={projectList} />)}
           </Col>
         </Row>
       </GridContent>
@@ -219,4 +229,5 @@ export default connect(({ loading, accountAndcenter }) => ({
   currentUserLoading: loading.effects['accountAndcenter/fetchCurrent'],
   fileuploading: accountAndcenter.fileuploading,
   titleTypes: accountAndcenter.titleTypes,
+  profile_picture: accountAndcenter.profile_picture,
 }))(Center);

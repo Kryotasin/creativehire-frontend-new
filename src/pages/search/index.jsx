@@ -52,7 +52,7 @@ const Search = (props) => {
 
   // const [queryResults, setQueryResults] = useState([]);
 
-  const matchPercentSortItem = ['Sorting by ascending order', 'Sorting by descending order', 'Sort by Match Percent'];
+  const matchPercentSortItem = ['Match Percent: Low to High', 'Match Percent: High to Low', 'Sort by: Match Percent'];
 
   useEffect(() => {
     if(props.location.query.visited && atob(props.location.query.visited) === 'True'){
@@ -146,7 +146,7 @@ const Search = (props) => {
 
   }, [searching]);
 
-  useEffect(() => {
+  useEffect(() => {console.log(matchPercentSortQuery)
     if (matchPercentSortQuery === 0 || matchPercentSortQuery === 1) {
       runSearchQuery();
     }
@@ -182,8 +182,8 @@ const Search = (props) => {
 
   const menu = (
     <Menu onClick={(e) => setMatchPercentSortQuery(Number(e.key))}>
-      <Menu.Item key="0">Ascending</Menu.Item>
-      <Menu.Item key="1">Descending</Menu.Item>
+      <Menu.Item key="0">Low to High</Menu.Item>
+      <Menu.Item key="1">High to Low</Menu.Item>
       <Menu.Item key="2">None</Menu.Item>
     </Menu>
   );

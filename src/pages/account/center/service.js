@@ -85,3 +85,8 @@ export async function queryWorkExpEducationUpdate(params){
     params
   );
 }
+
+
+export async function queryProfilePicture(params){
+  return axios.post(`${REACT_APP_AXIOS_API_V1}file-handler/`, params);
+}

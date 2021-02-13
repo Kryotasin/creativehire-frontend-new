@@ -1,98 +1,87 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Space } from 'antd';
+import React, { useState, useEffect, Suspense } from 'react';
+import { Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Link } from 'umi';
 
-import Projects from './Projects';
-import Articles from './SavedJobs';
-import Applications from './Applications';
-import Profile from './Profile';
-import SavedJobs from './SavedJobs';
-import Settings from './Settings';
+const Projects = React.lazy(() => import('./Projects'));
+const Applications = React.lazy(() => import('./Applications'));
+const Profile = React.lazy(() => import('./Profile'));
+const Settings = React.lazy(() => import('./Settings'));
 
 import styles from '../../Center.less';
 
-const operationTabList = [
-  {
-    key: 'profile',
-    tab: (
-      <span>
-        Profile{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          {/* (8) */}
-        </span>
-      </span>
-    ),
-  },
-  {
-    key: 'portfolio',
-    tab: (
-      <span>
-        Portfolio{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          {/* (8) */}
-        </span>
-      </span>
-    ),
-  },
-  {
-    key: 'savedjobs',
-    tab: (
-      <span>
-        Saved Jobs{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          {/* (8) */}
-        </span>
-      </span>
-    ),
-  },
-  {
-    key: 'appliedjobs',
-    tab: (
-      <span>
-        Applied Jobs{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          {/* (8) */}
-        </span>
-      </span>
-    ),
-  },  
-  {
-    key: 'settings',
-    tab: (
-      <span>
-        Settings{' '}
-        <span
-          style={{
-            fontSize: 14,
-          }}
-        >
-          {/* (8) */}
-        </span>
-      </span>
-    ),
-  },
-];
 
 const ProfileTabPane = (props) => {
 
-  const { userID } = props;
+  const { userID, projectList } = props;
+
+  useEffect(() =>{
+
+  }, [projectList]);
+
+  const operationTabList = [
+    {
+      key: 'profile',
+      tab: (
+        <span>
+          Profile{' '}
+          <span
+            style={{
+              fontSize: 14,
+            }}
+          >
+            {/* (8) */}
+          </span>
+        </span>
+      ),
+    },
+    {
+      key: 'portfolio',
+      tab: (
+        <span>
+          Portfolio{' '}
+          <span
+            style={{
+              fontSize: 14,
+            }}
+          > 
+            {projectList ? `(${Object.keys(projectList).length})` : '()'}
+          </span>
+        </span>
+      ),
+    },
+    {
+      key: 'appliedjobs',
+      tab: (
+        <span>
+          Applied Jobs{' '}
+          <span
+            style={{
+              fontSize: 14,
+            }}
+          >
+            {/* (8) */}
+          </span>
+        </span>
+      ),
+    },  
+    {
+      key: 'settings',
+      tab: (
+        <span>
+          Settings{' '}
+          <span
+            style={{
+              fontSize: 14,
+            }}
+          >
+            {/* (8) */}
+          </span>
+        </span>
+      ),
+    },
+  ];
+  
 
   const [tabKey, setTabKey] = useState('profile');
 
@@ -112,10 +101,6 @@ const ProfileTabPane = (props) => {
         {/* </Space> */}
         </>
       );
-    }
-
-    if (tabKey === 'savedjobs') {
-      return <SavedJobs userID={userID} />;
     }
 
     if (tabKey === 'appliedjobs') {
@@ -148,15 +133,17 @@ const ProfileTabPane = (props) => {
   });
 
   return (
-    <Card
-      className={styles.tabsCard}
-      bordered={false}
-      tabList={operationTabList}
-      activeTabKey={tabKey}
-      onTabChange={onTabChange}
-    >
-      {renderChildrenByTabKey()}
-    </Card>
+    <Suspense fallback={<Skeleton />}>
+      <Card
+        className={styles.tabsCard}
+        bordered={false}
+        tabList={operationTabList}
+        activeTabKey={tabKey}
+        onTabChange={onTabChange}
+      >
+        {renderChildrenByTabKey()}
+      </Card>
+    </Suspense>
   );
 };
 

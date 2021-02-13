@@ -81,7 +81,7 @@ const Homepage = (props) => {
 
   useEffect(() => {
     
-    if (currentUser && userID !== undefined) {
+    if (userID !== undefined) {
       // if(random_jobs === null || random_jobs === undefined){
       dispatch({
         type: 'user/fetchRandomJobs',
@@ -128,7 +128,7 @@ const Homepage = (props) => {
             job_list={random_jobs}
             showExtra={true}
             dispatch={dispatch}
-            pageSize={6}
+            pageSize={18}
             // updateJobMatchItem={updateJobMatchItem}
           />
           

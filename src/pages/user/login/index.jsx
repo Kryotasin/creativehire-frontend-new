@@ -1,4 +1,4 @@
-import { Alert, Checkbox } from 'antd';
+import { Alert, Checkbox, Button, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, connect } from 'umi';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
@@ -25,6 +25,7 @@ const Login = props => {
   const { status, error, submitting } = userAndlogin;
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState('login');
+  
 
   const handleSubmit = values => {
     const { dispatch } = props;
@@ -94,12 +95,13 @@ const Login = props => {
             Forgot Password
           </Link>
         </div>
-        <Submit loading={submitting}>Login</Submit>
-        <div className={styles.other}>
-          <Link className={styles.register} to="/user/register">
-            Register
-          </Link>
-        </div>
+            <Submit loading={submitting}>Login</Submit>
+            <p className={styles.or}>Or</p>
+            <Link to="/user/register">
+            <Button size="large" className={styles.submit} type='default'>Register</Button>
+            </Link>
+            
+        
       </LoginForm>
     </div>
   );

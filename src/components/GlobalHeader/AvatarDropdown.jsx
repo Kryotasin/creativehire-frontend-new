@@ -4,15 +4,53 @@ import React, { useEffect, useState } from 'react';
 import { history, connect } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-import axios from '../../umiRequestConfig';
+import asyncLocalStorage from '../../asyncLocalStorage';
+import jwt_decode from 'jwt-decode';
+import temp from '../../assets/anony.png';
 
 const AvatarDropdown = (props) => {
   
-  const { dispatch, entity_part, menu } = props;
+  const { dispatch, entity_part, menu, profile_picture } = props;
   const [ avatarSrc, setAvatarSrc ] = useState(undefined);
 
+    //----------------------------------------USER ID HANDLING--------------------------------------------------------------------
+
+    // useEffect(() => {  
+    //   if(Object.keys(entity_part).length === 0){
+    //     asyncLocalStorage.getItem('accessToken')
+    //     .then((token) => {console.log('avater', token)
+    //       token = JSON.parse(JSON.stringify(jwt_decode(token)));
+    //       dispatch({
+    //         type: 'accountAndcenter/fetchCurrent',
+    //         payload: { userID: btoa(token.user_id) },
+    //       });
+    //     })
+    //   }
+    // }, []);
+  
+    //------------------------------------------------------------------------------------------------------------
+
+    useEffect(() => {
+
+      if(profile_picture === undefined && Object.keys(entity_part).length > 0 ){
+        asyncLocalStorage.getItem('accessToken')
+        .then((token) => {
+          try{
+            dispatch({
+              type: 'accountAndcenter/fetchProfilePicture',
+              payload: entity_part.user_img_salt
+            });
+          }
+          catch(e){
+            console.log(e);
+          }
+          
+        });
+      }
+    }, [entity_part]);
+
   useEffect(() => {
-  }, [entity_part]);
+  }, [profile_picture]);
 
   const onMenuClick = (event) => {
     const { key } = event;
@@ -53,22 +91,6 @@ const AvatarDropdown = (props) => {
         </Menu.Item>
       </Menu>
     );
-    
-    // const typeOfImage = (proc) => {
-    //   return {"type" : "profile_pic", "process": proc, "fileName": entity_part.img_salt}
-    // }
-
-    // const getPic = () => {
-    //   axios.post('file-handler/', {
-    //     ...typeOfImage('fetch')
-    // })
-    // .then(res =>{
-    //   console.log(res.data);
-    //   this.setState({
-    //     avatarSrc: res.data
-    //   });
-    // })
-    // }
 
     return (
       <>
@@ -76,7 +98,13 @@ const AvatarDropdown = (props) => {
           Object.keys(entity_part).length !== 0 ? 
               <HeaderDropdown overlay={menuHeaderDropdown}>
                <span className={`${styles.action} ${styles.account}`}>
-                 {/* <Avatar size="small" className={styles.avatar} src={} alt="avatar" /> */}
+                 {
+                   profile_picture === undefined ? 
+                   <Avatar size="small" className={styles.avatar} src={temp} alt="avatar" />
+                   :
+                   <Avatar size="small" className={styles.avatar} src={`data:image/png;base64,${profile_picture}`} alt="avatar" />
+                 }
+                 
                  <span className={styles.name}>{entity_part ? entity_part.first_name.concat(' ').concat(entity_part.last_name) : ''}</span>
                </span>
               </HeaderDropdown>
@@ -118,5 +146,6 @@ const AvatarDropdown = (props) => {
 
 export default connect(({ user, accountAndcenter }) => ({
   entity_part: accountAndcenter.entity_part,
+  profile_picture: accountAndcenter.profile_picture,
 }))(AvatarDropdown);
 

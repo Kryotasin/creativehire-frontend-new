@@ -8,6 +8,7 @@ const Model = {
   state: {
     current: 'link',
     link: undefined,
+    prefix: undefined,
     basics: [],
     project: undefined,
     structure: null,
@@ -181,6 +182,10 @@ const Model = {
 
     saveError(state, { payload }) {
       return {...state, error: payload}
+    },
+
+    saveLinkPrefix(state, { payload }) {
+      return {...state, prefix: payload}
     }
   },
 };
