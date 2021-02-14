@@ -146,7 +146,7 @@ const Search = (props) => {
 
   }, [searching]);
 
-  useEffect(() => {console.log(matchPercentSortQuery)
+  useEffect(() => {
     if (matchPercentSortQuery === 0 || matchPercentSortQuery === 1) {
       runSearchQuery();
     }
@@ -332,6 +332,7 @@ const Search = (props) => {
               dispatch={dispatch}
               runSearchQuery={runSearchQuery}
               savedQuery={savedQuery}
+              setTooltipVisible={setTooltipVisible}
               // updateJobMatchItem={updateJobMatchItem}
             />
           </div>

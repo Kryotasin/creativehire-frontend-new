@@ -22,7 +22,9 @@ const JobsList = (props) => {
     showExtra,
     maxGridSize,
     runSearchQuery,
-    savedQuery
+    savedQuery,
+
+    setTooltipVisible
   } = props;
   const [data, setData] = useState(undefined);
   const [showModal, setShowModal] = useState(false);
@@ -83,6 +85,24 @@ const JobsList = (props) => {
     console.log(e);
   }
 
+  const openModal = (item, title) => {
+    if(!item.jm_data.jm_viewed_by_candidate){
+      updateJobMatchItem(item.jm_data.id, title, 'visited');  
+    }
+
+    dispatch({
+      type: 'user/updateJobpostViewCount',
+      payload: {jobpost_id: item.jobpost_data.id}
+    });
+
+    setShowModal(true);
+    setModalData(item);
+
+    if(setTooltipVisible){
+      setTooltipVisible(false);
+    }
+  };
+
   return (
     <>
       <Card
@@ -121,19 +141,7 @@ const JobsList = (props) => {
                   <Row gutter={[0, 32]}>
                     <Col span={4}>
                       <div
-                        onClick={() => {
-                          if(!item.jm_data.jm_viewed_by_candidate){
-                            updateJobMatchItem(item.jm_data.id, title, 'visited');  
-                          }
-
-                          dispatch({
-                            type: 'user/updateJobpostViewCount',
-                            payload: {jobpost_id: item.jobpost_data.id}
-                          });
-
-                          setShowModal(true);
-                          setModalData(item);
-                        }}
+                        onClick={() => openModal(item, title)}
                         className={styles.jobTitle}
                       >
                         <img
@@ -147,19 +155,7 @@ const JobsList = (props) => {
                       <Space direction="vertical" size={0}>
                         <Paragraph ellipsis={{ rows: 1, expandable: false }}>
                           <div
-                            onClick={() => {
-                              if(!item.jm_data.jm_viewed_by_candidate){
-                                updateJobMatchItem(item.jm_data.id, title, 'visited');  
-                              }
-
-                              dispatch({
-                                type: 'user/updateJobpostViewCount',
-                                payload: {jobpost_id: item.jobpost_data.id}
-                              });
-                              
-                              setShowModal(true);
-                              setModalData(item);
-                            }}
+                            onClick={() => openModal(item, title)}
                             className={styles.jobTitle}
                           >
                             <Title level={4} ellipsis className={styles.jobTitle}>
@@ -289,6 +285,9 @@ const JobsList = (props) => {
         title=""
         // onOk={this.handleOk}
         onCancel={() => {
+          if(setTooltipVisible){
+            setTooltipVisible(true);
+          }
           setShowModal(false);          
           setModalData(undefined);
         }}
@@ -302,7 +301,7 @@ const JobsList = (props) => {
         footer={null}
         style={{ top: 20 }}
         destroyOnClose="true"
-        zIndex={200}
+        // zIndex={1071}
       >
         <JobCardData jobData={modalData} structure={structure} keywords_part={keywords_part} updateJobMatchItem={updateJobMatchItem} title={title} />
       </Modal>

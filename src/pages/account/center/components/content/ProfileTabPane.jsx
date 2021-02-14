@@ -98,9 +98,11 @@ const ProfileTabPane = (props) => {
       return (
         // <Space size="large" direction="vertical">
         <>
-          <Link to="/portfolio/new">
-            <PlusOutlined /> Add New{' '}
-          </Link>
+          <div  className={styles.addnew}>
+            <Link to="/portfolio/new">
+              <PlusOutlined /> Add New{' '}
+            </Link>
+          </div>
           <Projects userID={userID} />
         {/* </Space> */}
         </>

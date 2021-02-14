@@ -82,7 +82,9 @@ const Projects = (props) => {
                   { 
                     item.fields.project_img === 'https://picsum.photos/400' ? 
                     // editMsg += ' project link'
-                      <Alert message="Click to change the project image" type="info" showIcon />
+                      <div className={styles.infobanner}>
+                        <Alert message="Click to change the project image" type="info" showIcon />
+                      </div>
                     :
                     ''
                   }

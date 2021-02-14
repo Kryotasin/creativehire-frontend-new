@@ -63,13 +63,13 @@ const JobCardData = (props) => {
       jobKeys.forEach((e) => {
         if (keywords_part.ck_keywords.projects.includes(parseInt(e, 10))) {
           output.push(
-            <Tag color={colors.get('projects')} key={e}>
+            <Tag className={styles.tags} color={colors.get('projects')} key={e}>
               {structure[3][e]}
             </Tag>,
           );
         } else {
           output.push(
-            <Tag key={e}>
+            <Tag className={styles.tags} color="grey" key={e}>
               {structure[3][e]}
             </Tag>,
           );
@@ -85,13 +85,13 @@ const JobCardData = (props) => {
       jobKeys.forEach((e) => {
         if (keywords_part.ck_keywords.resume.includes(parseInt(e, 10))) {
           output.push(
-            <Tag color={colors.get('resume')} key={'project-'.concat(e)}>
+            <Tag className={styles.tags} color={colors.get('resume')} key={'project-'.concat(e)}>
               {structure[3][e]}
             </Tag>,
           );
         } else {
           output.push(
-            <Tag key={'resume-'.concat(e)}>
+            <Tag className={styles.tags} color="grey" key={'resume-'.concat(e)}>
               {structure[3][e]}
             </Tag>,
           );
@@ -100,6 +100,10 @@ const JobCardData = (props) => {
     }
     return output;
   };
+  
+  function createMarkup(text) {
+    return {__html: text};
+  }
 
   return (
     <>
@@ -256,8 +260,9 @@ const JobCardData = (props) => {
           </Row>
           <Row gutter={[72, 36]}>
             <Col xs={24} sm={24} md={10} lg={10} xl={14}>
-              <Paragraph ellipsis={{ rows: 20, expandable: true, symbol: 'more' }}>
-                {jobData.jobpost_data.jobpost_description}
+              <Paragraph ellipsis={{ rows: 20, expandable: true, symbol: 'more' }}>{console.log(jobData.jobpost_data)}
+                {/* {jobData.jobpost_data.jobpost_description} */}
+                <div dangerouslySetInnerHTML={createMarkup(jobData.jobpost_data.jobpost_description)} />
               </Paragraph>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={10}>

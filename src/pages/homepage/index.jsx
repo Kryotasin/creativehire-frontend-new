@@ -12,8 +12,6 @@ import Recommended from './components/recommended';
 
 import asyncLocalStorage from '../../asyncLocalStorage';
 import jwt_decode from 'jwt-decode';
-import { Editor, EditorState } from "draft-js";
-import "draft-js/dist/Draft.css";
 
 const Homepage = (props) => {
   const {
@@ -29,15 +27,6 @@ const Homepage = (props) => {
   
   //----------------------------------------USER ID HANDLING--------------------------------------------------------------------
   const [ userID, setUserID ] = useState(undefined);
-
-  const [editorState, setEditorState] = React.useState(() =>
-    EditorState.createEmpty()
-  );
-
-  const editor = React.useRef(null);
-  function focusEditor() {
-    editor.current.focus();
-  }
 
   // const [ userIDInterval, setUserIDInterval ] = useState(undefined);
 
@@ -122,17 +111,6 @@ const Homepage = (props) => {
     <div className={styles.main}>
       {structure ? (
         <>
-            <div
-              style={{ border: "1px solid black", minHeight: "6em", cursor: "text" }}
-              onClick={focusEditor}
-            >
-              <Editor
-                ref={editor}
-                editorState={editorState}
-                onChange={setEditorState}
-                placeholder="Write something!"
-              />
-            </div>
         <JobsList
             title="Recommended"
             structure={structure}
