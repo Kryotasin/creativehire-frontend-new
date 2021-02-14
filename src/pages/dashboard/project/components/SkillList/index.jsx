@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Divider, Card, Typography, Tabs, AutoComplete, message, Row, Col, Popconfirm, Spin } from 'antd';
+import { Button, Divider, Card, Typography, Tabs, AutoComplete, message, Row, Col, Popconfirm, Spin, Alert  } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { PieChart } from 'react-charts-d3';
 import axios from '../../../../../umiRequestConfig';
@@ -17,6 +17,9 @@ const SkillList = (props) => {
   const [loading, setLoading] = useState(false);
   const [chartData, setChartData] = useState(undefined);
   const [sortedSkills, setSortedSkills] = useState(undefined);
+  const [ keywordCount, setKeywordCount ] = useState(-1);
+
+  const [ deletedList, setDeletedList ] = useState([]);
 
   const [ loaded, setLoaded ] = useState(false);
 
@@ -79,20 +82,39 @@ const SkillList = (props) => {
     //   setChartData(tempData);
     // }
     if (sortedSkills !== undefined && Object.keys(sortedSkills).length === 0) {
-      message.warn('No skills found!')
+      message.info('No skills found!')
+    }
+
+    if(sortedSkills !== undefined && Object.keys(sortedSkills).length > 0){    
+      const set = new Set();
+
+      keywords.forEach((e)=>{
+        set.add(e.split(',')[0]);
+      });
+
+      setKeywordCount(set.size);
     }
   }, [sortedSkills]);
 
   useEffect(() =>{
-    if(structure && Object.keys(structure).length > 0 && sortedSkills !== undefined && Object.keys(sortedSkills).length > 0){
+    if(structure && Object.keys(structure).length > 0 && sortedSkills !== undefined && Object.keys(sortedSkills).length > 0 && keywordCount > -1){
       setLoaded(true);
     }
 
     // return () => { setLoaded(false)}
-  }, [structure, sortedSkills]);
+  }, [structure, sortedSkills, keywordCount]);
 
-  const onDeleteButtonClick = (cn) => {
-    message.warn(`${structure[3][cn]} has been removed`);
+
+  useEffect(() => {
+    console.log(deletedList)
+  }, [deletedList]);
+
+  const onDeleteButtonClick = (skill) => {
+    const cn = skill.split(',')[0];
+    message.info(`${structure[3][cn]} has been removed`);
+
+    setDeletedList((prev) => [...prev, skill]);
+
     setKeywords((prev) => {
       return prev.filter((item) => {
         const [prevcn, ..._] = item.split(',');
@@ -168,7 +190,7 @@ const SkillList = (props) => {
                     size="small"
                     icon={<CloseOutlined />}
                     onClick={() => {
-                      onDeleteButtonClick(cn);
+                      onDeleteButtonClick(skill);
                     }}
                   />
                 </p>
@@ -190,7 +212,7 @@ const SkillList = (props) => {
                     size="small"
                     style={{ float: 'right' }}
                     onClick={() => {
-                      onDeleteButtonClick(cn);
+                      onDeleteButtonClick(skill);
                     }}
                   />
                 </p>
@@ -202,11 +224,21 @@ const SkillList = (props) => {
     );
   };
 
-  const onSelect = (label, option) => {
-    const { item, category, subcategory, index } = option;
-    message.success(`${item} has been added!`);
-    setSelected(item);
-    setKeywords((prev) => [...prev, `${index},-1,-1`]);
+  const onSelect = (label, option, skill = undefined) => {
+    if(skill){
+      message.success(`${structure[3][skill.split(',')[0]]} has been added!`);
+      setKeywords((prev) => [...prev, skill]);
+      console.log('select',skill)
+    }
+    else{
+      console.log(option)
+      const { item, category, subcategory, index } = option;
+      message.success(`${item} has been added!`);
+      setSelected(item);
+      setKeywords((prev) => [...prev, `${index},-1,-1`]);
+      console.log(item, index)
+    }
+
   };
 
   const renderItem = (item, cat) => (
@@ -259,6 +291,63 @@ const SkillList = (props) => {
         key: key,
       };
     });
+    
+  const showDeletedList = () =>{
+    return (
+      <>
+        {
+          Object.keys(deletedList).length > 0 ? 
+            <Button
+              type="primary"
+              onClick={onSave}
+              loading={loading}
+              size="middle"
+              style={{
+                marginBottom: 20
+              }}
+            >
+              Save keywords
+            </Button>
+            :
+            ''
+        }
+        {
+          deletedList.map((item) => {
+          const msg = <Text>Deleted <Text strong>{structure[3][item.split(',')[0]]}</Text></Text>;
+          return (
+            <Alert
+              message={msg}
+              type="success"
+              showIcon
+              action={
+                <Button size="small" type="text" onClick={() => {
+                  onSelect(undefined, undefined, item);
+                  // console.log(deletedList.splice(deletedList.indexOf(item), 1));
+                  setDeletedList((prev) => {
+                    if(prev.length === 1){
+                      return [];
+                    }
+                    else{
+                      const temp = [...prev];
+                      temp.splice(temp.indexOf(item), 1)
+                      return [...temp]
+                    }
+                  })
+
+                }}>
+                  Undo
+                </Button>
+              }
+              closable
+              key={'deletelist'.concat(item)}
+              className={styles.deletedBar}
+            />
+          )
+        })
+        }
+      </>
+    );
+  };
 
   return (
     <>
@@ -268,7 +357,7 @@ const SkillList = (props) => {
         <Col xs={{ span: 24 }} lg={{ span: 22, offset: 2 }}>
           <Card>
             <Tabs defaultActiveKey="keywords">
-              <TabPane tab="Keywords" key="keywords">
+              <TabPane tab={`Keywords (${keywordCount})`} key="keywords">
                 <div className={styles.stepForm}>
                   <div className={styles.inputContainer}>
                     <AutoComplete
@@ -285,6 +374,9 @@ const SkillList = (props) => {
                       }}
                       value={selected}
                     />
+                  </div>
+                  <div className={styles.result}>
+                      { showDeletedList() }
                   </div>
                   <div className={styles.result}>
                     {structure !== null && sortedSkills ? <>{renderSkills()}</> : null}
