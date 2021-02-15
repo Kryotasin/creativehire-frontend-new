@@ -27,6 +27,12 @@ const { Text } = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
 
+export const reverseByStartDate = (arr) => {
+  return arr.sort((a, b) =>{
+    return moment(a.startend[0]).diff(moment(b.startend[0]));
+  })
+}
+
 const WorkExperience = (props) => {
   const { dispatch, projectList, candidate_part, employmentTypes, titleTypes, months, currentYear, defaultDate, saving, userID } = props;
 
@@ -59,7 +65,7 @@ const WorkExperience = (props) => {
         });
       }
       
-      setWorkList(temp);
+      setWorkList(reverseByStartDate(temp));
       setYoe((candidate_part.candidate_yoe).toFixed(2));
     }
   }, [candidate_part]);
@@ -101,6 +107,8 @@ const WorkExperience = (props) => {
       payload: { candidate_part: e },
     });
   }
+
+
 
   return (
     <div className="parts">
@@ -208,7 +216,7 @@ const WorkExperience = (props) => {
                     });
                     
                     setYoe(newYoe.toFixed(2));
-                    setWorkList(temp);
+                    setWorkList(reverseByStartDate(temp));
                     form.resetFields();
                     setVisible(false);
                   });

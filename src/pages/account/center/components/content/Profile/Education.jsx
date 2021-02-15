@@ -19,6 +19,8 @@ import styles from './index.less';
 import axios from '../../../../../../umiRequestConfig';
 import EducationCard from './components/EducationCard';
 
+import {reverseByStartDate} from './WorkExperience';
+
 const { Text } = Typography;
 
 const { Option } = Select;
@@ -56,7 +58,7 @@ const Education = (props) => {
         });
       }
 
-      setEducationList(temp);
+      setEducationList(reverseByStartDate(temp));
     }
   }, [candidate_part]);
 
@@ -178,7 +180,7 @@ const Education = (props) => {
                       temp.push(entry[1]);
                     });
                     
-                    setEducationList(temp);
+                    setEducationList(reverseByStartDate(temp));
                     form.resetFields();
                     setVisible(false);
                   });
