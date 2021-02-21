@@ -101,7 +101,7 @@ const Model = {
           yield put({
             type: 'changeLoginStatus',
             payload: {'status': 521},
-            errors: 'Our server seems to be down. Please contact admin@creativehire.co if problem persists.'
+            errors: 'Our server seems to be down. Please contact info@creativehire.co if problem persists.'
           }); // Server is down
         }
         else{
