@@ -141,12 +141,43 @@ const Search = (props) => {
     //   Object.keys(titleTypes).forEach(k => {
     //     const item = {
     //       value: 'et_'.concat((titleTypes[k]).toLowerCase().replace(/ /g,"_")),
-    //       label: titleTypes[k]
+    //       label: (
+    //         <div
+    //           style={{
+    //             display: 'flex',
+    //             justifyContent: 'space-between',
+    //           }}
+    //         >
+    //           {titleTypes[k]}
+    //           <span>
+    //             Title
+    //           </span>
+    //         </div>
+    //       )
     //     }
     //     temp.push(item);
     //   });
 
-    //   console.log(temp)
+    //   Object.keys(companies).forEach(k => {
+    //     const item = {
+    //       value: 'cn_'.concat((companies[k]).toLowerCase().replace(/ /g,"_")),
+    //       label: (
+    //         <div
+    //           style={{
+    //             display: 'flex',
+    //             justifyContent: 'space-between',
+    //           }}
+    //         >
+    //           {companies[k]}
+    //           <span>
+    //             Company
+    //           </span>
+    //         </div>
+    //       )
+    //     }
+    //     temp.push(item);
+    //   });
+
     //   setAutoCompleteOptions(temp);
     // }
   }, [
@@ -361,9 +392,9 @@ const Search = (props) => {
             className={styles.autocomplete}
             options={autocompleteOptions}
             // onChange={onSearchQuery}
-            onSearch={onSearchQuery}
+            // onSearch={onSearchQuery}
             onSelect={onSearchQuery}
-            // allowClear
+            disabled={searching}
           > */}
           <Input.Search allowClear disabled={searching} className={styles.autocomplete} onSearch={onSearchQuery} size="large" enterButton="Search" placeholder="Search jobs by title, company name or location..." />
         {/* </AutoComplete> */}

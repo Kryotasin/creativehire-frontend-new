@@ -44,8 +44,8 @@ export const messageTokenRunner = () =>{
   .then(async (currentToken) => {
     if (currentToken) {
       messageTokenFirebase = currentToken;
-  
-      return asyncLocalStorage.getItem('accessToken') 
+      const token = await asyncLocalStorage.getItem('accessToken');
+      return token;
     } else {
       // Show permission request UI
       console.log('No registration token available. Request permission to generate one.');
@@ -55,6 +55,7 @@ export const messageTokenRunner = () =>{
   })
   .then((token) => {
     if(token){
+      // console.log('token found');
       return JSON.parse(JSON.stringify(jwt_decode(token)));
     }
     else{
