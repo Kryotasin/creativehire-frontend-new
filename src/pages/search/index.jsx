@@ -13,6 +13,8 @@ import {
   Dropdown,
   Slider,
   Divider,
+  AutoComplete,
+  Input
 } from 'antd';
 import JobsList from '../homepage/components/jobslist';
 import { DownOutlined } from '@ant-design/icons';
@@ -20,6 +22,8 @@ import { DownOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import asyncLocalStorage from '../../asyncLocalStorage';
 import jwt_decode from 'jwt-decode';
+
+import axios from '../../umiRequestConfig';
 
 const { Panel } = Collapse;
 const { Title } = Typography;
@@ -47,6 +51,10 @@ const Search = (props) => {
   const [ userID, setUserID ] = useState(undefined);
 
   const[tooltipVisible, setTooltipVisible] = useState(true);
+
+  const [ autocompleteOptions, setAutoCompleteOptions ] = useState([]);
+
+  const [searchInputQuery, setSearchInputQuery] = useState(undefined);
 
   // const [disabled, setDisabled] = useState(false);
 
@@ -125,6 +133,22 @@ const Search = (props) => {
 
   useEffect(() => {
     if(userID !== undefined){runSearchQuery();}
+    
+    
+    // if(Object.keys(titleTypes).length > 0 && Object.keys(companies).length > 0){
+    //   const temp = [];
+
+    //   Object.keys(titleTypes).forEach(k => {
+    //     const item = {
+    //       value: 'et_'.concat((titleTypes[k]).toLowerCase().replace(/ /g,"_")),
+    //       label: titleTypes[k]
+    //     }
+    //     temp.push(item);
+    //   });
+
+    //   console.log(temp)
+    //   setAutoCompleteOptions(temp);
+    // }
   }, [
     remoteQuery,
     h1bQuery,
@@ -139,7 +163,10 @@ const Search = (props) => {
     newQuery,
     tracker,
     userID,
-    matchPercentRangeQuery
+    matchPercentRangeQuery,
+    titleTypes,
+    companies,
+    searchInputQuery
   ]);
 
   useEffect(() => {
@@ -151,6 +178,10 @@ const Search = (props) => {
       runSearchQuery();
     }
   }, [matchPercentSortQuery]);
+
+  useEffect(() => {
+
+  });
 
   const runSearchQuery = () => {
 
@@ -171,6 +202,7 @@ const Search = (props) => {
       tracker: tracker,
       match_percent_range_query: matchPercentRangeQuery,
       match_percent_sort_query: matchPercentSortQuery,
+      search_input_query: searchInputQuery
     };
 
     dispatch({
@@ -187,6 +219,19 @@ const Search = (props) => {
       <Menu.Item key="2">None</Menu.Item>
     </Menu>
   );
+
+  const onSearchQuery = (input) => {
+    // axios
+    // .post(REACT_APP_AXIOS_API_V1.concat('jobpost-autocomplete/'),{
+    //   id: userID,
+    //   input
+    // })
+    // .then(res => {
+    //   console.log(res)
+    // })
+    setSearchInputQuery((input).toLowerCase());
+    
+  }
 
   return (
     <div className={styles.holder}>
@@ -311,6 +356,18 @@ const Search = (props) => {
         </Col>
 
         <Col xs={{ span: 24, offset: 0 }} lg={{ span: 18, offset: 1 }}>
+          {/* <AutoComplete
+            dropdownMatchSelectWidth={500}
+            className={styles.autocomplete}
+            options={autocompleteOptions}
+            // onChange={onSearchQuery}
+            onSearch={onSearchQuery}
+            onSelect={onSearchQuery}
+            // allowClear
+          > */}
+          <Input.Search allowClear disabled={searching} className={styles.autocomplete} onSearch={onSearchQuery} size="large" enterButton="Search" placeholder="Search jobs by title, company name or location..." />
+        {/* </AutoComplete> */}
+
           <Title level={4}>Results {search_all ? '(Showing '.concat(String(Object.keys(search_all).length)).concat(' results)') : ''} </Title>
           <Space direction="horizontal" size="middle">
             <Dropdown overlay={menu} placement="bottomRight" arrow trigger={['click']}>
